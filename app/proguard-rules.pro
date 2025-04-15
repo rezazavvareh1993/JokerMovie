@@ -1,0 +1,4 @@
+-keepattributes EnclosingMethod
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*,Signature
+-keep,allowobfuscation,allowshrinking class kotlin.Result
