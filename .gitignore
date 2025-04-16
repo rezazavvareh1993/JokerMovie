@@ -19,6 +19,7 @@ local.properties
 /core/common/build
 /core/network/build
 /core/ui/build
+/core/designsystem/build
 *.apk
 *.ap_
 *.aab
