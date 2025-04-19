@@ -34,6 +34,10 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
+                        Text(text = BuildConfig.VERSION_NAME)
+                        Text(text = BuildConfig.APPLICATION_ID)
+                        Text(text = BuildConfig.FLAVOR)
+                        Text(BuildConfig.VERSION_CODE.toString())
                         Text(
                             text = BuildConfig.AUTH_BASE_URL,
                             modifier = Modifier.padding(innerPadding)

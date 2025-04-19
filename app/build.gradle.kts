@@ -28,6 +28,8 @@ android {
     productFlavors {
         create("dev") {
             dimension = "paliz"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
             buildConfigField(
                 "String",
                 "AUTH_BASE_URL",
@@ -41,6 +43,8 @@ android {
         }
         create("stage") {
             dimension = "paliz"
+            applicationIdSuffix = ".stage"
+            versionNameSuffix = "-stage"
             buildConfigField(
                 "String",
                 "AUTH_BASE_URL",
@@ -81,10 +85,15 @@ android {
     }
 
     buildTypes {
-        debug { isDebuggable = true }
+        debug {
+            isDebuggable = true
+            versionNameSuffix = "-debug"
+
+        }
 
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
