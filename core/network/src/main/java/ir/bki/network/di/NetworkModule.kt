@@ -6,8 +6,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ir.bki.network.BuildConfig
 import ir.bki.network.qualifiers.AUTH
 import ir.bki.network.qualifiers.SETTING
+import ir.bki.network.util.BuildConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,8 +21,8 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
 
-    private const val AUTH_BASE_URL = ""
-    private const val SETTING_BASE_URL = ""
+    private const val AUTH_BASE_URL = BuildConstants.AUTH_BASE_URL
+    private const val SETTING_BASE_URL = BuildConstants.SETTING_BASE_URL
 
     @Provides
     @Singleton
@@ -35,7 +37,11 @@ object NetworkModule {
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
+        logging.level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
         return logging
     }
 
