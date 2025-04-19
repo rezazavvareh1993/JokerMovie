@@ -12,7 +12,6 @@
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 /.idea/misc.xml
 /app/build
 .idea
@@ -25,3 +24,5 @@ local.properties
 *.aab
 bin/
 gen/
+keystore.properties
+*.jks

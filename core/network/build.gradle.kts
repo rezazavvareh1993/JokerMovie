@@ -19,6 +19,31 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
+    flavorDimensions.add("paliz")
+
+    productFlavors {
+        create("dev") {
+            dimension = "paliz"
+            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth-dev.example.com/PalizAuthDev\"")
+            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting-dev.example.com/PalizSettingDev\"")
+        }
+        create("stage") {
+            dimension = "paliz"
+            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth-stage.example.com/PalizAuthStage\"")
+            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting-stage.example.com/PalizSettingStage\"")
+        }
+        create("prod") {
+            dimension = "paliz"
+            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth.example.com/PalizAuthProd\"")
+            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting.example.com/PalizSettingProd\"")
+        }
+    }
+
+    buildTypes {
+        getByName("debug")
+        getByName("release")
+    }
+
     buildFeatures {
         buildConfig = true
     }
