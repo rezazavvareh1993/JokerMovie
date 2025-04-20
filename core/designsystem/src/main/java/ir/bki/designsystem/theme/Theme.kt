@@ -14,16 +14,18 @@ import ir.bki.designsystem.custom.LocalPalizIconPalette
 import ir.bki.designsystem.custom.PalizCustomColorPalette
 import ir.bki.designsystem.custom.PalizIconPalette
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = Purple80,
+        secondary = PurpleGrey80,
+        tertiary = Pink80,
+    )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+private val LightColorScheme =
+    lightColorScheme(
+        primary = Purple40,
+        secondary = PurpleGrey40,
+        tertiary = Pink40,
 //    primary = HipixiLightPrimary,
 //    onPrimary = HipixiLightOnPrimary,
 //    primaryContainer = HipixiLightPrimaryContainer,
@@ -44,7 +46,6 @@ private val LightColorScheme = lightColorScheme(
 //    outline = HipixiLightOutline,
 //    outlineVariant = HipixiLightOutlineVariant,
 //    scrim = HipixiLightScrim,
-
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -53,8 +54,8 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
-    */
-)
+     */
+    )
 
 val onLightPalizIconPalette =
     PalizIconPalette(
@@ -74,14 +75,15 @@ fun PalizTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (darkTheme) DarkColorScheme else LightColorScheme
-        }
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                if (darkTheme) DarkColorScheme else LightColorScheme
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
     val customColorsPalette = OnLightPalizCustomColorsPalette
     val customIconsPalette = onLightPalizIconPalette

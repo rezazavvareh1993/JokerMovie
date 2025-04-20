@@ -15,6 +15,7 @@
 /.idea/misc.xml
 /app/build
 .idea
+/core/build
 /core/common/build
 /core/network/build
 /core/ui/build

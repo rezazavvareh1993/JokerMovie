@@ -65,7 +65,8 @@ private fun placeHolderOfTextField(textFieldComponentParams: TextFieldComponentP
             /*HeadlineSmallTextComponent(
                 text = textFieldComponentParams.placeHolder,
                 color = MaterialTheme.colorScheme.outline,
-            )*/ // Todo replace headlineSmallText
+            )*/
+            // Todo replace headlineSmallText
         }
     } else {
         null

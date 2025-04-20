@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ShowToast(
+fun showToast(
     context: Context,
     message: String,
 ) {

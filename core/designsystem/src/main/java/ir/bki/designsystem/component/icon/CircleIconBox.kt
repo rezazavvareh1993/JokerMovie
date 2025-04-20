@@ -63,7 +63,7 @@ fun CircleIconBoxComponent(
 @PreviewLightDark
 @Composable
 fun CircleIconBoxComponentPreview() {
-    PalizTheme  {
+    PalizTheme {
         CircleIconBoxComponent(
             icon = LocalPalizIconPalette.current.icPalizSampleIcon,
         )

@@ -8,4 +8,32 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.ktlint) apply false
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.kotlin.android") {
+        apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+        afterEvaluate {
+            extensions.findByType(org.jlleitschuh.gradle.ktlint.KtlintExtension::class.java)
+                ?.apply {
+                    android.set(true) //  Keep this as it won't affect non-Android modules
+                    outputToConsole.set(true)
+                    ignoreFailures.set(true)
+                    reporters {
+                        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+                        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+                    }
+                    filter {
+                        exclude("**/generated/**")
+                        include("**/*.kt")
+                    }
+                }
+
+            tasks.matching { it.name == "preBuild" || it.name == "compileKotlin" }.configureEach {
+                dependsOn("ktlintFormat")
+            }
+        }
+    }
 }
