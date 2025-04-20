@@ -40,11 +40,11 @@ class MainActivity : ComponentActivity() {
                         Text(BuildConfig.VERSION_CODE.toString())
                         Text(
                             text = BuildConfig.AUTH_BASE_URL,
-                            modifier = Modifier.padding(innerPadding)
+                            modifier = Modifier.padding(innerPadding),
                         )
                         Text(
                             text = BuildConfig.SETTING_BASE_URL,
-                            modifier = Modifier.padding(innerPadding)
+                            modifier = Modifier.padding(innerPadding),
                         )
                     }
                 }

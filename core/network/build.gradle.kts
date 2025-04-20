@@ -7,10 +7,16 @@ plugins {
 
 android {
     namespace = "ir.bki.network"
-    compileSdk = libs.versions.android.targetSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.targetSdk
+            .get()
+            .toInt()
 
     defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,7 +53,7 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_21.toString()
     }
@@ -84,7 +90,7 @@ dependencies {
     // Modules
     implementation(projects.core.common)
 
-    testImplementation (libs.junit)
+    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

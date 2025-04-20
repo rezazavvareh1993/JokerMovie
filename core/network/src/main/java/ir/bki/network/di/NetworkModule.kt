@@ -20,7 +20,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
-
     private const val AUTH_BASE_URL = BuildConstants.AUTH_BASE_URL
     private const val SETTING_BASE_URL = BuildConstants.SETTING_BASE_URL
 
@@ -30,27 +29,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMoshiConvertorFactory(moshi: Moshi): MoshiConverterFactory =
-        MoshiConverterFactory.create(moshi)
+    fun provideMoshiConvertorFactory(moshi: Moshi): MoshiConverterFactory = MoshiConverterFactory.create(moshi)
 
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
-        logging.level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
+        logging.level =
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         return logging
     }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient =
-        OkHttpClient.Builder()
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(httpLoggingInterceptor)
             .readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS)
@@ -61,9 +59,10 @@ object NetworkModule {
     @AUTH
     fun providesAuthRetrofit(
         okHttpClient: OkHttpClient,
-        moshiConverterFactory: MoshiConverterFactory
+        moshiConverterFactory: MoshiConverterFactory,
     ): Retrofit =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
             .client(okHttpClient)
@@ -75,9 +74,10 @@ object NetworkModule {
     @SETTING
     fun providesSettingRetrofit(
         okHttpClient: OkHttpClient,
-        moshiConverterFactory: MoshiConverterFactory
+        moshiConverterFactory: MoshiConverterFactory,
     ): Retrofit =
-        Retrofit.Builder()
+        Retrofit
+            .Builder()
             .addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
             .client(okHttpClient)

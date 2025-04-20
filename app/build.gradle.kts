@@ -11,14 +11,30 @@ plugins {
 
 android {
     namespace = "ir.bki.paliz"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "ir.bki.paliz"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = libs.versions.appVersion.get().toInt()
-        versionName = libs.versions.appVersion.get().toCharArray().joinToString(".")
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
+        versionCode =
+            libs.versions.appVersion
+                .get()
+                .toInt()
+        versionName =
+            libs.versions.appVersion
+                .get()
+                .toCharArray()
+                .joinToString(".")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,12 +49,12 @@ android {
             buildConfigField(
                 "String",
                 "AUTH_BASE_URL",
-                "\"https://auth-dev.example.com/PalizAuthDev\""
+                "\"https://auth-dev.example.com/PalizAuthDev\"",
             )
             buildConfigField(
                 "String",
                 "SETTING_BASE_URL",
-                "\"https://setting-dev.example.com/PalizSettingDev\""
+                "\"https://setting-dev.example.com/PalizSettingDev\"",
             )
         }
         create("stage") {
@@ -48,12 +64,12 @@ android {
             buildConfigField(
                 "String",
                 "AUTH_BASE_URL",
-                "\"https://auth-stage.example.com/PalizAuthStage\""
+                "\"https://auth-stage.example.com/PalizAuthStage\"",
             )
             buildConfigField(
                 "String",
                 "SETTING_BASE_URL",
-                "\"https://setting-stage.example.com/PalizSettingStage\""
+                "\"https://setting-stage.example.com/PalizSettingStage\"",
             )
         }
         create("prod") {
@@ -61,19 +77,20 @@ android {
             buildConfigField(
                 "String",
                 "AUTH_BASE_URL",
-                "\"https://auth.example.com/PalizAuthProd\""
+                "\"https://auth.example.com/PalizAuthProd\"",
             )
             buildConfigField(
                 "String",
                 "SETTING_BASE_URL",
-                "\"https://setting.example.com/PalizSettingProd\""
+                "\"https://setting.example.com/PalizSettingProd\"",
             )
         }
     }
 
-    val keystoreProperties = Properties().apply {
-        load(File(rootDir, "keystore.properties").inputStream())
-    }
+    val keystoreProperties =
+        Properties().apply {
+            load(File(rootDir, "keystore.properties").inputStream())
+        }
 
     signingConfigs {
         create("release") {
@@ -88,7 +105,6 @@ android {
         debug {
             isDebuggable = true
             versionNameSuffix = "-debug"
-
         }
 
         release {
@@ -97,7 +113,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }

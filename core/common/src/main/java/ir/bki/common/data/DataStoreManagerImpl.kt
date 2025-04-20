@@ -17,57 +17,59 @@ const val DATA_STORE_PREFERENCES_KEY = "paliz_app_datastore_preferences"
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_PREFERENCES_KEY)
 
-internal class DataStoreManagerImpl @Inject constructor(
-    @ApplicationContext val context: Context,
-) : DataStoreManager {
-    override suspend fun saveData(
-        key: String,
-        value: String,
-    ) {
-        context.dataStore.edit { prefs ->
-            prefs[stringPreferencesKey(key)] = value
+internal class DataStoreManagerImpl
+    @Inject
+    constructor(
+        @ApplicationContext val context: Context,
+    ) : DataStoreManager {
+        override suspend fun saveData(
+            key: String,
+            value: String,
+        ) {
+            context.dataStore.edit { prefs ->
+                prefs[stringPreferencesKey(key)] = value
+            }
+        }
+
+        override suspend fun saveData(
+            key: String,
+            value: Boolean,
+        ) {
+            context.dataStore.edit { prefs ->
+                prefs[booleanPreferencesKey(key)] = value
+            }
+        }
+
+        override fun getString(key: String): Flow<String> =
+            context.dataStore.data.map { prefs ->
+                prefs[stringPreferencesKey(key)] ?: ""
+            }
+
+        override fun getBoolean(key: String): Flow<Boolean> =
+            context.dataStore.data.map { prefs ->
+                prefs[booleanPreferencesKey(key)] ?: false
+            }
+
+        override suspend fun <T : Any> getObject(
+            key: String,
+            mapper: (String) -> Result<T>,
+        ): Flow<Result<T>> =
+            getString(key).map { jsonString ->
+                mapper(jsonString)
+            }
+
+        override suspend fun <T : Any> saveObject(
+            key: String,
+            value: T,
+            toJson: (T) -> String,
+        ) {
+            val jsonString = toJson(value)
+            saveData(key, jsonString)
+        }
+
+        override suspend fun clearAllData() {
+            context.dataStore.edit { prefs ->
+                prefs.clear()
+            }
         }
     }
-
-    override suspend fun saveData(
-        key: String,
-        value: Boolean,
-    ) {
-        context.dataStore.edit { prefs ->
-            prefs[booleanPreferencesKey(key)] = value
-        }
-    }
-
-    override fun getString(key: String): Flow<String> =
-        context.dataStore.data.map { prefs ->
-            prefs[stringPreferencesKey(key)] ?: ""
-        }
-
-    override fun getBoolean(key: String): Flow<Boolean> =
-        context.dataStore.data.map { prefs ->
-            prefs[booleanPreferencesKey(key)] ?: false
-        }
-
-    override suspend fun <T : Any> getObject(
-        key: String,
-        mapper: (String) -> Result<T>,
-    ): Flow<Result<T>> =
-        getString(key).map { jsonString ->
-            mapper(jsonString)
-        }
-
-    override suspend fun <T : Any> saveObject(
-        key: String,
-        value: T,
-        toJson: (T) -> String,
-    ) {
-        val jsonString = toJson(value)
-        saveData(key, jsonString)
-    }
-
-    override suspend fun clearAllData() {
-        context.dataStore.edit { prefs ->
-            prefs.clear()
-        }
-    }
-}
