@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                         Text(text = BuildConfig.APPLICATION_ID)
                         Text(text = BuildConfig.FLAVOR)
                         Text(BuildConfig.VERSION_CODE.toString())
-                        Text(text = BuildConfig.AUTH_BASE_URL, modifier = Modifier.padding(innerPadding))
+                        Text(text = BuildConfig.WALLET_BASE_URL, modifier = Modifier.padding(innerPadding))
                         Text(
                             text = BuildConfig.SETTING_BASE_URL,
                             modifier = Modifier.padding(innerPadding),

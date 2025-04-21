@@ -30,17 +30,33 @@ android {
     productFlavors {
         create("dev") {
             dimension = "paliz"
-            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth-dev.example.com/PalizAuthDev\"")
-            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting-dev.example.com/PalizSettingDev\"")
+            buildConfigField(
+                "String",
+                "WALLET_BASE_URL",
+                "\"http://10.0.85.111:1010/\"",
+            )
+            buildConfigField(
+                "String",
+                "SETTING_BASE_URL",
+                "\"https://setting-dev.example.com/PalizSettingDev\"",
+            )
         }
-        create("stage") {
+        create("uat") {
             dimension = "paliz"
-            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth-stage.example.com/PalizAuthStage\"")
+            buildConfigField(
+                "String",
+                "WALLET_BASE_URL",
+                "\"https://wallet-uat.bki.ir/walletbackend/\"",
+            )
             buildConfigField("String", "SETTING_BASE_URL", "\"https://setting-stage.example.com/PalizSettingStage\"")
         }
         create("prod") {
             dimension = "paliz"
-            buildConfigField("String", "AUTH_BASE_URL", "\"https://auth.example.com/PalizAuthProd\"")
+            buildConfigField(
+                "String",
+                "WALLET_BASE_URL",
+                "\"https://wallet.bki.ir/walletbackend/\"",
+            )
             buildConfigField("String", "SETTING_BASE_URL", "\"https://setting.example.com/PalizSettingProd\"")
         }
     }

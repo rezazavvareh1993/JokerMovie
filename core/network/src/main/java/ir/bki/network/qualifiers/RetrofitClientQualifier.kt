@@ -4,7 +4,7 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AUTH
+annotation class WALLET
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ir.bki.network.BuildConfig
-import ir.bki.network.qualifiers.AUTH
 import ir.bki.network.qualifiers.SETTING
+import ir.bki.network.qualifiers.WALLET
 import ir.bki.network.util.BuildConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
-    private const val AUTH_BASE_URL = BuildConstants.AUTH_BASE_URL
+    private const val WALLET_BASE_URL = BuildConstants.WALLET_BASE_URL
     private const val SETTING_BASE_URL = BuildConstants.SETTING_BASE_URL
 
     @Provides
@@ -56,7 +56,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @AUTH
+    @WALLET
     fun providesAuthRetrofit(
         okHttpClient: OkHttpClient,
         moshiConverterFactory: MoshiConverterFactory,
@@ -66,7 +66,7 @@ object NetworkModule {
             .addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
             .client(okHttpClient)
-            .baseUrl(AUTH_BASE_URL)
+            .baseUrl(WALLET_BASE_URL)
             .build()
 
     @Provides
