@@ -40,6 +40,17 @@ class MoviesViewModel
                     mMoviesState.update { it.copy(movieNameInput = event.newMovieName) }
 
                 is MoviesUiEvent.OnSearchedMovie -> searchMovies(event.query)
+
+                is MoviesUiEvent.OnCancelSearch -> cancelSearch()
+            }
+        }
+
+        private fun cancelSearch() {
+            viewModelScope.launch {
+                mMoviesState.update {
+                    it.copy(movieNameInput = "", hasSearchResult = false)
+                }
+                getMovies()
             }
         }
 

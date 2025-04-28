@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.rezazavareh7.designsystem.component.icon.IconComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 
@@ -52,6 +53,7 @@ fun OutlineTextFieldComponent(outlineTextFieldComponentParams: OutlineTextFieldC
             outlineTextFieldComponentParams.onValueChange(newValue)
         },
         enabled = outlineTextFieldComponentParams.isEnabled,
+        shape = outlineTextFieldComponentParams.shape,
         modifier =
             outlineTextFieldComponentParams.modifier
                 .fillMaxWidth()
@@ -68,7 +70,7 @@ fun OutlineTextFieldComponent(outlineTextFieldComponentParams: OutlineTextFieldC
             OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
             ),
-        trailingIcon = trailingIconOfOutlineTextField(outlineTextFieldComponentParams = outlineTextFieldComponentParams),
+        trailingIcon = trailingIconOfOutlineTextField(outlineTextFieldComponentParams),
         leadingIcon = leadingIconOfOutlineTextField(outlineTextFieldComponentParams),
         label = labelOfOutlineTextField(outlineTextFieldComponentParams),
         supportingText = supportingTextOfOutlineTextField(outlineTextFieldComponentParams),
@@ -88,6 +90,8 @@ private fun trailingIconOfOutlineTextField(outlineTextFieldComponentParams: Outl
     if (outlineTextFieldComponentParams.hasTrailingIcon) {
         {
             IconComponent(
+                isClickable = outlineTextFieldComponentParams.isTrailingIconClickable,
+                onClick = outlineTextFieldComponentParams.clickOnTrailingIcon,
                 drawableId = outlineTextFieldComponentParams.trailingIcon,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -100,6 +104,8 @@ private fun leadingIconOfOutlineTextField(outlineTextFieldComponentParams: Outli
     if (outlineTextFieldComponentParams.hasLeadingIcon) {
         {
             IconComponent(
+                isClickable = outlineTextFieldComponentParams.isLeadingIconClickable,
+                onClick = outlineTextFieldComponentParams.clickOnLeadingIcon,
                 drawableId =
                     if (outlineTextFieldComponentParams.isError) {
                         LocalJokerIconPalette.current.icJokerError
@@ -123,7 +129,7 @@ private fun placeHolderOfOutlineTextField(outlineTextFieldComponentParams: Outli
         {
             Text(
                 text = outlineTextFieldComponentParams.placeHolder,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.outline,
             )
         }
     } else {
@@ -146,7 +152,7 @@ private fun supportingTextOfOutlineTextField(outlineTextFieldComponentParams: Ou
 
 private fun labelOfOutlineTextField(outlineTextFieldComponentParams: OutlineTextFieldComponentParams): @Composable (() -> Unit)? =
     if (outlineTextFieldComponentParams.hasLabel) {
-        { Text(text = outlineTextFieldComponentParams.label) }
+        { TitleSmallTextComponent(text = outlineTextFieldComponentParams.label) }
     } else {
         null
     }

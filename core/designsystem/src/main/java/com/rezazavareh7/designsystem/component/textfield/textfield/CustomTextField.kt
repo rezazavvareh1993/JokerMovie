@@ -1,6 +1,5 @@
 package com.rezazavareh7.designsystem.component.textfield.textfield
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -80,12 +79,8 @@ private fun leadingIconOfTextField(textFieldComponentParams: TextFieldComponentP
     if (textFieldComponentParams.hasLeadingIcon) {
         {
             IconComponent(
-                modifier =
-                    if (textFieldComponentParams.isLeadingIconClickable) {
-                        Modifier.clickable { textFieldComponentParams.clickOnLeadingIcon() }
-                    } else {
-                        Modifier
-                    },
+                isClickable = textFieldComponentParams.isLeadingIconClickable,
+                onClick = textFieldComponentParams.clickOnLeadingIcon,
                 drawableId =
                     if (textFieldComponentParams.isError) {
                         LocalJokerIconPalette.current.icJokerError

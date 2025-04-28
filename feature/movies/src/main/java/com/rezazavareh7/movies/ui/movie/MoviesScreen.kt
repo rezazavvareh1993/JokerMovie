@@ -16,10 +16,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
-import com.rezazavareh7.designsystem.component.textfield.textfield.CustomTextFieldComponent
-import com.rezazavareh7.designsystem.component.textfield.textfield.TextFieldComponentParams
+import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponent
+import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponentParams
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
@@ -41,6 +42,10 @@ fun MoviesScreen(
     Scaffold(
         topBar = {
             ToolbarComponent(startContent = {
+                IconComponent(
+                    drawableId = LocalJokerIconPalette.current.icMainLogo,
+                    modifier = Modifier.padding(vertical = 2.dp),
+                )
                 TitleLargeTextComponent(
                     text = "Joker Movies",
                 )
@@ -60,15 +65,15 @@ fun MoviesScreen(
                 painterId = LocalJokerIconPalette.current.imgJokerBackground,
             )
             Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)) {
-                CustomTextFieldComponent(
-                    textFieldComponentParams =
-                        TextFieldComponentParams(
+                OutlineTextFieldComponent(
+                    outlineTextFieldComponentParams =
+                        OutlineTextFieldComponentParams(
                             modifier = Modifier.padding(16.dp),
                             hasPlaceHolder = true,
                             placeHolder = stringResource(id = R.string.search_movie),
                             onValueChange = { value ->
                                 if (moviesUiState.movieNameInput.isEmpty() && moviesUiState.hasSearchResult) {
-                                    movieUiEvent(MoviesUiEvent.OnGetMoviesCalled)
+                                    movieUiEvent(MoviesUiEvent.OnCancelSearch)
                                 } else {
                                     movieUiEvent(MoviesUiEvent.OnSearchMovieChanged(value))
                                 }
@@ -78,6 +83,12 @@ fun MoviesScreen(
                             hasLeadingIcon = true,
                             leadingIcon = LocalJokerIconPalette.current.icJokerSearch,
                             isLeadingIconClickable = true,
+                            isTrailingIconClickable = true,
+                            hasTrailingIcon = moviesUiState.movieNameInput.length >= 2,
+                            trailingIcon = LocalJokerIconPalette.current.icCancel,
+                            clickOnTrailingIcon = {
+                                movieUiEvent(MoviesUiEvent.OnCancelSearch)
+                            },
                             clickOnLeadingIcon = {
                                 if (moviesUiState.movieNameInput.length >= 2) {
                                     movieUiEvent(MoviesUiEvent.OnSearchedMovie(moviesUiState.movieNameInput))
