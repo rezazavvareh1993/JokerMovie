@@ -5,16 +5,16 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".PalizApp"
-        android:icon="@mipmap/ic_launcher"
+        android:name=".JokerMovieApp"
+        android:icon="@drawable/joker_main_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/joker_main_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Paliz">
+        android:theme="@style/Theme.JokerMovie">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Paliz">
+            android:theme="@style/Theme.JokerMovie">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "ir.bki.ui"
+    namespace = "com.rezazavareh7.ui"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
@@ -48,6 +48,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling)
     api(libs.androidx.navigation.compose)
     api(libs.androidx.compose.ui)
+
+    // Glide
+    implementation(libs.glide.compose)
+    ksp(libs.glide.ksp)
 
     // Material
     api(libs.androidx.compose.material3)

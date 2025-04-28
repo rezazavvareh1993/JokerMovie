@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ir.bki.network"
+    namespace = "com.rezazavareh7.network"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
@@ -20,54 +20,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    flavorDimensions.add("paliz")
-
-    productFlavors {
-        create("dev") {
-            dimension = "paliz"
-            buildConfigField(
-                "String",
-                "WALLET_BASE_URL",
-                "\"http://10.0.85.111:1010/\"",
-            )
-            buildConfigField(
-                "String",
-                "SETTING_BASE_URL",
-                "\"https://setting-dev.example.com/PalizSettingDev\"",
-            )
-        }
-        create("uat") {
-            dimension = "paliz"
-            buildConfigField(
-                "String",
-                "WALLET_BASE_URL",
-                "\"https://wallet-uat.bki.ir/walletbackend/\"",
-            )
-            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting-stage.example.com/PalizSettingStage\"")
-        }
-        create("prod") {
-            dimension = "paliz"
-            buildConfigField(
-                "String",
-                "WALLET_BASE_URL",
-                "\"https://wallet.bki.ir/walletbackend/\"",
-            )
-            buildConfigField("String", "SETTING_BASE_URL", "\"https://setting.example.com/PalizSettingProd\"")
-        }
-    }
-
-    buildTypes {
-        getByName("debug")
-        getByName("release")
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     kotlinOptions {

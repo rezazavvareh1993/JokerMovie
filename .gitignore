@@ -27,6 +27,3 @@ bin/
 gen/
 keystore.properties
 *.jks
-app/dev
-app/prod
-app/stage

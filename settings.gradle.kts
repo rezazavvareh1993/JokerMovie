@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Paliz"
+rootProject.name = "JokerMovie"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
@@ -27,3 +27,4 @@ include(":core:common")
 include(":core:designsystem")
 include(":core:network")
 include(":core:ui")
+include(":feature:movies")

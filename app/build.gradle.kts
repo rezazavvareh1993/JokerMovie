@@ -10,14 +10,14 @@ plugins {
 }
 
 android {
-    namespace = "ir.bki.paliz"
+    namespace = "com.rezazavareh7.jokermovie"
     compileSdk =
         libs.versions.android.compileSdk
             .get()
             .toInt()
 
     defaultConfig {
-        applicationId = "ir.bki.paliz"
+        applicationId = "com.rezazavareh7.jokermovie"
         minSdk =
             libs.versions.android.minSdk
                 .get()
@@ -37,48 +37,6 @@ android {
                 .joinToString(".")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    flavorDimensions.add("paliz")
-
-    productFlavors {
-        create("dev") {
-            dimension = "paliz"
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-            buildConfigField("String", "WALLET_BASE_URL", "\"http://10.0.85.111:1010/\"")
-            buildConfigField(
-                "String",
-                "SETTING_BASE_URL",
-                "\"https://setting-dev.example.com/PalizSettingDev\"",
-            )
-        }
-        create("uat") {
-            dimension = "paliz"
-            applicationIdSuffix = ".uat"
-            versionNameSuffix = "-uat"
-            buildConfigField("String", "WALLET_BASE_URL", "\"https://wallet-uat.bki.ir/walletbackend/\"")
-
-            buildConfigField(
-                "String",
-                "SETTING_BASE_URL",
-                "\"https://setting-stage.example.com/PalizSettingStage\"",
-            )
-        }
-        create("prod") {
-            dimension = "paliz"
-            buildConfigField(
-                "String",
-                "WALLET_BASE_URL",
-                "\"https://wallet.bki.ir/walletbackend/\"",
-            )
-
-            buildConfigField(
-                "String",
-                "SETTING_BASE_URL",
-                "\"https://setting.example.com/PalizSettingProd\"",
-            )
-        }
     }
 
     val keystoreProperties =
@@ -135,6 +93,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+    // SystemUiController
+    implementation(libs.accompanist.systemuicontroller)
+
     // Splash
     implementation(libs.androidx.core.splashscreen)
 
@@ -156,6 +117,7 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.core.common)
     implementation(projects.core.network)
+    implementation(projects.feature.movies)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

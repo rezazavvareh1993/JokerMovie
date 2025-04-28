@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ir.bki.common"
+    namespace = "com.rezazavareh7.common"
     compileSdk =
         libs.versions.android.targetSdk
             .get()
