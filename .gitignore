@@ -20,6 +20,9 @@
 /core/network/build
 /core/ui/build
 /core/designsystem/build
+/core/database/build
+/feature/movies/build
+
 *.apk
 *.ap_
 *.aab
@@ -27,3 +30,8 @@ bin/
 gen/
 keystore.properties
 *.jks
+app/dev
+app/prod
+app/stage
+/.kotlin/errors
+*.log
