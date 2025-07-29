@@ -8,8 +8,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviesApiService {
-    @GET("movie/top_rated?language=en-US&page=1")
-    suspend fun getTopRatedMovies(): Result<MoviesResponse>
+    @GET("movie/top_rated?language=en-US")
+    suspend fun getTopRatedMovies(
+        @Query("page") page: Int,
+    ): MoviesResponse
 
     @GET("movie/{movie_id}?language=en-US")
     suspend fun getMovieDetails(

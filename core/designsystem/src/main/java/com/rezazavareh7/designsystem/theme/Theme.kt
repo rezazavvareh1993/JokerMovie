@@ -7,8 +7,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.rezazavareh7.designsystem.R
-import com.rezazavareh7.designsystem.custom.JokerMovieIconPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 
 private val DarkColorScheme =
@@ -47,17 +45,6 @@ private val LightColorScheme =
         outline = JokerLightOutline,
     )
 
-val onLightJokerIconPalette =
-    JokerMovieIconPalette(
-        icJokerSearch = R.drawable.ic_sample_search,
-        icJokerError = R.drawable.ic_sample_search,
-        icJokerBack = R.drawable.ic_sample_search,
-        imgJokerBackground = R.drawable.img_background,
-        icMovie = R.drawable.ic_movie,
-        icStar = R.drawable.ic_star,
-        icBorderStar = R.drawable.ic_border_star,
-    )
-
 @Composable
 fun JokerMovieTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -74,7 +61,7 @@ fun JokerMovieTheme(
             else -> LightColorScheme
         }
 
-    val customIconsPalette = onLightJokerIconPalette
+    val customIconsPalette = LocalJokerIconPalette.current
 
     CompositionLocalProvider(
         LocalJokerIconPalette provides customIconsPalette,

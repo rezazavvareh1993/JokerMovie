@@ -1,6 +1,7 @@
 package com.rezazavareh7.movies.ui.movie.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,17 +30,21 @@ import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 
 @Composable
-fun MovieListItem(data: MovieData) {
+fun MovieListItem(
+    movieItem: MovieData,
+    clickOnItem: (Long) -> Unit,
+) {
     Column(
         modifier =
             Modifier
                 .width(300.dp)
                 .height(500.dp)
-                .background(Color.Black, shape = Shape.highRoundCorner),
+                .background(Color.Black, shape = Shape.highRoundCorner)
+                .clickable { clickOnItem(movieItem.id) },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TitleMediumTextComponent(
-            text = data.name,
+            text = movieItem.title,
             modifier =
                 Modifier
                     .fillMaxWidth()
@@ -62,17 +67,18 @@ fun MovieListItem(data: MovieData) {
         ) {
             ShowGlideImageByUrl(
                 modifier =
-                    Modifier.fillMaxSize()
+                    Modifier
+                        .fillMaxSize()
                         .clip(Shape.highRoundCorner),
-                imageUrlPath = data.banner,
+                imageUrlPath = movieItem.posterPath,
                 contentScale = ContentScale.FillBounds,
                 context = LocalContext.current,
                 placeHolder = LocalJokerIconPalette.current.icMovie,
             )
         }
 
-        RatingBarComponent(rating = data.rate, stars = 5, onRatingChanged = {})
+        RatingBarComponent(rating = movieItem.voteAverage, stars = 5, onRatingChanged = {})
         Spacer(Modifier.height(4.dp))
-        TitleMediumTextComponent(text = data.releaseDate, color = Color.Gray)
+        TitleMediumTextComponent(text = movieItem.releaseDate, color = Color.Gray)
     }
 }

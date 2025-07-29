@@ -57,7 +57,7 @@ val replyTypography =
             TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                fontFamily = AppFont.jokerFontFamily,
+                fontFamily = AppFont.vazirFontFamily,
                 lineHeight = 32.sp,
                 letterSpacing = 0.25.sp,
             ),
@@ -115,6 +115,14 @@ val replyTypography =
                 fontSize = 12.sp,
                 lineHeight = 20.sp,
                 fontFamily = AppFont.vazirFontFamily,
+                letterSpacing = 0.sp,
+            ),
+        displayLarge =
+            TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 28.sp,
+                fontFamily = AppFont.jokerFontFamily,
+                lineHeight = 44.sp,
                 letterSpacing = 0.sp,
             ),
     )

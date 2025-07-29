@@ -1,5 +1,6 @@
 package com.rezazavareh7.movies.ui.movie
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,21 +10,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
 import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponent
 import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponentParams
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
+import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.ui.movie.component.MovieListItem
 import com.rezazavareh7.ui.components.ShowToast
 
@@ -31,7 +37,8 @@ import com.rezazavareh7.ui.components.ShowToast
 fun MoviesScreen(
     movieUiEvent: (MoviesUiEvent) -> Unit,
     moviesUiState: MoviesUiState,
-    navigateToMovieDetailsScreen: () -> Unit,
+    navigateToMovieDetailsScreen: (Long) -> Unit,
+    movies: LazyPagingItems<MovieData>,
 ) {
     val context = LocalContext.current
     val lazyRowState = rememberLazyListState()
@@ -39,14 +46,25 @@ fun MoviesScreen(
         ShowToast(context, moviesUiState.errorMessage)
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
     }
+
+    LaunchedEffect(movies.loadState) {
+        if (movies.loadState.refresh is LoadState.Error) {
+            Toast
+                .makeText(
+                    context,
+                    "Error: " + (movies.loadState.refresh as LoadState.Error).error.message,
+                    Toast.LENGTH_LONG,
+                ).show()
+        }
+    }
     Scaffold(
         topBar = {
             ToolbarComponent(startContent = {
                 IconComponent(
                     drawableId = LocalJokerIconPalette.current.icMainLogo,
-                    modifier = Modifier.padding(vertical = 2.dp),
+                    modifier = Modifier.padding(),
                 )
-                TitleLargeTextComponent(
+                TitleCustomTextComponent(
                     text = "Joker Movies",
                 )
             })
@@ -81,7 +99,7 @@ fun MoviesScreen(
                             value = moviesUiState.movieNameInput,
                             limitationCharacter = 40,
                             hasLeadingIcon = true,
-                            leadingIcon = LocalJokerIconPalette.current.icJokerSearch,
+                            leadingIcon = LocalJokerIconPalette.current.icSearch,
                             isLeadingIconClickable = true,
                             isTrailingIconClickable = true,
                             hasTrailingIcon = moviesUiState.movieNameInput.length >= 2,
@@ -96,16 +114,22 @@ fun MoviesScreen(
                             },
                         ),
                 )
-                LazyRow(
-                    state = lazyRowState,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp, horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(moviesUiState.moviesData) { item ->
-                        MovieListItem(item)
+                if (movies.loadState.refresh is LoadState.Loading) {
+                    CircularProgressIndicator()
+                } else {
+                    LazyRow(
+                        state = lazyRowState,
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp, horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(moviesUiState.moviesData) { item ->
+                            MovieListItem(item) { movieId ->
+                                navigateToMovieDetailsScreen(movieId)
+                            }
+                        }
                     }
                 }
             }

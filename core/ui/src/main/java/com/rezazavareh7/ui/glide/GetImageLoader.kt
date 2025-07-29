@@ -4,6 +4,4 @@ import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 
-fun getImageLoader(context: Context): RequestManager {
-    return Glide.with(context)
-}
+fun getImageLoader(context: Context): RequestManager = Glide.with(context)

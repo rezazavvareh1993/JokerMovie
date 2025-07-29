@@ -7,7 +7,9 @@ import javax.inject.Inject
 
 class GetMovieDetailsUseCase
     @Inject
-    constructor(private val moviesRepository: MoviesRepository) {
+    constructor(
+        private val moviesRepository: MoviesRepository,
+    ) {
         suspend operator fun invoke(movieId: Long): MovieDetailsResult =
             when (val result = moviesRepository.getMovieDetail(movieId)) {
                 is GetMovieDetailNetworkState.Success -> MovieDetailsResult(movieDetailsData = result.data)

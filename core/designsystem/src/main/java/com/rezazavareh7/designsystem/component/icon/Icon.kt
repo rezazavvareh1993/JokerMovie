@@ -75,7 +75,7 @@ fun IconComponent(
 fun IconComponentPreview() {
     JokerMovieTheme {
         IconComponent(
-            drawableId = LocalJokerIconPalette.current.icJokerSearch,
+            drawableId = LocalJokerIconPalette.current.icSearch,
             tint = Color.Unspecified,
         )
     }

@@ -7,18 +7,24 @@ object MoviesScreensGraph {
     data object Movies
 
     @Serializable
-    data object MovieDetails
+    data class MovieDetails(
+        val movieId: Long,
+    )
 }
 
 @Serializable
-sealed class MoviesScreens<T>(val route: T) {
+sealed class MoviesScreens<T>(
+    val route: T,
+) {
     @Serializable
     data object Movies : MoviesScreens<MoviesScreensGraph.Movies>(
         route = MoviesScreensGraph.Movies,
     )
 
     @Serializable
-    data object MovieDetails : MoviesScreens<MoviesScreensGraph.MovieDetails>(
-        route = MoviesScreensGraph.MovieDetails,
-    )
+    data class MovieDetails(
+        val movieId: Long,
+    ) : MoviesScreens<MoviesScreensGraph.MovieDetails>(
+            route = MoviesScreensGraph.MovieDetails(movieId = movieId),
+        )
 }

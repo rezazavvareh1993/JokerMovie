@@ -13,7 +13,11 @@ sealed class GraphRoutes {
 }
 
 @Serializable
-sealed class BottomScreens<T>(val name: Int, val icon: Int, val route: T) {
+sealed class BottomScreens<T>(
+    val name: Int,
+    val icon: Int,
+    val route: T,
+) {
     @Serializable
     data object Home : BottomScreens<GraphRoutes.HomeScreens>(
         name = R.string.home,

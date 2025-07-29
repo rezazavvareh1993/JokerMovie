@@ -1,45 +1,50 @@
 [versions]
-agp = "8.9.1"
-kotlin = "2.1.10"
+agp = "8.11.1"
+kotlin = "2.2.0"
 appVersion = "100"
-android-compileSdk = "35"
+android-compileSdk = "36"
 android-minSdk = "24"
+#noinspection OldTargetApi
 android-targetSdk = "35"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
-composeBom = "2025.04.00"
-hilt = "2.52"
-ksp = "2.1.10-1.0.31"
+composeBom = "2025.07.00"
+hilt = "2.57"
+ksp = "2.2.0-2.0.2"
 hiltCompiler = "1.2.0"
 hiltNavigationCompose = "1.2.0"
-moshiConverter = "2.11.0"
-moshi = "1.15.1"
-retrofit = "2.11.0"
-navigationCompose = "2.8.9"
-okhttp = "4.12.0"
-jetbrainsKotlinJvm = "1.9.0"
-kotlinxSerialization = "2.1.10"
-kotlinxSerializationJson = "1.8.0"
+moshiConverter = "3.0.0"
+moshi = "1.15.2"
+pagingCompose = "3.3.6"
+retrofit = "3.0.0"
+navigationCompose = "2.9.2"
+okhttp = "5.1.0"
+jetbrainsKotlinJvm = "2.2.0"
+kotlinxSerialization = "2.2.0"
+kotlinxSerializationJson = "1.9.0"
 timber = "5.0.1"
-retrofitResultAdapterVersion = "1.0.12"
+retrofitResultAdapterVersion = "1.0.13"
 coreSplashscreen = "1.0.1"
-preferencesVersion = "1.1.4"
-lifecycleProcess = "2.8.7"
-appcompat = "1.7.0"
+preferencesVersion = "1.1.7"
+lifecycleProcess = "2.9.2"
+appcompat = "1.7.1"
 material = "1.12.0"
-ktlint = "12.1.1"
-accompanistSystemuicontroller = "0.30.1"
+ktlint = "13.0.0"
+accompanistSystemuicontroller = "0.36.0"
 glideComposeVerions = "1.0.0-beta01"
 glideVersion = "5.0.0-rc01"
+roomVersion = "2.7.2"
 
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -81,6 +86,9 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 glide-compose = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideComposeVerions" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
+room-ktx = {group= "androidx.room", name = "room-ktx", version.ref = "roomVersion"}
+room-compiler = {group= "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
+room-paging = {group= "androidx.room", name = "room-paging", version.ref = "roomVersion"}
 
 
 

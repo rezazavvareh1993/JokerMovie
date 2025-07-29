@@ -24,11 +24,14 @@ class MoviesMapper
                 data =
                     data.results.map { movie ->
                         MovieData(
-                            name = movie.title,
+                            title = movie.title,
                             id = movie.id.toLong(),
-                            banner = movie.poster_path,
+                            posterPath = movie.poster_path ?: "",
                             releaseDate = movie.release_date,
-                            rate = movie.vote_average.toFloat(),
+                            voteAverage = movie.vote_average.toFloat(),
+                            overview = movie.overview,
+                            voteCount = movie.vote_count.toLong(),
+                            genres = emptyList(),
                         )
                     },
             )

@@ -42,7 +42,7 @@ fun FloatActionButtonComponentPreview() {
     JokerMovieTheme {
         FloatActionButtonComponent(
             onClick = { },
-            icon = LocalJokerIconPalette.current.icJokerSearch,
+            icon = LocalJokerIconPalette.current.icSearch,
         )
     }
 }

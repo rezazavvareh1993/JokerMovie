@@ -7,10 +7,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarVisibilityManager
 import com.rezazavareh7.movies.ui.movie.MoviesScreen
 import com.rezazavareh7.movies.ui.movie.MoviesViewModel
+import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsScreen
+import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsViewModel
 
 fun NavGraphBuilder.moviesNavGraph(
     navController: NavHostController,
@@ -22,16 +26,32 @@ fun NavGraphBuilder.moviesNavGraph(
     ) {
         composable<MoviesScreensGraph.Movies> {
             val viewModel = hiltViewModel<MoviesViewModel>()
-            val signUpUiEvent = viewModel::onEvent
-            val signUpState by viewModel.moviesState.collectAsStateWithLifecycle()
+            val moviesUiEvent = viewModel::onEvent
+            val moviesState by viewModel.moviesState.collectAsStateWithLifecycle()
             MoviesScreen(
-                movieUiEvent = signUpUiEvent,
-                moviesUiState = signUpState,
-                navigateToMovieDetailsScreen = {
-                    //                    navController.navigate(MoviesScreens.MovieDetails.route)
+                movieUiEvent = moviesUiEvent,
+                moviesUiState = moviesState,
+                movies = viewModel.moviePagingFlow.collectAsLazyPagingItems(),
+                navigateToMovieDetailsScreen = { movieId ->
+                    navController.navigate(MoviesScreens.MovieDetails(movieId).route)
                 },
             )
             systemBarVisibilityManager.hideBottomBar()
+        }
+
+        composable<MoviesScreensGraph.MovieDetails> { backStackEntry ->
+            val movieDetailsInfo: MoviesScreensGraph.MovieDetails = backStackEntry.toRoute()
+            val viewModel = hiltViewModel<MovieDetailsViewModel>()
+            val movieDetailsUiEvent = viewModel::onEvent
+            val movieDetailsUiState by viewModel.movieDetailsState.collectAsStateWithLifecycle()
+            MovieDetailsScreen(
+                movieId = movieDetailsInfo.movieId,
+                movieDetailsUiEvent = movieDetailsUiEvent,
+                movieDetailsUiState = movieDetailsUiState,
+                onBackClicked = {
+                    navController.popBackStack()
+                },
+            )
         }
     }
 }

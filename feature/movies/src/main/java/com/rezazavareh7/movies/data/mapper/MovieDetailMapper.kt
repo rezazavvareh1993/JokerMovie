@@ -25,6 +25,12 @@ class MovieDetailsMapper
                     MovieDetailData(
                         name = data.title,
                         id = data.id.toLong(),
+                        banner = data.poster_path ?: "",
+                        overview = data.overview,
+                        genres = data.genres.map { it.name },
+                        rate = data.vote_average.toFloat(),
+                        voteCount = data.vote_count.toLong(),
+                        releaseDate = data.release_date,
                     ),
             )
     }

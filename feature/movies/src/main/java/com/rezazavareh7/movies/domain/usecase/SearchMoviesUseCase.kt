@@ -7,7 +7,9 @@ import javax.inject.Inject
 
 class SearchMoviesUseCase
     @Inject
-    constructor(private val repository: MoviesRepository) {
+    constructor(
+        private val repository: MoviesRepository,
+    ) {
         suspend operator fun invoke(query: String): MoviesResult =
             when (val result = repository.searchMovie(query = query)) {
                 is GetMoviesNetworkState.Success ->

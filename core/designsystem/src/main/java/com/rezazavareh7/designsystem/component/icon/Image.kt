@@ -32,7 +32,7 @@ fun ImageComponent(
 fun ImageComponentPreview() {
     JokerMovieTheme {
         ImageComponent(
-            painterId = LocalJokerIconPalette.current.icJokerSearch,
+            painterId = LocalJokerIconPalette.current.icSearch,
         )
     }
 }

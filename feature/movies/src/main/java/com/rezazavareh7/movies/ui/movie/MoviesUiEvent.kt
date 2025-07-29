@@ -7,7 +7,11 @@ sealed class MoviesUiEvent {
 
     data object OnToastMessageShown : MoviesUiEvent()
 
-    data class OnSearchMovieChanged(val newMovieName: String) : MoviesUiEvent()
+    data class OnSearchMovieChanged(
+        val newMovieName: String,
+    ) : MoviesUiEvent()
 
-    data class OnSearchedMovie(val query: String) : MoviesUiEvent()
+    data class OnSearchedMovie(
+        val query: String,
+    ) : MoviesUiEvent()
 }

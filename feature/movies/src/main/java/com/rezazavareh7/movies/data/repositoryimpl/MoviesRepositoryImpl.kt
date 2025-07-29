@@ -21,11 +21,11 @@ class MoviesRepositoryImpl
         private val searchMovieMapper: SearchMovieMapper,
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) : MoviesRepository {
-        override suspend fun getMovies(): GetMoviesNetworkState =
-            withContext(dispatcher) {
-                val result = moviesApiServices.getTopRatedMovies()
-                moviesMapper(result)
-            }
+//        override suspend fun getMovies(): GetMoviesNetworkState =
+//            withContext(dispatcher) {
+//                val result = moviesApiServices.getTopRatedMovies()
+//                moviesMapper(result)
+//            }
 
         override suspend fun searchMovie(query: String): GetMoviesNetworkState =
             withContext(dispatcher) {

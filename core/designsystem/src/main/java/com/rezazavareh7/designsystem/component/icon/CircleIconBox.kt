@@ -65,7 +65,7 @@ fun CircleIconBoxComponent(
 fun CircleIconBoxComponentPreview() {
     JokerMovieTheme {
         CircleIconBoxComponent(
-            icon = LocalJokerIconPalette.current.icJokerSearch,
+            icon = LocalJokerIconPalette.current.icSearch,
         )
     }
 }

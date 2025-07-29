@@ -5,8 +5,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MovieDetailsResponse(
     val adult: Boolean,
-    val backdrop_path: String,
-    val belongs_to_collection: Any,
+    val backdrop_path: String? = null,
     val budget: Int,
     val genres: List<Genre>,
     val homepage: String,
@@ -17,13 +16,12 @@ data class MovieDetailsResponse(
     val original_title: String,
     val overview: String,
     val popularity: Double,
-    val poster_path: String,
+    val poster_path: String? = null,
     val production_companies: List<ProductionCompany>,
     val production_countries: List<ProductionCountry>,
     val release_date: String,
     val revenue: Int,
     val runtime: Int,
-    val spoken_languages: List<SpokenLanguage>,
     val status: String,
     val tagline: String,
     val title: String,
@@ -41,7 +39,7 @@ data class Genre(
 @JsonClass(generateAdapter = true)
 data class ProductionCompany(
     val id: Int,
-    val logo_path: Any,
+    val logo_path: String? = null,
     val name: String,
     val origin_country: String,
 )

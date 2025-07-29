@@ -1,9 +1,12 @@
 package com.rezazavareh7.movies.domain.model
 
 data class MovieData(
-    val name: String,
-    val banner: String,
+    val title: String,
+    val posterPath: String,
     val id: Long,
-    val rate: Float,
+    val voteAverage: Float,
     val releaseDate: String,
+    val genres: List<String>,
+    val overview: String,
+    val voteCount: Long,
 )

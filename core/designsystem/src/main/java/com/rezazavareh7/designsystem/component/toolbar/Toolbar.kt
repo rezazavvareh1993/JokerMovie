@@ -48,7 +48,7 @@ fun ToolbarComponent(
             if (hasBackButton) {
                 IconComponent(
                     boxSize = 32.dp,
-                    drawableId = LocalJokerIconPalette.current.icJokerBack,
+                    drawableId = LocalJokerIconPalette.current.icBack,
                     tint = backButtonColor,
                     isClickable = true,
                 ) {

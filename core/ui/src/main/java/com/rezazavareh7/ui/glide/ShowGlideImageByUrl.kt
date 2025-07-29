@@ -23,7 +23,7 @@ fun ShowGlideImageByUrl(
     isClickable: Boolean = false,
     longClickOnItem: (String) -> Unit = {},
     clickOnItem: (String) -> Unit = {},
-    placeHolder: Int = LocalJokerIconPalette.current.icJokerSearch,
+    placeHolder: Int = LocalJokerIconPalette.current.icSearch,
 ) {
     val baseUrl = "https://image.tmdb.org/t/p/original"
     val baseThumbnailUrl = "https://image.tmdb.org/t/p/w185"
