@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
@@ -40,6 +41,7 @@ fun MoviesScreen(
     navigateToMovieDetailsScreen: (Long) -> Unit,
     movies: LazyPagingItems<MovieData>,
 ) {
+    val pagedMovies = moviesUiState.moviesPagedData.collectAsLazyPagingItems()
     val context = LocalContext.current
     val lazyRowState = rememberLazyListState()
     if (moviesUiState.errorMessage.isNotEmpty()) {
@@ -64,9 +66,7 @@ fun MoviesScreen(
                     drawableId = LocalJokerIconPalette.current.icMainLogo,
                     modifier = Modifier.padding(),
                 )
-                TitleCustomTextComponent(
-                    text = "Joker Movies",
-                )
+                TitleCustomTextComponent(text = "Joker Movies")
             })
         },
         modifier = Modifier.fillMaxSize(),
@@ -125,9 +125,31 @@ fun MoviesScreen(
                                 .padding(vertical = 16.dp, horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        items(moviesUiState.moviesData) { item ->
-                            MovieListItem(item) { movieId ->
-                                navigateToMovieDetailsScreen(movieId)
+                        items(pagedMovies.itemCount) { index ->
+                            val item = pagedMovies[index]
+                            item?.let {
+                                MovieListItem(item) { movieId ->
+                                    navigateToMovieDetailsScreen(movieId)
+                                }
+                            }
+                        }
+
+                        pagedMovies.apply {
+                            when {
+                                loadState.refresh is LoadState.Loading ->
+                                    item {
+                                        CircularProgressIndicator()
+                                    }
+
+                                loadState.append is LoadState.Loading ->
+                                    item {
+                                        CircularProgressIndicator()
+                                    }
+
+                                loadState.refresh is LoadState.Error ->
+                                    item {
+                                        Text("Error")
+                                    }
                             }
                         }
                     }

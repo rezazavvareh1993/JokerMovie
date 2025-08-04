@@ -52,6 +52,7 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.room.paging)
 
     // Moshi
     ksp(libs.moshi.codegen)

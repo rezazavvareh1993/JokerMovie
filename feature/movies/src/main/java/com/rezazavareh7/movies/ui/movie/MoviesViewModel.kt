@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.rezazavareh.database.MovieEntity
 import com.rezazavareh7.movies.data.mapper.toMovieData
+import com.rezazavareh7.movies.domain.usecase.GetPagedMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,7 @@ class MoviesViewModel
         pager: Pager<Int, MovieEntity>,
 //        private val getMoviesUseCase: GetMoviesUseCase,
         private val searchMoviesUseCase: SearchMoviesUseCase,
+        private val getPagedMoviesUseCase: GetPagedMoviesUseCase,
     ) : ViewModel() {
         private var mMoviesState = MutableStateFlow(MoviesUiState(isLoading = true))
 
@@ -32,9 +34,7 @@ class MoviesViewModel
             pager
                 .flow
                 .map { pagingData ->
-                    pagingData.map { movieEntity ->
-                        movieEntity.toMovieData()
-                    }
+                    pagingData.map { movieEntity -> movieEntity.toMovieData() }
                 }.cachedIn(viewModelScope)
 
         val moviesState =
@@ -73,28 +73,14 @@ class MoviesViewModel
 
         private fun getMovies() {
             viewModelScope.launch {
-//                val result = getMoviesUseCase()
-//                when (result.hasError) {
-//                    false -> {
-//                        mMoviesState.update {
-//                            it.copy(
-//                                isLoading = false,
-//                                moviesData = result.moviesData,
-//                                hasSearchResult = false,
-//                            )
-//                        }
-//                    }
-//
-//                    true -> {
-//                        mMoviesState.update {
-//                            it.copy(
-//                                isLoading = false,
-//                                hasSearchResult = false,
-//                                errorMessage = result.errorMessage,
-//                            )
-//                        }
-//                    }
-//                }
+                val result = getPagedMoviesUseCase()
+                mMoviesState.update {
+                    it.copy(
+                        isLoading = false,
+                        moviesPagedData = result.moviesPagedData,
+                        hasSearchResult = false,
+                    )
+                }
             }
         }
 

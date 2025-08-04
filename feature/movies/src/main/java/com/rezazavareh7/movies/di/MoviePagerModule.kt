@@ -26,14 +26,14 @@ object MoviePagerModule {
         movieDao: MovieDao,
     ): Pager<Int, MovieEntity> =
         Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = 5),
             remoteMediator =
                 MovieRemoteMediator(
                     movieDb = movieDataBase,
                     moviesApiService = movieApi,
                 ),
             pagingSourceFactory = {
-                movieDao.pagingSource()
+                movieDao.getAllMovies()
             },
         )
 }

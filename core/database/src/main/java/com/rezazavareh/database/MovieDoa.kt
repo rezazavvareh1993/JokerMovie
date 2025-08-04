@@ -5,20 +5,16 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
 interface MovieDao {
     @Upsert
-    suspend fun upsetAll(fileEntity: List<MovieEntity>): List<Long>
-
-    @Query("SELECT * FROM $MOVIE_TABLE_NAME")
-    fun pagingSource(): PagingSource<Int, MovieEntity>
+    suspend fun insertAll(fileEntity: List<MovieEntity>)
 
     @Query("DELETE FROM $MOVIE_TABLE_NAME")
     suspend fun clearAll()
 
     @Query("SELECT * FROM $MOVIE_TABLE_NAME")
-    fun getAllFiles(): Flow<List<MovieEntity>>
+    fun getAllMovies(): PagingSource<Int, MovieEntity>
 }

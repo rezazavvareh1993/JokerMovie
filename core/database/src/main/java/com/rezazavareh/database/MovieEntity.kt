@@ -17,3 +17,9 @@ data class MovieEntity(
     val overview: String,
     val genres: String,
 )
+
+@Entity("remote_key")
+data class RemoteKeyEntity(
+    @PrimaryKey val id: String,
+    val nextOffset: Int,
+)

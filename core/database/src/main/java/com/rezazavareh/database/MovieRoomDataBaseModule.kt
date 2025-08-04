@@ -24,8 +24,12 @@ object MovieRoomDataBaseModule {
                 context.applicationContext,
                 MovieDataBase::class.java,
                 MOVIE_DATABASE,
-            ).build()
+            ).fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideDao(database: MovieDataBase): MovieDao = database.movieDao
+
+    @Provides
+    fun provideRemoteKeyDao(database: MovieDataBase): RemoteKeyDao = database.remoteKeyDao
 }

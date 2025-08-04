@@ -1,38 +1,46 @@
 package com.rezazavareh7.movies.data.mapper
 
-import com.rezazavareh7.movies.data.model.MoviesResponse
+import com.rezazavareh.database.MovieEntity
+import com.rezazavareh7.movies.data.model.MoviesResponseResult
 import com.rezazavareh7.movies.domain.model.MovieData
-import com.rezazavareh7.movies.domain.networkstate.GetMoviesNetworkState
 import javax.inject.Inject
 
 class MoviesMapper
     @Inject
     constructor() {
-        operator fun invoke(result: Result<MoviesResponse>): GetMoviesNetworkState =
-            result.fold(
-                onSuccess = { onSuccess(it) },
-                onFailure = { onFailure(it) },
+        fun MovieEntity.mapToDomain(): MovieData =
+            MovieData(
+                title = this.title,
+                id = this.id.toLong(),
+                posterPath = this.posterPath,
+                releaseDate = this.releaseDate,
+                voteAverage = this.voteAverage,
+                overview = this.overview,
+                voteCount = this.voteCount,
+                genres = emptyList(),
             )
 
-        private fun onFailure(error: Throwable): GetMoviesNetworkState =
-            GetMoviesNetworkState.Error(
-                message = error.message.toString(),
+        fun MoviesResponseResult.mapToEntity(): MovieEntity =
+            MovieEntity(
+                title = title,
+                id = id.toLong(),
+                posterPath = poster_path ?: "",
+                releaseDate = release_date,
+                voteAverage = vote_average.toFloat(),
+                overview = overview,
+                voteCount = vote_count.toLong(),
+                genres = "",
             )
 
-        private fun onSuccess(data: MoviesResponse): GetMoviesNetworkState =
-            GetMoviesNetworkState.Success(
-                data =
-                    data.results.map { movie ->
-                        MovieData(
-                            title = movie.title,
-                            id = movie.id.toLong(),
-                            posterPath = movie.poster_path ?: "",
-                            releaseDate = movie.release_date,
-                            voteAverage = movie.vote_average.toFloat(),
-                            overview = movie.overview,
-                            voteCount = movie.vote_count.toLong(),
-                            genres = emptyList(),
-                        )
-                    },
+        fun MovieData.mapToEntity(): MovieEntity =
+            MovieEntity(
+                title = title,
+                id = id,
+                posterPath = posterPath,
+                releaseDate = releaseDate,
+                voteAverage = voteAverage,
+                overview = overview,
+                voteCount = voteCount,
+                genres = "",
             )
     }
