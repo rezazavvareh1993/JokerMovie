@@ -3,11 +3,10 @@ package com.rezazavareh7.movies.domain
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.domain.networkstate.GetMovieDetailNetworkState
-import com.rezazavareh7.movies.domain.networkstate.GetMoviesNetworkState
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
-    suspend fun searchMovie(query: String): GetMoviesNetworkState
+    fun searchMovie(query: String): Flow<PagingData<MovieData>>
 
     suspend fun getMovieDetail(movieId: Long): GetMovieDetailNetworkState
 

@@ -31,7 +31,7 @@ fun NavGraphBuilder.moviesNavGraph(
             MoviesScreen(
                 movieUiEvent = moviesUiEvent,
                 moviesUiState = moviesState,
-                movies = viewModel.moviePagingFlow.collectAsLazyPagingItems(),
+                movies = moviesState.moviesPagedData.collectAsLazyPagingItems(),
                 navigateToMovieDetailsScreen = { movieId ->
                     navController.navigate(MoviesScreens.MovieDetails(movieId).route)
                 },

@@ -2,17 +2,11 @@ package com.rezazavareh7.movies.ui.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.cachedIn
-import androidx.paging.map
-import com.rezazavareh.database.MovieEntity
-import com.rezazavareh7.movies.data.mapper.toMovieData
 import com.rezazavareh7.movies.domain.usecase.GetPagedMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,19 +17,10 @@ import javax.inject.Inject
 class MoviesViewModel
     @Inject
     constructor(
-        pager: Pager<Int, MovieEntity>,
-//        private val getMoviesUseCase: GetMoviesUseCase,
         private val searchMoviesUseCase: SearchMoviesUseCase,
         private val getPagedMoviesUseCase: GetPagedMoviesUseCase,
     ) : ViewModel() {
         private var mMoviesState = MutableStateFlow(MoviesUiState(isLoading = true))
-
-        val moviePagingFlow =
-            pager
-                .flow
-                .map { pagingData ->
-                    pagingData.map { movieEntity -> movieEntity.toMovieData() }
-                }.cachedIn(viewModelScope)
 
         val moviesState =
             mMoviesState
@@ -87,25 +72,12 @@ class MoviesViewModel
         private fun searchMovies(query: String) {
             viewModelScope.launch {
                 val result = searchMoviesUseCase(query)
-                when (result.hasError) {
-                    false -> {
-                        mMoviesState.update {
-                            it.copy(
-                                isLoading = false,
-                                moviesData = result.moviesData,
-                                hasSearchResult = true,
-                            )
-                        }
-                    }
-
-                    true -> {
-                        mMoviesState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = result.errorMessage,
-                            )
-                        }
-                    }
+                mMoviesState.update {
+                    it.copy(
+                        isLoading = false,
+                        moviesPagedData = result.moviesPagedData,
+                        hasSearchResult = true,
+                    )
                 }
             }
         }

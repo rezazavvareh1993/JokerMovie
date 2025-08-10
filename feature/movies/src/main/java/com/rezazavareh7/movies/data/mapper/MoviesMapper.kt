@@ -1,46 +1,38 @@
 package com.rezazavareh7.movies.data.mapper
 
-import com.rezazavareh.database.MovieEntity
-import com.rezazavareh7.movies.data.model.MoviesResponseResult
+import com.rezazavareh7.movies.data.model.MoviesResponse
+import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MovieData
 import javax.inject.Inject
 
 class MoviesMapper
     @Inject
     constructor() {
-        fun MovieEntity.mapToDomain(): MovieData =
-            MovieData(
-                title = this.title,
-                id = this.id.toLong(),
-                posterPath = this.posterPath,
-                releaseDate = this.releaseDate,
-                voteAverage = this.voteAverage,
-                overview = this.overview,
-                voteCount = this.voteCount,
-                genres = emptyList(),
+        fun mapToData(result: Result<MoviesResponse>): BasicNetworkState<List<MovieData>> =
+            result.fold(
+                onSuccess = { onSuccess(it) },
+                onFailure = { onFailure(it) },
             )
 
-        fun MoviesResponseResult.mapToEntity(): MovieEntity =
-            MovieEntity(
-                title = title,
-                id = id.toLong(),
-                posterPath = poster_path ?: "",
-                releaseDate = release_date,
-                voteAverage = vote_average.toFloat(),
-                overview = overview,
-                voteCount = vote_count.toLong(),
-                genres = "",
-            )
+        private fun onFailure(throwable: Throwable): BasicNetworkState<List<MovieData>> =
+            BasicNetworkState.Error(throwable = throwable, message = throwable.message.toString())
 
-        fun MovieData.mapToEntity(): MovieEntity =
-            MovieEntity(
-                title = title,
-                id = id,
-                posterPath = posterPath,
-                releaseDate = releaseDate,
-                voteAverage = voteAverage,
-                overview = overview,
-                voteCount = voteCount,
-                genres = "",
+        private fun onSuccess(data: MoviesResponse): BasicNetworkState<List<MovieData>> =
+            BasicNetworkState.Success(
+                data =
+                    data.results.map {
+                        with(it) {
+                            MovieData(
+                                title = title,
+                                id = id.toLong(),
+                                posterPath = poster_path ?: "",
+                                releaseDate = release_date,
+                                voteAverage = vote_average.toFloat(),
+                                overview = overview,
+                                voteCount = vote_count.toLong(),
+                                genres = emptyList(),
+                            )
+                        }
+                    },
             )
     }
