@@ -46,7 +46,7 @@ dependencies {
 
     // Room
     implementation(libs.room.ktx)
-    api(libs.room.paging)
+//    api(libs.room.paging)
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit)

@@ -3,10 +3,10 @@ package com.rezazavareh.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-const val MOVIE_TABLE_NAME = "movie_table"
+const val FAVORITE_TABLE_NAME = "favorite_table"
 
-@Entity(tableName = MOVIE_TABLE_NAME)
-data class MovieEntity(
+@Entity(tableName = FAVORITE_TABLE_NAME)
+data class FavoriteEntity(
     @PrimaryKey
     val id: Long,
     val title: String,
@@ -16,10 +16,5 @@ data class MovieEntity(
     val voteCount: Long,
     val overview: String,
     val genres: String,
-)
-
-@Entity("remote_key")
-data class RemoteKeyEntity(
-    @PrimaryKey val id: String,
-    val nextOffset: Int,
+    val category: String = "movie",
 )

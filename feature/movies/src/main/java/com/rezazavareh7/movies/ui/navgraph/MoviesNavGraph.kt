@@ -8,9 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
-import com.rezazavareh7.designsystem.component.navigation.SystemBarVisibilityManager
+import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.ui.movie.MoviesScreen
 import com.rezazavareh7.movies.ui.movie.MoviesViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsScreen
@@ -18,10 +17,10 @@ import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsViewModel
 
 fun NavGraphBuilder.moviesNavGraph(
     navController: NavHostController,
-    systemBarVisibilityManager: SystemBarVisibilityManager,
+    systemBarManager: SystemBarManager,
     isUserLoggedIn: Boolean,
 ) {
-    navigation<GraphRoutes.HomeScreens>(
+    navigation<GraphRoutes.Home>(
         startDestination = MoviesScreens.Movies.route,
     ) {
         composable<MoviesScreensGraph.Movies> {
@@ -31,12 +30,16 @@ fun NavGraphBuilder.moviesNavGraph(
             MoviesScreen(
                 movieUiEvent = moviesUiEvent,
                 moviesUiState = moviesState,
-                movies = moviesState.moviesPagedData.collectAsLazyPagingItems(),
                 navigateToMovieDetailsScreen = { movieId ->
                     navController.navigate(MoviesScreens.MovieDetails(movieId).route)
                 },
+                navigateToFavoriteScreen = {
+                    navController.navigate(MoviesScreens.Favorite.route)
+                },
             )
-            systemBarVisibilityManager.hideBottomBar()
+            if (!systemBarManager.isBottomBarVisible.value) {
+                systemBarManager.showBottomBar()
+            }
         }
 
         composable<MoviesScreensGraph.MovieDetails> { backStackEntry ->

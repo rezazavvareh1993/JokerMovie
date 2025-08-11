@@ -1,6 +1,7 @@
 package com.rezazavareh7.movies.ui.movie
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,17 +21,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponent
 import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponentParams
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
-import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.ui.movie.component.MovieListItem
 import com.rezazavareh7.ui.components.ShowToast
 
@@ -39,9 +39,9 @@ fun MoviesScreen(
     movieUiEvent: (MoviesUiEvent) -> Unit,
     moviesUiState: MoviesUiState,
     navigateToMovieDetailsScreen: (Long) -> Unit,
-    movies: LazyPagingItems<MovieData>,
+    navigateToFavoriteScreen: () -> Unit,
 ) {
-    val pagedMovies = moviesUiState.moviesPagedData.collectAsLazyPagingItems()
+    val movies = moviesUiState.moviesPagedData.collectAsLazyPagingItems()
     val context = LocalContext.current
     val lazyRowState = rememberLazyListState()
     if (moviesUiState.errorMessage.isNotEmpty()) {
@@ -67,6 +67,14 @@ fun MoviesScreen(
                     modifier = Modifier.padding(),
                 )
                 TitleCustomTextComponent(text = "Joker Movies")
+            }, endContent = {
+                TitleMediumTextComponent(
+                    text = stringResource(com.rezazavareh7.designsystem.R.string.favorite),
+                    modifier =
+                        Modifier.clickable {
+                            navigateToFavoriteScreen()
+                        },
+                )
             })
         },
         modifier = Modifier.fillMaxSize(),
@@ -125,16 +133,20 @@ fun MoviesScreen(
                                 .padding(vertical = 16.dp, horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        items(pagedMovies.itemCount) { index ->
-                            val item = pagedMovies[index]
+                        items(movies.itemCount) { index ->
+                            val item = movies[index]
                             item?.let {
-                                MovieListItem(item) { movieId ->
-                                    navigateToMovieDetailsScreen(movieId)
-                                }
+                                MovieListItem(
+                                    item,
+                                    onFavoriteClicked = {},
+                                    clickOnItem = { movieId ->
+                                        navigateToMovieDetailsScreen(movieId)
+                                    },
+                                )
                             }
                         }
 
-                        pagedMovies.apply {
+                        movies.apply {
                             when {
                                 loadState.refresh is LoadState.Loading ->
                                     item {

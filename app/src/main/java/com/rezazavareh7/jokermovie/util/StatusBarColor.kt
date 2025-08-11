@@ -4,22 +4,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.rezazavareh7.designsystem.component.navigation.SystemBarVisibilityManager
+import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 
 @Composable
-fun SetStatusBarColor(systemBarVisibilityManager: SystemBarVisibilityManager) {
+fun SetStatusBarColor(systemBarManager: SystemBarManager) {
     val systemUiController = rememberSystemUiController()
-    val useDarkIcons = systemBarVisibilityManager.isLightBar.value
+    val useDarkIcons = systemBarManager.isLightBar.value
 
     systemUiController.setSystemBarsColor(
-        color = getBarColor(systemBarVisibilityManager),
+        color = getBarColor(systemBarManager),
         darkIcons = useDarkIcons,
     )
 }
 
 @Composable
-private fun getBarColor(systemBarVisibilityManager: SystemBarVisibilityManager): Color =
-    if (!systemBarVisibilityManager.isLightBar.value) {
+private fun getBarColor(systemBarManager: SystemBarManager): Color =
+    if (!systemBarManager.isLightBar.value) {
         MaterialTheme.colorScheme.onSurface
     } else {
         MaterialTheme.colorScheme.surface

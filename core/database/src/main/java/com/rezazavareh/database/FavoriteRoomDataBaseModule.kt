@@ -9,27 +9,24 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-private const val MOVIE_DATABASE = "movie_database.db"
+private const val FAVORITE_DATABASE = "favorite_database.db"
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MovieRoomDataBaseModule {
+object FavoriteRoomDataBaseModule {
     @Provides
     @Singleton
-    fun provideMovieRoomDataBase(
+    fun provideFavoriteRoomDataBase(
         @ApplicationContext context: Context,
-    ): MovieDataBase =
+    ): FavoriteDataBase =
         Room
             .databaseBuilder(
                 context.applicationContext,
-                MovieDataBase::class.java,
-                MOVIE_DATABASE,
+                FavoriteDataBase::class.java,
+                FAVORITE_DATABASE,
             ).fallbackToDestructiveMigration()
             .build()
 
     @Provides
-    fun provideDao(database: MovieDataBase): MovieDao = database.movieDao
-
-    @Provides
-    fun provideRemoteKeyDao(database: MovieDataBase): RemoteKeyDao = database.remoteKeyDao
+    fun provideDao(database: FavoriteDataBase): FavoriteDao = database.favoriteDao
 }

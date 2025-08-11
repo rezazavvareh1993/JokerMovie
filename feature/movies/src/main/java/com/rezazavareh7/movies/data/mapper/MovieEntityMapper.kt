@@ -1,11 +1,11 @@
 package com.rezazavareh7.movies.data.mapper
 
-import com.rezazavareh.database.MovieEntity
+import com.rezazavareh.database.FavoriteEntity
 import com.rezazavareh7.movies.data.model.MoviesResponseResult
 import com.rezazavareh7.movies.domain.model.MovieData
 
-fun MoviesResponseResult.toMovieEntity(): MovieEntity =
-    MovieEntity(
+fun MoviesResponseResult.toMovieEntity(): FavoriteEntity =
+    FavoriteEntity(
         id = id.toLong(),
         title = this@toMovieEntity.title,
         overview = overview,
@@ -16,14 +16,14 @@ fun MoviesResponseResult.toMovieEntity(): MovieEntity =
         genres = "",
     )
 
-fun MovieEntity.toMovieData(): MovieData =
+fun FavoriteEntity.toMovieData(): MovieData =
     MovieData(
-        id = id.toLong(),
+        id = id,
         title = title,
         overview = overview,
         releaseDate = releaseDate,
         voteAverage = voteAverage,
-        voteCount = voteCount.toLong(),
+        voteCount = voteCount,
         posterPath = posterPath,
         genres = emptyList(),
     )

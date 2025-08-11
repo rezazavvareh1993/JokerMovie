@@ -4,24 +4,24 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
-import com.rezazavareh7.designsystem.component.navigation.SystemBarVisibilityManager
+import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.ui.navgraph.moviesNavGraph
 
 @Composable
 fun RootNavGraph(
     navController: NavHostController,
-    systemBarVisibilityManager: SystemBarVisibilityManager,
+    systemBarManager: SystemBarManager,
     isUserLoggedIn: Boolean,
     isNavigateToSpecialRouteOfBottomNavigation: (Int) -> Unit,
     navigateToPasswordVerification: () -> Unit,
 ) {
     NavHost(
         navController = navController,
-        startDestination = GraphRoutes.HomeScreens,
+        startDestination = GraphRoutes.Home,
     ) {
         moviesNavGraph(
             navController = navController,
-            systemBarVisibilityManager = systemBarVisibilityManager,
+            systemBarManager = systemBarManager,
             isUserLoggedIn = isUserLoggedIn,
         )
     }

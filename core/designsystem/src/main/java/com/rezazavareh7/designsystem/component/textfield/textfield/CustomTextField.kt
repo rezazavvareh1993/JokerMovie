@@ -83,7 +83,7 @@ private fun leadingIconOfTextField(textFieldComponentParams: TextFieldComponentP
                 onClick = textFieldComponentParams.clickOnLeadingIcon,
                 drawableId =
                     if (textFieldComponentParams.isError) {
-                        LocalJokerIconPalette.current.icError
+                        LocalJokerIconPalette.current.icInfo
                     } else {
                         textFieldComponentParams.leadingIcon
                     },

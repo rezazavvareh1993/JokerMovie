@@ -3,7 +3,7 @@ package com.rezazavareh7.designsystem.component.navigation
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 
-class SystemBarVisibilityManager {
+class SystemBarManager {
     private val _isBottomBarVisible = mutableStateOf(false)
     val isBottomBarVisible: State<Boolean> = _isBottomBarVisible
 

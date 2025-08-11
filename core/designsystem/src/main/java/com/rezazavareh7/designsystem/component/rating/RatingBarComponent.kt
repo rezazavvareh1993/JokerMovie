@@ -30,7 +30,7 @@ fun RatingBarComponent(
                     if (i <= rating) {
                         LocalJokerIconPalette.current.icStar
                     } else {
-                        LocalJokerIconPalette.current.icBorderStar
+                        LocalJokerIconPalette.current.icEmptyStar
                     },
                 tint = MaterialTheme.colorScheme.primary,
                 modifier =

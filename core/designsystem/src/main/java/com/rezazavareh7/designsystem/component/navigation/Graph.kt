@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class GraphRoutes {
     @Serializable
-    object HomeScreens
+    object Home
 
     @Serializable
     object AuthenticationScreens
@@ -19,9 +19,9 @@ sealed class BottomScreens<T>(
     val route: T,
 ) {
     @Serializable
-    data object Home : BottomScreens<GraphRoutes.HomeScreens>(
+    data object Home : BottomScreens<GraphRoutes.Home>(
         name = R.string.home,
         icon = R.drawable.ic_home,
-        route = GraphRoutes.HomeScreens,
+        route = GraphRoutes.Home,
     )
 }

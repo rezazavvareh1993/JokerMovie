@@ -9,4 +9,5 @@ data class MovieData(
     val genres: List<String>,
     val overview: String,
     val voteCount: Long,
+    val isFavorite: Boolean = false,
 )

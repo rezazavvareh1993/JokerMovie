@@ -4,7 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.rezazavareh.database.MovieDao
+import com.rezazavareh.database.FavoriteDao
 import com.rezazavareh7.movies.data.apiservice.MoviesApiService
 import com.rezazavareh7.movies.data.mapper.MovieDetailsMapper
 import com.rezazavareh7.movies.data.mapper.MoviesMapper
@@ -27,7 +27,7 @@ class MoviesRepositoryImpl
         private val moviesMapper: MoviesMapper,
         private val movieDetailMapper: MovieDetailsMapper,
         private val searchMovieMapper: SearchMovieMapper,
-        private val movieDao: MovieDao,
+        private val favoriteDao: FavoriteDao,
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
         private val moviePagingSource: MoviePagingSource,
         private val searchMoviePagerFactory: SearchMoviePagingSource.Factory,

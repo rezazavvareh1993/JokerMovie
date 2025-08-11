@@ -108,7 +108,7 @@ private fun leadingIconOfOutlineTextField(outlineTextFieldComponentParams: Outli
                 onClick = outlineTextFieldComponentParams.clickOnLeadingIcon,
                 drawableId =
                     if (outlineTextFieldComponentParams.isError) {
-                        LocalJokerIconPalette.current.icError
+                        LocalJokerIconPalette.current.icInfo
                     } else {
                         outlineTextFieldComponentParams.leadingIcon
                     },

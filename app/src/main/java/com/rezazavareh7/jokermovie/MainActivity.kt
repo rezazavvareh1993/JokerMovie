@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.rezazavareh7.designsystem.component.navigation.SystemBarVisibilityManager
+import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 import com.rezazavareh7.jokermovie.navgraph.NavigationBar
 import com.rezazavareh7.jokermovie.navgraph.RootNavGraph
@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val systemBarVisibilityManager = SystemBarVisibilityManager()
+    private val systemBarManager = SystemBarManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 }
                 splashScreen.setKeepOnScreenCondition { false }
 
-                SetStatusBarColor(systemBarVisibilityManager)
+                SetStatusBarColor(systemBarManager)
 
                 val navController = rememberNavController()
                 var isNavigateFromOut by remember {
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             bottomBar = {
-                                if (systemBarVisibilityManager.isBottomBarVisible.value) {
+                                if (systemBarManager.isBottomBarVisible.value) {
                                     NavigationBar(
                                         navController,
                                         selectedItemIndex = selectedItemIndex,
@@ -74,11 +74,11 @@ class MainActivity : ComponentActivity() {
                                 }
                                 RootNavGraph(
                                     navController = navController,
-                                    systemBarVisibilityManager = systemBarVisibilityManager,
+                                    systemBarManager = systemBarManager,
                                     isUserLoggedIn = isUserLoggedIn,
                                     navigateToPasswordVerification = { },
                                     isNavigateToSpecialRouteOfBottomNavigation = { navigateToSpecialIndexOfBottomNavigation ->
-                                        systemBarVisibilityManager.showBottomBar()
+                                        systemBarManager.showBottomBar()
                                         isNavigateFromOut = true
                                         selectedItemIndex = navigateToSpecialIndexOfBottomNavigation
                                     },

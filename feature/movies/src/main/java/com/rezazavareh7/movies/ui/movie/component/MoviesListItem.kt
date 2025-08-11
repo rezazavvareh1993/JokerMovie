@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.rating.RatingBarComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
@@ -33,6 +34,7 @@ import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 fun MovieListItem(
     movieItem: MovieData,
     clickOnItem: (Long) -> Unit,
+    onFavoriteClicked: (Boolean) -> Unit,
 ) {
     Column(
         modifier =
@@ -74,6 +76,22 @@ fun MovieListItem(
                 contentScale = ContentScale.FillBounds,
                 context = LocalContext.current,
                 placeHolder = LocalJokerIconPalette.current.icMovie,
+            )
+
+            IconComponent(
+                drawableId =
+                    if (movieItem.isFavorite) {
+                        LocalJokerIconPalette.current.icLike
+                    } else {
+                        LocalJokerIconPalette.current.icDislike
+                    },
+                tint = MaterialTheme.colorScheme.error,
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomStart),
+                isClickable = true,
+                onClick = { onFavoriteClicked(!movieItem.isFavorite) },
             )
         }
 
