@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetPagedMoviesUseCase
+class GetNowPlayingMoviesUseCase
     @Inject
     constructor(
         private val moviesRepository: MoviesRepository,
@@ -14,7 +14,7 @@ class GetPagedMoviesUseCase
     ) {
         suspend operator fun invoke(): MoviesResult =
             withContext(dispatcher) {
-                val result = moviesRepository.getPagedMovies()
-                MoviesResult(moviesPagedData = result)
+                val result = moviesRepository.getNowPlayingMovies()
+                MoviesResult(nowPlayingMovies = result)
             }
     }

@@ -1,5 +1,7 @@
 package com.rezazavareh7.movies.ui.movie
 
+import com.rezazavareh7.movies.domain.model.MovieData
+
 sealed class MoviesUiEvent {
     data object OnGetMoviesCalled : MoviesUiEvent()
 
@@ -13,5 +15,13 @@ sealed class MoviesUiEvent {
 
     data class OnSearchedMovie(
         val query: String,
+    ) : MoviesUiEvent()
+
+    data class OnLikeMovie(
+        val movieData: MovieData,
+    ) : MoviesUiEvent()
+
+    data class OnDislikeMovie(
+        val movieData: MovieData,
     ) : MoviesUiEvent()
 }

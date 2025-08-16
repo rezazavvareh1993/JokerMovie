@@ -2,7 +2,12 @@ package com.rezazavareh7.movies.ui.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rezazavareh7.movies.domain.usecase.GetPagedMoviesUseCase
+import com.rezazavareh7.movies.domain.model.Category
+import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetTopRatedMoviesUseCase
+import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
+import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,13 +23,16 @@ class MoviesViewModel
     @Inject
     constructor(
         private val searchMoviesUseCase: SearchMoviesUseCase,
-        private val getPagedMoviesUseCase: GetPagedMoviesUseCase,
+        private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+        private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
+        private val removeFavoriteItemUseCase: RemoveFavoriteItemUseCase,
+        private val getFavoritesUseCase: GetFavoritesUseCase,
     ) : ViewModel() {
         private var mMoviesState = MutableStateFlow(MoviesUiState(isLoading = true))
-
         val moviesState =
             mMoviesState
                 .onStart {
+                    getFavorites()
                     getMovies()
                 }.stateIn(
                     viewModelScope,
@@ -44,6 +52,10 @@ class MoviesViewModel
                 is MoviesUiEvent.OnSearchedMovie -> searchMovies(event.query)
 
                 is MoviesUiEvent.OnCancelSearch -> cancelSearch()
+
+                is MoviesUiEvent.OnLikeMovie -> saveFavoriteMovie(event.movieData)
+
+                is MoviesUiEvent.OnDislikeMovie -> removeFavoriteMovie(event.movieData)
             }
         }
 
@@ -58,13 +70,38 @@ class MoviesViewModel
 
         private fun getMovies() {
             viewModelScope.launch {
-                val result = getPagedMoviesUseCase()
+                val result = getTopRatedMoviesUseCase()
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
-                        moviesPagedData = result.moviesPagedData,
+                        moviesPagedData = result.topRatedMovies,
                         hasSearchResult = false,
                     )
+                }
+            }
+        }
+
+        private fun getFavorites() {
+            viewModelScope.launch {
+                val result = getFavoritesUseCase.invoke(category = Category.MOVIE)
+                result.favoriteList.collect { favorites ->
+                    mMoviesState.update { it.copy(favorites = favorites) }
+                }
+            }
+        }
+
+        private fun saveFavoriteMovie(movieData: MovieData) {
+            viewModelScope.launch {
+                viewModelScope.launch {
+                    saveFavoriteItemUseCase(movieData)
+                }
+            }
+        }
+
+        private fun removeFavoriteMovie(movieData: MovieData) {
+            viewModelScope.launch {
+                viewModelScope.launch {
+                    removeFavoriteItemUseCase(movieData)
                 }
             }
         }
@@ -75,7 +112,7 @@ class MoviesViewModel
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
-                        moviesPagedData = result.moviesPagedData,
+                        moviesPagedData = result.topRatedMovies,
                         hasSearchResult = true,
                     )
                 }

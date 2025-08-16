@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.flowOf
 data class MoviesResult(
     val hasError: Boolean = false,
     val moviesData: List<MovieData> = emptyList(),
-    val moviesPagedData: Flow<PagingData<MovieData>> = flowOf(PagingData.empty()),
+    val topRatedMovies: Flow<PagingData<MovieData>> = flowOf(PagingData.empty()),
+    val upcomingMovies: Flow<PagingData<MovieData>> = flowOf(PagingData.empty()),
+    val popularMovies: Flow<PagingData<MovieData>> = flowOf(PagingData.empty()),
+    val nowPlayingMovies: Flow<PagingData<MovieData>> = flowOf(PagingData.empty()),
     val errorMessage: String = "",
 )

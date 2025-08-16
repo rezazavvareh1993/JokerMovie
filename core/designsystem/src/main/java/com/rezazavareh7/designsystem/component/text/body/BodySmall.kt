@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -19,6 +20,8 @@ fun BodySmallTextComponent(
     color: Color = MaterialTheme.colorScheme.onSurface,
     textAlign: TextAlign = TextAlign.Start,
     isClickable: Boolean = false,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Visible,
     onClickable: () -> Unit = {},
 ) {
     TextComponent(
@@ -27,6 +30,8 @@ fun BodySmallTextComponent(
         color = color,
         style = MaterialTheme.typography.bodySmall,
         textAlign = textAlign,
+        overflow = overflow,
+        maxLines = maxLines,
         isClickable = isClickable,
         onClickable = onClickable,
     )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.rating.RatingBarComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
+import com.rezazavareh7.designsystem.component.text.body.BodySmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.domain.model.MovieData
@@ -33,35 +34,37 @@ import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 @Composable
 fun MovieListItem(
     movieItem: MovieData,
+    isLiked: Boolean,
     clickOnItem: (Long) -> Unit,
-    onFavoriteClicked: (Boolean) -> Unit,
+    onFavoriteClicked: (Boolean, MovieData) -> Unit,
 ) {
     Column(
         modifier =
             Modifier
-                .width(300.dp)
-                .height(500.dp)
+                .width(175.dp)
+                .fillMaxHeight()
                 .background(Color.Black, shape = Shape.highRoundCorner)
+                .padding(8.dp)
                 .clickable { clickOnItem(movieItem.id) },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TitleMediumTextComponent(
+        BodySmallTextComponent(
             text = movieItem.title,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(8.dp),
+                    .wrapContentHeight(),
+            maxLines = 1,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.surface,
-            overFlow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis,
         )
         Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(350.dp)
-                    .padding(12.dp)
+                    .weight(1f)
+                    .padding(4.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primary,
                         shape = Shape.highRoundCorner,
@@ -80,7 +83,7 @@ fun MovieListItem(
 
             IconComponent(
                 drawableId =
-                    if (movieItem.isFavorite) {
+                    if (isLiked) {
                         LocalJokerIconPalette.current.icLike
                     } else {
                         LocalJokerIconPalette.current.icDislike
@@ -88,15 +91,22 @@ fun MovieListItem(
                 tint = MaterialTheme.colorScheme.error,
                 modifier =
                     Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .align(Alignment.BottomStart),
+                iconSize = 16.dp,
+                boxSize = 16.dp,
                 isClickable = true,
-                onClick = { onFavoriteClicked(!movieItem.isFavorite) },
+                onClick = { onFavoriteClicked(!isLiked, movieItem) },
             )
         }
 
-        RatingBarComponent(rating = movieItem.voteAverage, stars = 5, onRatingChanged = {})
+        RatingBarComponent(
+            rating = movieItem.voteAverage,
+            starSize = 12.dp,
+            stars = 5,
+            onRatingChanged = {},
+        )
         Spacer(Modifier.height(4.dp))
-        TitleMediumTextComponent(text = movieItem.releaseDate, color = Color.Gray)
+        BodySmallTextComponent(text = movieItem.releaseDate, color = Color.Gray)
     }
 }

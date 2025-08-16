@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
@@ -31,6 +34,8 @@ import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.Outlin
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
+import com.rezazavareh7.movies.domain.model.FavoriteData
+import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.ui.movie.component.MovieListItem
 import com.rezazavareh7.ui.components.ShowToast
 
@@ -43,7 +48,6 @@ fun MoviesScreen(
 ) {
     val movies = moviesUiState.moviesPagedData.collectAsLazyPagingItems()
     val context = LocalContext.current
-    val lazyRowState = rememberLazyListState()
     if (moviesUiState.errorMessage.isNotEmpty()) {
         ShowToast(context, moviesUiState.errorMessage)
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
@@ -125,47 +129,144 @@ fun MoviesScreen(
                 if (movies.loadState.refresh is LoadState.Loading) {
                     CircularProgressIndicator()
                 } else {
-                    LazyRow(
-                        state = lazyRowState,
+                    LazyColumn(
+                        state = rememberLazyListState(),
                         modifier =
                             Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp, horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                .weight(1f)
+                                .fillMaxWidth(),
                     ) {
-                        items(movies.itemCount) { index ->
-                            val item = movies[index]
-                            item?.let {
-                                MovieListItem(
-                                    item,
-                                    onFavoriteClicked = {},
-                                    clickOnItem = { movieId ->
-                                        navigateToMovieDetailsScreen(movieId)
-                                    },
-                                )
-                            }
+                        item {
+                            MovieList(
+                                movies,
+                                moviesUiState.favorites,
+                                { isLiked, movieItem ->
+                                    if (isLiked) {
+                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
+                                    } else {
+                                        movieUiEvent(
+                                            MoviesUiEvent.OnDislikeMovie(
+                                                movieItem,
+                                            ),
+                                        )
+                                    }
+                                },
+                                navigateToMovieDetailsScreen,
+                            )
+                        }
+                        item {
+                            MovieList(
+                                movies,
+                                moviesUiState.favorites,
+                                { isLiked, movieItem ->
+                                    if (isLiked) {
+                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
+                                    } else {
+                                        movieUiEvent(
+                                            MoviesUiEvent.OnDislikeMovie(
+                                                movieItem,
+                                            ),
+                                        )
+                                    }
+                                },
+                                navigateToMovieDetailsScreen,
+                            )
                         }
 
-                        movies.apply {
-                            when {
-                                loadState.refresh is LoadState.Loading ->
-                                    item {
-                                        CircularProgressIndicator()
+                        item {
+                            MovieList(
+                                movies,
+                                moviesUiState.favorites,
+                                { isLiked, movieItem ->
+                                    if (isLiked) {
+                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
+                                    } else {
+                                        movieUiEvent(
+                                            MoviesUiEvent.OnDislikeMovie(
+                                                movieItem,
+                                            ),
+                                        )
                                     }
+                                },
+                                navigateToMovieDetailsScreen,
+                            )
+                        }
 
-                                loadState.append is LoadState.Loading ->
-                                    item {
-                                        CircularProgressIndicator()
+                        item {
+                            MovieList(
+                                movies,
+                                moviesUiState.favorites,
+                                { isLiked, movieItem ->
+                                    if (isLiked) {
+                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
+                                    } else {
+                                        movieUiEvent(
+                                            MoviesUiEvent.OnDislikeMovie(
+                                                movieItem,
+                                            ),
+                                        )
                                     }
-
-                                loadState.refresh is LoadState.Error ->
-                                    item {
-                                        Text("Error")
-                                    }
-                            }
+                                },
+                                navigateToMovieDetailsScreen,
+                            )
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieList(
+    movies: LazyPagingItems<MovieData>,
+    favorites: List<FavoriteData>,
+    onFavoriteClicked: (Boolean, MovieData) -> Unit,
+    navigateToMovieDetailsScreen: (Long) -> Unit,
+) {
+    TitleMediumTextComponent(text = stringResource(com.rezazavareh7.designsystem.R.string.favorite))
+    LazyRow(
+        state = rememberLazyListState(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .padding(vertical = 16.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(movies.itemCount) { index ->
+            val item = movies[index]
+            item?.let {
+                MovieListItem(
+                    item,
+                    isLiked =
+                        favorites
+                            .map { it.id }
+                            .contains(item.id),
+                    onFavoriteClicked = onFavoriteClicked,
+                    clickOnItem = { movieId ->
+                        navigateToMovieDetailsScreen(movieId)
+                    },
+                )
+            }
+        }
+
+        movies.apply {
+            when {
+                loadState.refresh is LoadState.Loading ->
+                    item {
+                        CircularProgressIndicator()
+                    }
+
+                loadState.append is LoadState.Loading ->
+                    item {
+                        CircularProgressIndicator()
+                    }
+
+                loadState.refresh is LoadState.Error ->
+                    item {
+                        Text("Error")
+                    }
             }
         }
     }

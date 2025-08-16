@@ -38,6 +38,7 @@ accompanistSystemuicontroller = "0.36.0"
 glideComposeVerions = "1.0.0-beta01"
 glideVersion = "5.0.0-rc01"
 roomVersion = "2.7.2"
+foundation = "1.8.3"
 
 
 [libraries]
@@ -90,6 +91,7 @@ glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVers
 room-ktx = {group= "androidx.room", name = "room-ktx", version.ref = "roomVersion"}
 room-compiler = {group= "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
 room-paging = {group= "androidx.room", name = "room-paging", version.ref = "roomVersion"}
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 

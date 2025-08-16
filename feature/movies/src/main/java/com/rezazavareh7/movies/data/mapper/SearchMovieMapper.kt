@@ -1,6 +1,7 @@
 package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh7.movies.data.model.SearchMovieResponse
+import com.rezazavareh7.movies.domain.model.Category
 import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.domain.networkstate.GetMoviesNetworkState
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class SearchMovieMapper
                 data =
                     data.results.map { movie ->
                         MovieData(
+                            category = Category.MOVIE,
                             title = movie.title,
                             id = movie.id.toLong(),
                             posterPath = movie.poster_path ?: "",

@@ -8,7 +8,7 @@ import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MovieData
 import javax.inject.Inject
 
-class MoviePagingSource
+class TopRatedMoviePagingSource
     @Inject
     constructor(
         private val moviesApiService: MoviesApiService,

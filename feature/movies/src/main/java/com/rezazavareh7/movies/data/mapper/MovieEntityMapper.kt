@@ -2,6 +2,7 @@ package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh.database.FavoriteEntity
 import com.rezazavareh7.movies.data.model.MoviesResponseResult
+import com.rezazavareh7.movies.domain.model.Category
 import com.rezazavareh7.movies.domain.model.MovieData
 
 fun MoviesResponseResult.toMovieEntity(): FavoriteEntity =
@@ -26,4 +27,5 @@ fun FavoriteEntity.toMovieData(): MovieData =
         voteCount = voteCount,
         posterPath = posterPath,
         genres = emptyList(),
+        category = Category.MOVIE,
     )

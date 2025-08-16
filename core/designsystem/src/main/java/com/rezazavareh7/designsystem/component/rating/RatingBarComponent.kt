@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
@@ -21,7 +22,7 @@ fun RatingBarComponent(
     rating: Float,
     onRatingChanged: (Float) -> Unit,
     stars: Int = 5,
-    starSize: Int = 32,
+    starSize: Dp = 32.dp,
 ) {
     Row(modifier = modifier) {
         for (i in 1..stars) {
@@ -35,7 +36,7 @@ fun RatingBarComponent(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier =
                     Modifier
-                        .size(starSize.dp)
+                        .size(starSize)
                         .clickable { onRatingChanged(i.toFloat()) },
             )
         }
@@ -53,6 +54,6 @@ fun RatingBarComponentPreview() {
             rating = newRating
         },
         stars = 5,
-        starSize = 32,
+        starSize = 32.dp,
     )
 }

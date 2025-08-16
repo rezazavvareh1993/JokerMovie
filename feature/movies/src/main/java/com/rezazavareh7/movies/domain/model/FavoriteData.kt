@@ -1,7 +1,6 @@
 package com.rezazavareh7.movies.domain.model
 
-data class MovieData(
-    val category: Category,
+data class FavoriteData(
     val title: String,
     val posterPath: String,
     val id: Long,
@@ -10,7 +9,4 @@ data class MovieData(
     val genres: List<String>,
     val overview: String,
     val voteCount: Long,
-/*
-    val isFavorite: Boolean = false,
-*/
 )

@@ -6,15 +6,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SearchMoviesUseCase
+class GetUpcomingMoviesUseCase
     @Inject
     constructor(
-        private val repository: MoviesRepository,
+        private val moviesRepository: MoviesRepository,
         private val dispatcher: CoroutineDispatcher,
     ) {
-        suspend operator fun invoke(query: String): MoviesResult =
+        suspend operator fun invoke(): MoviesResult =
             withContext(dispatcher) {
-                val result = repository.searchMovies(query)
-                MoviesResult(topRatedMovies = result)
+                val result = moviesRepository.getUpcomingMovies()
+                MoviesResult(upcomingMovies = result)
             }
     }

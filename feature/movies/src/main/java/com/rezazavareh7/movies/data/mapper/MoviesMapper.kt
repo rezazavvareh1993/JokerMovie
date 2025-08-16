@@ -2,6 +2,7 @@ package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh7.movies.data.model.MoviesResponse
 import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
+import com.rezazavareh7.movies.domain.model.Category
 import com.rezazavareh7.movies.domain.model.MovieData
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class MoviesMapper
                     data.results.map {
                         with(it) {
                             MovieData(
+                                category = Category.MOVIE,
                                 title = title,
                                 id = id.toLong(),
                                 posterPath = poster_path ?: "",
