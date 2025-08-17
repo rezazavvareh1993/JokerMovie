@@ -1,10 +1,10 @@
 package com.rezazavareh7.movies.ui.movie
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,9 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -34,10 +32,9 @@ import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.Outlin
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
-import com.rezazavareh7.movies.domain.model.FavoriteData
 import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.ui.movie.component.MovieListItem
-import com.rezazavareh7.ui.components.ShowToast
+import com.rezazavareh7.ui.components.showToast
 
 @Composable
 fun MoviesScreen(
@@ -46,23 +43,45 @@ fun MoviesScreen(
     navigateToMovieDetailsScreen: (Long) -> Unit,
     navigateToFavoriteScreen: () -> Unit,
 ) {
-    val movies = moviesUiState.moviesPagedData.collectAsLazyPagingItems()
+    val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
+    val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
+    val popularMovies = moviesUiState.popularMovies.collectAsLazyPagingItems()
+    val nowPlayingMovies = moviesUiState.nowPlayingMovies.collectAsLazyPagingItems()
     val context = LocalContext.current
     if (moviesUiState.errorMessage.isNotEmpty()) {
-        ShowToast(context, moviesUiState.errorMessage)
+        showToast(context, moviesUiState.errorMessage)
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
     }
 
-    LaunchedEffect(movies.loadState) {
-        if (movies.loadState.refresh is LoadState.Error) {
-            Toast
-                .makeText(
-                    context,
-                    "Error: " + (movies.loadState.refresh as LoadState.Error).error.message,
-                    Toast.LENGTH_LONG,
-                ).show()
-        }
-    }
+//    LaunchedEffect(topRatedMovies.loadState) {
+//        if (topRatedMovies.loadState.refresh is LoadState.Error)
+//            showToast(
+//                context,
+//                (topRatedMovies.loadState.refresh as LoadState.Error).error.message.toString()
+//            )
+//    }
+//    LaunchedEffect(upcomingMovies.loadState) {
+//        if (upcomingMovies.loadState.refresh is LoadState.Error)
+//            showToast(
+//                context,
+//                (upcomingMovies.loadState.refresh as LoadState.Error).error.message.toString()
+//            )
+//    }
+//    LaunchedEffect(popularMovies.loadState) {
+//        if (popularMovies.loadState.refresh is LoadState.Error)
+//            showToast(
+//                context,
+//                (popularMovies.loadState.refresh as LoadState.Error).error.message.toString()
+//            )
+//    }
+//    LaunchedEffect(nowPlayingMovies.loadState) {
+//        if (nowPlayingMovies.loadState.refresh is LoadState.Error)
+//            showToast(
+//                context,
+//                (nowPlayingMovies.loadState.refresh as LoadState.Error).error.message.toString()
+//            )
+//    }
+
     Scaffold(
         topBar = {
             ToolbarComponent(startContent = {
@@ -87,20 +106,22 @@ fun MoviesScreen(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(padding)
+                    .consumeWindowInsets(padding),
         ) {
             ImageComponent(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 painterId = LocalJokerIconPalette.current.imgJokerBackground,
             )
-            Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 16.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 4.dp)) {
                 OutlineTextFieldComponent(
                     outlineTextFieldComponentParams =
                         OutlineTextFieldComponentParams(
                             modifier = Modifier.padding(16.dp),
                             hasPlaceHolder = true,
                             placeHolder = stringResource(id = R.string.search_movie),
+                            autoFocus = false,
                             onValueChange = { value ->
                                 if (moviesUiState.movieNameInput.isEmpty() && moviesUiState.hasSearchResult) {
                                     movieUiEvent(MoviesUiEvent.OnCancelSearch)
@@ -126,7 +147,11 @@ fun MoviesScreen(
                             },
                         ),
                 )
-                if (movies.loadState.refresh is LoadState.Loading) {
+                if (topRatedMovies.loadState.refresh is LoadState.Loading ||
+                    nowPlayingMovies.loadState.refresh is LoadState.Loading ||
+                    upcomingMovies.loadState.refresh is LoadState.Loading ||
+                    popularMovies.loadState.refresh is LoadState.Loading
+                ) {
                     CircularProgressIndicator()
                 } else {
                     LazyColumn(
@@ -138,76 +163,40 @@ fun MoviesScreen(
                     ) {
                         item {
                             MovieList(
-                                movies,
-                                moviesUiState.favorites,
-                                { isLiked, movieItem ->
-                                    if (isLiked) {
-                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
-                                    } else {
-                                        movieUiEvent(
-                                            MoviesUiEvent.OnDislikeMovie(
-                                                movieItem,
-                                            ),
-                                        )
-                                    }
-                                },
-                                navigateToMovieDetailsScreen,
+                                title = "Upcoming",
+                                movies = upcomingMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                movieUiEvent = movieUiEvent,
+                                onMovieClicked = navigateToMovieDetailsScreen,
                             )
                         }
                         item {
                             MovieList(
-                                movies,
-                                moviesUiState.favorites,
-                                { isLiked, movieItem ->
-                                    if (isLiked) {
-                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
-                                    } else {
-                                        movieUiEvent(
-                                            MoviesUiEvent.OnDislikeMovie(
-                                                movieItem,
-                                            ),
-                                        )
-                                    }
-                                },
-                                navigateToMovieDetailsScreen,
+                                title = "Top Rated",
+                                movies = topRatedMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                movieUiEvent = movieUiEvent,
+                                onMovieClicked = navigateToMovieDetailsScreen,
                             )
                         }
 
                         item {
                             MovieList(
-                                movies,
-                                moviesUiState.favorites,
-                                { isLiked, movieItem ->
-                                    if (isLiked) {
-                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
-                                    } else {
-                                        movieUiEvent(
-                                            MoviesUiEvent.OnDislikeMovie(
-                                                movieItem,
-                                            ),
-                                        )
-                                    }
-                                },
-                                navigateToMovieDetailsScreen,
+                                title = "Now Playing",
+                                movies = nowPlayingMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                movieUiEvent = movieUiEvent,
+                                onMovieClicked = navigateToMovieDetailsScreen,
                             )
                         }
 
                         item {
                             MovieList(
-                                movies,
-                                moviesUiState.favorites,
-                                { isLiked, movieItem ->
-                                    if (isLiked) {
-                                        movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
-                                    } else {
-                                        movieUiEvent(
-                                            MoviesUiEvent.OnDislikeMovie(
-                                                movieItem,
-                                            ),
-                                        )
-                                    }
-                                },
-                                navigateToMovieDetailsScreen,
+                                title = "Popular",
+                                movies = popularMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                movieUiEvent = movieUiEvent,
+                                onMovieClicked = navigateToMovieDetailsScreen,
                             )
                         }
                     }
@@ -219,19 +208,20 @@ fun MoviesScreen(
 
 @Composable
 fun MovieList(
+    title: String,
     movies: LazyPagingItems<MovieData>,
-    favorites: List<FavoriteData>,
-    onFavoriteClicked: (Boolean, MovieData) -> Unit,
-    navigateToMovieDetailsScreen: (Long) -> Unit,
+    favoriteIds: List<Long>,
+    onMovieClicked: (Long) -> Unit,
+    movieUiEvent: (MoviesUiEvent) -> Unit,
 ) {
-    TitleMediumTextComponent(text = stringResource(com.rezazavareh7.designsystem.R.string.favorite))
+    TitleMediumTextComponent(text = title)
     LazyRow(
         state = rememberLazyListState(),
         modifier =
             Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .padding(vertical = 16.dp, horizontal = 12.dp),
+                .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(movies.itemCount) { index ->
@@ -239,14 +229,19 @@ fun MovieList(
             item?.let {
                 MovieListItem(
                     item,
-                    isLiked =
-                        favorites
-                            .map { it.id }
-                            .contains(item.id),
-                    onFavoriteClicked = onFavoriteClicked,
-                    clickOnItem = { movieId ->
-                        navigateToMovieDetailsScreen(movieId)
+                    isLiked = favoriteIds.contains(item.id),
+                    onFavoriteClicked = { isLiked, movieItem ->
+                        if (isLiked) {
+                            movieUiEvent(MoviesUiEvent.OnLikeMovie(movieItem))
+                        } else {
+                            movieUiEvent(
+                                MoviesUiEvent.OnDislikeMovie(
+                                    movieItem,
+                                ),
+                            )
+                        }
                     },
+                    onMovieClicked = onMovieClicked,
                 )
             }
         }
@@ -265,7 +260,10 @@ fun MovieList(
 
                 loadState.refresh is LoadState.Error ->
                     item {
-                        Text("Error")
+                        showToast(
+                            LocalContext.current,
+                            (movies.loadState.refresh as LoadState.Error).error.message.toString(),
+                        )
                     }
             }
         }

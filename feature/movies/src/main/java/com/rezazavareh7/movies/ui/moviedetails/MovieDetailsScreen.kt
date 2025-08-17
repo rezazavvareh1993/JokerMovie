@@ -33,7 +33,7 @@ import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponen
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
-import com.rezazavareh7.ui.components.ShowToast
+import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 
 @Composable
@@ -46,7 +46,7 @@ fun MovieDetailsScreen(
     val context = LocalContext.current
     val lazyColumnState = rememberLazyListState()
     if (movieDetailsUiState.errorMessage.isNotEmpty()) {
-        ShowToast(context, movieDetailsUiState.errorMessage)
+        showToast(context, movieDetailsUiState.errorMessage)
         movieDetailsUiEvent(MovieDetailsUiEvent.OnToastMessageShown)
     }
 

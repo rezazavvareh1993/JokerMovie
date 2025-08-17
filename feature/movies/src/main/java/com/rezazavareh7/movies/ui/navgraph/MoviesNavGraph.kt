@@ -37,8 +37,8 @@ fun NavGraphBuilder.moviesNavGraph(
                     navController.navigate(MoviesScreens.Favorite.route)
                 },
             )
-            if (!systemBarManager.isBottomBarVisible.value) {
-                systemBarManager.showBottomBar()
+            if (systemBarManager.isBottomBarVisible.value) {
+                systemBarManager.hideBottomBar()
             }
         }
 

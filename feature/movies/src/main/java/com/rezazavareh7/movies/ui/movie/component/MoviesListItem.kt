@@ -35,7 +35,7 @@ import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 fun MovieListItem(
     movieItem: MovieData,
     isLiked: Boolean,
-    clickOnItem: (Long) -> Unit,
+    onMovieClicked: (Long) -> Unit,
     onFavoriteClicked: (Boolean, MovieData) -> Unit,
 ) {
     Column(
@@ -45,7 +45,7 @@ fun MovieListItem(
                 .fillMaxHeight()
                 .background(Color.Black, shape = Shape.highRoundCorner)
                 .padding(8.dp)
-                .clickable { clickOnItem(movieItem.id) },
+                .clickable { onMovieClicked(movieItem.id) },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BodySmallTextComponent(

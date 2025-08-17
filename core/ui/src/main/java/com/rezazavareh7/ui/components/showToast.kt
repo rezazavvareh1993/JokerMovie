@@ -2,10 +2,8 @@ package com.rezazavareh7.ui.components
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.Composable
 
-@Composable
-fun ShowToast(
+fun showToast(
     context: Context,
     message: String,
 ) {

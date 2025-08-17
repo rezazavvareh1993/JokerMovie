@@ -15,7 +15,7 @@ import com.rezazavareh7.designsystem.component.navigation.NavigationBarComponent
 import com.rezazavareh7.designsystem.component.navigation.NavigationBarItemComponent
 import com.rezazavareh7.designsystem.component.text.label.LabelLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.label.LabelMediumTextComponent
-import com.rezazavareh7.ui.components.ShowToast
+import com.rezazavareh7.ui.components.showToast
 
 @Composable
 fun NavigationBar(
@@ -39,7 +39,7 @@ fun NavigationBar(
     }
 
     if (toastMessage.isNotEmpty()) {
-        ShowToast(context = LocalContext.current, message = toastMessage)
+        showToast(context = LocalContext.current, message = toastMessage)
     }
     var lastBottomSheetScreenRoot by remember {
         mutableStateOf(items[selectedItemIndex].route.toString())

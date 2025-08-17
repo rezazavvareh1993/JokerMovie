@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +68,12 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                         ) { innerPadding ->
-                            Box(modifier = Modifier.padding(innerPadding)) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .padding(innerPadding)
+                                        .consumeWindowInsets(innerPadding),
+                            ) {
                                 val isUserLoggedIn = true
                                 if (!isUserLoggedIn) {
                                     selectedItemIndex = 0

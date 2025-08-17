@@ -5,11 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.rezazavareh7.movies.domain.model.Category
 import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetNowPlayingMoviesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetPopularMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetTopRatedMoviesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetUpcomingMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -24,6 +28,9 @@ class MoviesViewModel
     constructor(
         private val searchMoviesUseCase: SearchMoviesUseCase,
         private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+        private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
+        private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
+        private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
         private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
         private val removeFavoriteItemUseCase: RemoveFavoriteItemUseCase,
         private val getFavoritesUseCase: GetFavoritesUseCase,
@@ -70,11 +77,17 @@ class MoviesViewModel
 
         private fun getMovies() {
             viewModelScope.launch {
-                val result = getTopRatedMoviesUseCase()
+                val topRatedResult = async { getTopRatedMoviesUseCase() }
+                val popularResult = async { getPopularMoviesUseCase() }
+                val nowPlayingResult = async { getNowPlayingMoviesUseCase() }
+                val upcomingResult = async { getUpcomingMoviesUseCase() }
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
-                        moviesPagedData = result.topRatedMovies,
+                        topRatedMovies = topRatedResult.await().topRatedMovies,
+                        popularMovies = popularResult.await().popularMovies,
+                        upcomingMovies = upcomingResult.await().upcomingMovies,
+                        nowPlayingMovies = nowPlayingResult.await().nowPlayingMovies,
                         hasSearchResult = false,
                     )
                 }
@@ -85,7 +98,7 @@ class MoviesViewModel
             viewModelScope.launch {
                 val result = getFavoritesUseCase.invoke(category = Category.MOVIE)
                 result.favoriteList.collect { favorites ->
-                    mMoviesState.update { it.copy(favorites = favorites) }
+                    mMoviesState.update { it.copy(favoriteIds = favorites.map { item -> item.id }) }
                 }
             }
         }
@@ -112,7 +125,7 @@ class MoviesViewModel
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
-                        moviesPagedData = result.topRatedMovies,
+                        topRatedMovies = result.topRatedMovies,
                         hasSearchResult = true,
                     )
                 }
