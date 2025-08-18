@@ -1,7 +1,6 @@
 package com.rezazavareh.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Update
@@ -14,8 +13,8 @@ interface FavoriteDao {
     @Upsert
     suspend fun saveFavoriteItem(entity: FavoriteEntity)
 
-    @Delete
-    suspend fun delete(entity: FavoriteEntity)
+    @Query("DELETE FROM $FAVORITE_TABLE_NAME WHERE id = :id")
+    suspend fun deleteFavoriteItemById(id: Long)
 
     @Update
     suspend fun update(entity: FavoriteEntity)

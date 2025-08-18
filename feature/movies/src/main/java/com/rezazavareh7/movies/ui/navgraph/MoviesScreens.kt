@@ -7,7 +7,7 @@ object MoviesScreensGraph {
     data object Movies
 
     @Serializable
-    object Favorite
+    data class Favorite(val category: String)
 
     @Serializable
     data class MovieDetails(
@@ -25,8 +25,8 @@ sealed class MoviesScreens<T>(
     )
 
     @Serializable
-    data object Favorite : MoviesScreens<MoviesScreensGraph.Favorite>(
-        route = MoviesScreensGraph.Favorite,
+    data class Favorite(val category: String) : MoviesScreens<MoviesScreensGraph.Favorite>(
+        route = MoviesScreensGraph.Favorite(category = category),
     )
 
     @Serializable

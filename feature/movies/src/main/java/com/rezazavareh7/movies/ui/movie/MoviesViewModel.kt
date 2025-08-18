@@ -96,8 +96,8 @@ class MoviesViewModel
 
         private fun getFavorites() {
             viewModelScope.launch {
-                val result = getFavoritesUseCase.invoke(category = Category.MOVIE)
-                result.favoriteList.collect { favorites ->
+                val favoriteList = getFavoritesUseCase.invoke(category = Category.MOVIE.toString())
+                favoriteList.collect { favorites ->
                     mMoviesState.update { it.copy(favoriteIds = favorites.map { item -> item.id }) }
                 }
             }
@@ -114,7 +114,7 @@ class MoviesViewModel
         private fun removeFavoriteMovie(movieData: MovieData) {
             viewModelScope.launch {
                 viewModelScope.launch {
-                    removeFavoriteItemUseCase(movieData)
+                    removeFavoriteItemUseCase(movieData.id)
                 }
             }
         }

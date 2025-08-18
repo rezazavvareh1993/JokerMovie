@@ -20,11 +20,11 @@ interface MoviesRepository {
 
     fun getNowPlayingMovies(): Flow<PagingData<MovieData>>
 
-    fun fetchFavorites(category: Category): Flow<List<FavoriteData>>
+    fun fetchFavorites(category: String): Flow<List<FavoriteData>>
 
     suspend fun insertFavoriteItem(movieData: MovieData)
 
-    suspend fun deleteMovieFromFavoriteMovies(movieData: MovieData)
+    suspend fun deleteFavoriteItemById(id: Long)
 
     suspend fun findItemById(
         category: Category,

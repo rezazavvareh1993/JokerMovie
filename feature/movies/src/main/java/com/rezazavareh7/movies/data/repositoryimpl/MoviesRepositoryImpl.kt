@@ -69,10 +69,10 @@ class MoviesRepositoryImpl
                 pagingSourceFactory = { nowPlayingMoviePagingSource },
             ).flow
 
-        override fun fetchFavorites(category: Category): Flow<List<FavoriteData>> =
+        override fun fetchFavorites(category: String): Flow<List<FavoriteData>> =
             flow {
                 val entities =
-                    favoriteDao.getFavorites(category.toString()).collect {
+                    favoriteDao.getFavorites(category).collect {
                         if (it.isNotEmpty()) {
                             val dataList = favoritesMapper.mapToData(*it.toTypedArray())
                             emit(dataList)
@@ -84,8 +84,7 @@ class MoviesRepositoryImpl
             favoriteDao.saveFavoriteItem(favoritesMapper.mapToEntity(movieData).first())
         }
 
-        override suspend fun deleteMovieFromFavoriteMovies(movieData: MovieData) =
-            favoriteDao.delete(favoritesMapper.mapToEntity(movieData).first())
+        override suspend fun deleteFavoriteItemById(id: Long) = favoriteDao.deleteFavoriteItemById(id)
 
         override suspend fun findItemById(
             category: Category,

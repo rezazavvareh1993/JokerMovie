@@ -25,13 +25,13 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.icon.ImageComponent
+import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
-import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponent
-import com.rezazavareh7.designsystem.component.textfield.outlinetextfield.OutlineTextFieldComponentParams
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
+import com.rezazavareh7.movies.domain.model.Category
 import com.rezazavareh7.movies.domain.model.MovieData
 import com.rezazavareh7.movies.ui.movie.component.MovieListItem
 import com.rezazavareh7.ui.components.showToast
@@ -41,7 +41,7 @@ fun MoviesScreen(
     movieUiEvent: (MoviesUiEvent) -> Unit,
     moviesUiState: MoviesUiState,
     navigateToMovieDetailsScreen: (Long) -> Unit,
-    navigateToFavoriteScreen: () -> Unit,
+    navigateToFavoriteScreen: (String) -> Unit,
 ) {
     val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
     val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
@@ -95,7 +95,7 @@ fun MoviesScreen(
                     text = stringResource(com.rezazavareh7.designsystem.R.string.favorite),
                     modifier =
                         Modifier.clickable {
-                            navigateToFavoriteScreen()
+                            navigateToFavoriteScreen(Category.MOVIE.toString())
                         },
                 )
             })
@@ -115,37 +115,23 @@ fun MoviesScreen(
                 painterId = LocalJokerIconPalette.current.imgJokerBackground,
             )
             Column(modifier = Modifier.padding(horizontal = 4.dp)) {
-                OutlineTextFieldComponent(
-                    outlineTextFieldComponentParams =
-                        OutlineTextFieldComponentParams(
-                            modifier = Modifier.padding(16.dp),
-                            hasPlaceHolder = true,
-                            placeHolder = stringResource(id = R.string.search_movie),
-                            autoFocus = false,
-                            onValueChange = { value ->
-                                if (moviesUiState.movieNameInput.isEmpty() && moviesUiState.hasSearchResult) {
-                                    movieUiEvent(MoviesUiEvent.OnCancelSearch)
-                                } else {
-                                    movieUiEvent(MoviesUiEvent.OnSearchMovieChanged(value))
-                                }
-                            },
-                            value = moviesUiState.movieNameInput,
-                            limitationCharacter = 40,
-                            hasLeadingIcon = true,
-                            leadingIcon = LocalJokerIconPalette.current.icSearch,
-                            isLeadingIconClickable = true,
-                            isTrailingIconClickable = true,
-                            hasTrailingIcon = moviesUiState.movieNameInput.length >= 2,
-                            trailingIcon = LocalJokerIconPalette.current.icCancel,
-                            clickOnTrailingIcon = {
-                                movieUiEvent(MoviesUiEvent.OnCancelSearch)
-                            },
-                            clickOnLeadingIcon = {
-                                if (moviesUiState.movieNameInput.length >= 2) {
-                                    movieUiEvent(MoviesUiEvent.OnSearchedMovie(moviesUiState.movieNameInput))
-                                }
-                            },
-                        ),
+                SearchBarComponent(
+                    modifier = Modifier.padding(16.dp),
+                    query = moviesUiState.movieNameInput,
+                    maxQueryLength = 30,
+                    onQueryChange = { query ->
+                        movieUiEvent(MoviesUiEvent.OnSearchMovieChanged(newMovieName = query))
+                    },
+                    onSearch = {
+                        if (moviesUiState.movieNameInput.isEmpty() && moviesUiState.hasSearchResult) {
+                            movieUiEvent(MoviesUiEvent.OnCancelSearch)
+                        } else {
+                            movieUiEvent(MoviesUiEvent.OnSearchedMovie(moviesUiState.movieNameInput))
+                        }
+                    },
+                    placeHolder = stringResource(R.string.search_movie),
+                    content = {
+                    },
                 )
                 if (topRatedMovies.loadState.refresh is LoadState.Loading ||
                     nowPlayingMovies.loadState.refresh is LoadState.Loading ||

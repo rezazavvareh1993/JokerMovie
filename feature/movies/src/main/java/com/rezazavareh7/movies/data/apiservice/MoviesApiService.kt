@@ -27,7 +27,7 @@ interface MoviesApiService {
         @Query("page") page: Int,
     ): Result<MoviesResponse>
 
-    @GET("movie/{movie_id}?language=en-US")
+    @GET("movie/{movie_id}?language=fa-IR")
     suspend fun getMovieDetails(
         @Path("movie_id") movieId: Long,
     ): Result<MovieDetailsResponse>

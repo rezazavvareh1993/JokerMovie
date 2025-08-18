@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.glide.compose)
     ksp(libs.glide.ksp)
 
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+
     // Material
     api(libs.androidx.compose.material3)
 

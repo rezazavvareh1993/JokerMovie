@@ -15,7 +15,6 @@ android {
         libs.versions.android.compileSdk
             .get()
             .toInt()
-
     defaultConfig {
         applicationId = "com.rezazavareh7.jokermovie"
         minSdk =

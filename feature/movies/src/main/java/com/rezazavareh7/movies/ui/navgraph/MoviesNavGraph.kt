@@ -10,6 +10,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
+import com.rezazavareh7.movies.ui.favorite.FavoriteScreen
+import com.rezazavareh7.movies.ui.favorite.FavoriteViewModel
 import com.rezazavareh7.movies.ui.movie.MoviesScreen
 import com.rezazavareh7.movies.ui.movie.MoviesViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsScreen
@@ -33,8 +35,8 @@ fun NavGraphBuilder.moviesNavGraph(
                 navigateToMovieDetailsScreen = { movieId ->
                     navController.navigate(MoviesScreens.MovieDetails(movieId).route)
                 },
-                navigateToFavoriteScreen = {
-                    navController.navigate(MoviesScreens.Favorite.route)
+                navigateToFavoriteScreen = { category ->
+                    navController.navigate(MoviesScreens.Favorite(category = category).route)
                 },
             )
             if (systemBarManager.isBottomBarVisible.value) {
@@ -51,6 +53,24 @@ fun NavGraphBuilder.moviesNavGraph(
                 movieId = movieDetailsInfo.movieId,
                 movieDetailsUiEvent = movieDetailsUiEvent,
                 movieDetailsUiState = movieDetailsUiState,
+                onBackClicked = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable<MoviesScreensGraph.Favorite> { backStackEntry ->
+            val favoriteInfo: MoviesScreensGraph.Favorite = backStackEntry.toRoute()
+            val viewModel = hiltViewModel<FavoriteViewModel>()
+            val favoriteUiEvent = viewModel::onEvent
+            val favoriteUiState by viewModel.favoriteState.collectAsStateWithLifecycle()
+            FavoriteScreen(
+                category = favoriteInfo.category,
+                favoriteUiEvent = favoriteUiEvent,
+                favoriteUiState = favoriteUiState,
+                navigateToDetails = { id ->
+                    navController.navigate(MoviesScreens.MovieDetails(id).route)
+                },
                 onBackClicked = {
                     navController.popBackStack()
                 },
