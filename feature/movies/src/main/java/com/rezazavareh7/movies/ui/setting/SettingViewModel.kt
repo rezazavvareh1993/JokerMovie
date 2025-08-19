@@ -76,7 +76,7 @@ class SettingViewModel
                 getLanguageUseCase().collect { currentLanguage ->
                     mSettingUiState.update {
                         it.copy(
-                            selectedThemeSegmentButtonIndex = if (currentLanguage == LanguageSegmentButtonType.FARSI.type) 1 else 0,
+                            selectedLanguageSegmentButtonIndex = if (currentLanguage == LanguageSegmentButtonType.FARSI.toString()) 1 else 0,
                         )
                     }
                 }

@@ -5,7 +5,7 @@ enum class ThemeSegmentButtonType {
     DARK,
 }
 
-enum class LanguageSegmentButtonType(val type: String) {
+enum class LanguageSegmentButtonType(val locale: String) {
     ENGLISH("en-Us"),
     FARSI("fa-IR"),
     ;
@@ -13,7 +13,7 @@ enum class LanguageSegmentButtonType(val type: String) {
     companion object {
         fun getType(type: String): LanguageSegmentButtonType =
             when (type) {
-                "en-US" -> ENGLISH
+                "ENGLISH" -> ENGLISH
                 else -> FARSI
             }
     }
