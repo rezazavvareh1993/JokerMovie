@@ -1,8 +1,8 @@
-package com.rezazavareh7.common.doamin
+package com.rezazavareh.prefrences
 
 import kotlinx.coroutines.flow.Flow
 
-interface DataStoreManager {
+interface RegularDataStoreManager {
     suspend fun saveData(
         key: String,
         value: String,
@@ -11,11 +11,18 @@ interface DataStoreManager {
     suspend fun saveData(
         key: String,
         value: Boolean,
+        defaultValue: Boolean = false,
     )
 
-    fun getString(key: String): Flow<String>
+    fun getString(
+        key: String,
+        defaultValue: String = "",
+    ): Flow<String>
 
-    fun getBoolean(key: String): Flow<Boolean>
+    fun getBoolean(
+        key: String,
+        defaultValue: Boolean = false,
+    ): Flow<Boolean>
 
     suspend fun <T : Any> getObject(
         key: String,

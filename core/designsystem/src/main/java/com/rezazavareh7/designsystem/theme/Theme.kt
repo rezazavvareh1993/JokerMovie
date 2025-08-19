@@ -11,20 +11,20 @@ import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 
 private val DarkColorScheme =
     darkColorScheme(
-        primary = JokerLightPrimary,
-        onPrimary = JokerLightOnPrimary,
-        primaryContainer = JokerLightPrimaryContainer,
-        onPrimaryContainer = JokerLightOnPrimaryContainer,
-        secondary = JokerLightSecondary,
-        onSecondary = JokerLightOnSecondary,
-        error = JokerLightError,
-        onError = JokerLightOnError,
-        errorContainer = JokerLightErrorContainer,
-        onErrorContainer = JokerLightOnErrorContainer,
-        surface = JokerLightSurface,
-        onSurface = JokerLightOnSurface,
-        onSurfaceVariant = JokerLightOnSurfaceVariant,
-        outline = JokerLightOutline,
+        primary = JokerDarkPrimary,
+        onPrimary = JokerDarkOnPrimary,
+        primaryContainer = JokerDarkPrimaryContainer,
+        onPrimaryContainer = JokerDarkOnPrimaryContainer,
+        secondary = JokerDarkSecondary,
+        onSecondary = JokerDarkOnSecondary,
+        error = JokerDarkError,
+        onError = JokerDarkOnError,
+        errorContainer = JokerDarkErrorContainer,
+        onErrorContainer = JokerDarkOnErrorContainer,
+        surface = JokerDarkSurface,
+        onSurface = JokerDarkOnSurface,
+        onSurfaceVariant = JokerDarkOnSurfaceVariant,
+        outline = JokerDarkOutline,
     )
 
 private val LightColorScheme =

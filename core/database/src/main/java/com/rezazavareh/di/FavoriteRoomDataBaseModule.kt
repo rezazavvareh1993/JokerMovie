@@ -1,7 +1,9 @@
-package com.rezazavareh.database
+package com.rezazavareh.di
 
 import android.content.Context
 import androidx.room.Room
+import com.rezazavareh.database.FavoriteDao
+import com.rezazavareh.database.FavoriteDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -30,4 +30,8 @@ interface MoviesRepository {
         category: Category,
         id: Long,
     ): FavoriteData?
+
+    suspend fun saveLanguage(language: String)
+
+    fun getLanguage(): Flow<String>
 }

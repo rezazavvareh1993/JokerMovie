@@ -1,4 +1,4 @@
-package com.rezazavareh7.network.di
+package com.rezazavareh7.common.di
 
 import dagger.Module
 import dagger.Provides

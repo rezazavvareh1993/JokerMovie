@@ -16,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,7 +23,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.icon.ImageComponent
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
@@ -42,6 +40,7 @@ fun MoviesScreen(
     moviesUiState: MoviesUiState,
     navigateToMovieDetailsScreen: (Long) -> Unit,
     navigateToFavoriteScreen: (String) -> Unit,
+    navigateToSetting: () -> Unit,
 ) {
     val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
     val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
@@ -53,41 +52,14 @@ fun MoviesScreen(
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
     }
 
-//    LaunchedEffect(topRatedMovies.loadState) {
-//        if (topRatedMovies.loadState.refresh is LoadState.Error)
-//            showToast(
-//                context,
-//                (topRatedMovies.loadState.refresh as LoadState.Error).error.message.toString()
-//            )
-//    }
-//    LaunchedEffect(upcomingMovies.loadState) {
-//        if (upcomingMovies.loadState.refresh is LoadState.Error)
-//            showToast(
-//                context,
-//                (upcomingMovies.loadState.refresh as LoadState.Error).error.message.toString()
-//            )
-//    }
-//    LaunchedEffect(popularMovies.loadState) {
-//        if (popularMovies.loadState.refresh is LoadState.Error)
-//            showToast(
-//                context,
-//                (popularMovies.loadState.refresh as LoadState.Error).error.message.toString()
-//            )
-//    }
-//    LaunchedEffect(nowPlayingMovies.loadState) {
-//        if (nowPlayingMovies.loadState.refresh is LoadState.Error)
-//            showToast(
-//                context,
-//                (nowPlayingMovies.loadState.refresh as LoadState.Error).error.message.toString()
-//            )
-//    }
-
     Scaffold(
         topBar = {
             ToolbarComponent(startContent = {
                 IconComponent(
                     drawableId = LocalJokerIconPalette.current.icMainLogo,
                     modifier = Modifier.padding(),
+                    isClickable = true,
+                    onClick = navigateToSetting,
                 )
                 TitleCustomTextComponent(text = "Joker Movies")
             }, endContent = {
@@ -109,11 +81,11 @@ fun MoviesScreen(
                     .padding(padding)
                     .consumeWindowInsets(padding),
         ) {
-            ImageComponent(
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                painterId = LocalJokerIconPalette.current.imgJokerBackground,
-            )
+//            ImageComponent(
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.Crop,
+//                painterId = LocalJokerIconPalette.current.imgJokerBackground,
+//            )
             Column(modifier = Modifier.padding(horizontal = 4.dp)) {
                 SearchBarComponent(
                     modifier = Modifier.padding(16.dp),

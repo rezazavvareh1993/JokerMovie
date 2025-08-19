@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,7 +38,7 @@ fun FavoriteListItem(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(80.dp)
+                .height(120.dp)
                 /*.background(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     shape = Shape.highRoundCorner,
@@ -58,11 +59,9 @@ fun FavoriteListItem(
                     .background(
                         brush =
                             Brush.verticalGradient(
-                                colors =
-                                    listOf(
-                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-                                    ),
+                                0.5f to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                                0.85f to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                                1f to Color.Transparent,
                             ),
                     ),
         )

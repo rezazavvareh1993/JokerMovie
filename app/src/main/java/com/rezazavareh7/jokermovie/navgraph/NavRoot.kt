@@ -11,9 +11,6 @@ import com.rezazavareh7.movies.ui.navgraph.moviesNavGraph
 fun RootNavGraph(
     navController: NavHostController,
     systemBarManager: SystemBarManager,
-    isUserLoggedIn: Boolean,
-    isNavigateToSpecialRouteOfBottomNavigation: (Int) -> Unit,
-    navigateToPasswordVerification: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -22,7 +19,6 @@ fun RootNavGraph(
         moviesNavGraph(
             navController = navController,
             systemBarManager = systemBarManager,
-            isUserLoggedIn = isUserLoggedIn,
         )
     }
 }

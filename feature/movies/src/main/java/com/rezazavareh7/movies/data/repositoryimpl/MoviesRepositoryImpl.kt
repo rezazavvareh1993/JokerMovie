@@ -95,4 +95,12 @@ class MoviesRepositoryImpl
                 favoritesMapper.mapToData(foundEntity).first()
             }
         }
+
+        override suspend fun saveLanguage(language: String) {
+            TODO("Not yet implemented")
+        }
+
+        override fun getLanguage(): Flow<String> {
+            TODO("Not yet implemented")
+        }
     }

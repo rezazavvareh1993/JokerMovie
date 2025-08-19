@@ -44,6 +44,12 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // Data Store
+    implementation(libs.androidx.dataStore.preferences)
+
+    // Serializable
+    implementation(libs.kotlinx.serialization.json)
+
     // Room
     implementation(libs.room.ktx)
 //    api(libs.room.paging)

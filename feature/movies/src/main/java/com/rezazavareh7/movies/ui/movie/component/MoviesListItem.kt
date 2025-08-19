@@ -43,7 +43,7 @@ fun MovieListItem(
             Modifier
                 .width(175.dp)
                 .fillMaxHeight()
-                .background(Color.Black, shape = Shape.highRoundCorner)
+                .background(MaterialTheme.colorScheme.onSurface, shape = Shape.highRoundCorner)
                 .padding(8.dp)
                 .clickable { onMovieClicked(movieItem.id) },
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -16,11 +16,12 @@ import com.rezazavareh7.movies.ui.movie.MoviesScreen
 import com.rezazavareh7.movies.ui.movie.MoviesViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsScreen
 import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsViewModel
+import com.rezazavareh7.movies.ui.setting.SettingScreen
+import com.rezazavareh7.movies.ui.setting.SettingViewModel
 
 fun NavGraphBuilder.moviesNavGraph(
     navController: NavHostController,
     systemBarManager: SystemBarManager,
-    isUserLoggedIn: Boolean,
 ) {
     navigation<GraphRoutes.Home>(
         startDestination = MoviesScreens.Movies.route,
@@ -37,6 +38,9 @@ fun NavGraphBuilder.moviesNavGraph(
                 },
                 navigateToFavoriteScreen = { category ->
                     navController.navigate(MoviesScreens.Favorite(category = category).route)
+                },
+                navigateToSetting = {
+                    navController.navigate(MoviesScreens.Setting.route)
                 },
             )
             if (systemBarManager.isBottomBarVisible.value) {
@@ -71,6 +75,19 @@ fun NavGraphBuilder.moviesNavGraph(
                 navigateToDetails = { id ->
                     navController.navigate(MoviesScreens.MovieDetails(id).route)
                 },
+                onBackClicked = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+        composable<MoviesScreensGraph.Setting> {
+            val viewModel = hiltViewModel<SettingViewModel>()
+            val settingUiEvent = viewModel::onEvent
+            val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
+            SettingScreen(
+                settingUiEvent = settingUiEvent,
+                settingUiState = settingUiState,
                 onBackClicked = {
                     navController.popBackStack()
                 },
