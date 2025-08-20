@@ -3,21 +3,24 @@ package com.rezazavareh7.movies.ui.setting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.button.segmentbutton.singlechoice.SegmentButtonItem
 import com.rezazavareh7.designsystem.component.button.segmentbutton.singlechoice.SingleChoiceSegmentButtonComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
+import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
+import com.rezazavareh7.designsystem.R as DesignSystemResource
+import com.rezazavareh7.movies.R as MovieResource
 
 @Composable
 fun SettingScreen(
@@ -30,7 +33,7 @@ fun SettingScreen(
             hasBackButton = true,
             onBackClicked = onBackClicked,
             startContent = {
-                TitleMediumTextComponent(text = "تنظیمات")
+                TitleMediumTextComponent(text = stringResource(DesignSystemResource.string.setting))
             },
         )
     }) { innerPadding ->
@@ -41,29 +44,26 @@ fun SettingScreen(
                     .padding(innerPadding)
                     .padding(horizontal = 24.dp),
         ) {
+            Spacer(Modifier.height(32.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TitleSmallTextComponent(text = "تم")
+                TitleMediumTextComponent(text = stringResource(MovieResource.string.theme))
                 SingleChoiceSegmentButtonComponent(
                     options =
                         linkedMapOf(
-                            ThemeSegmentButtonType.LIGHT.name to SegmentButtonItem("Light", null),
-                            ThemeSegmentButtonType.DARK.name to SegmentButtonItem("Dark", null),
-                        ),
-                    colors =
-                        SegmentedButtonDefaults.colors(
-                            activeContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            inactiveContainerColor =
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                    alpha = 0.7f,
+                            ThemeSegmentButtonType.LIGHT.name to
+                                SegmentButtonItem(
+                                    stringResource(MovieResource.string.light),
+                                    LocalJokerIconPalette.current.icSun,
                                 ),
-                            activeBorderColor = MaterialTheme.colorScheme.outline,
-                            inactiveBorderColor = MaterialTheme.colorScheme.outline,
-                            activeContentColor = MaterialTheme.colorScheme.surface,
-                            inactiveContentColor = MaterialTheme.colorScheme.surface,
+                            ThemeSegmentButtonType.DARK.name to
+                                SegmentButtonItem(
+                                    stringResource(MovieResource.string.dark),
+                                    LocalJokerIconPalette.current.icMoon,
+                                ),
                         ),
                     selectedIndex = settingUiState.selectedThemeSegmentButtonIndex,
                     buttonClicked = { key, index ->
@@ -76,24 +76,24 @@ fun SettingScreen(
                     },
                 )
             }
-
+            Spacer(Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TitleSmallTextComponent(text = "زبان")
+                TitleMediumTextComponent(text = stringResource(MovieResource.string.language))
                 SingleChoiceSegmentButtonComponent(
                     options =
                         linkedMapOf(
                             LanguageSegmentButtonType.ENGLISH.name to
                                 SegmentButtonItem(
-                                    "English",
+                                    stringResource(MovieResource.string.english),
                                     null,
                                 ),
                             LanguageSegmentButtonType.FARSI.name to
                                 SegmentButtonItem(
-                                    "Farsi",
+                                    stringResource(MovieResource.string.farsi),
                                     null,
                                 ),
                         ),
@@ -102,7 +102,7 @@ fun SettingScreen(
                         settingUiEvent(
                             SettingUiEvent.OnLanguageSegmentButtonClicked(
                                 index,
-                                LanguageSegmentButtonType.valueOf(key).toString(),
+                                LanguageSegmentButtonType.valueOf(key).locale,
                             ),
                         )
                     },

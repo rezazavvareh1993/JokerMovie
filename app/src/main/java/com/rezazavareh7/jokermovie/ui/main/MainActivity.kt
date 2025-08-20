@@ -1,5 +1,7 @@
 package com.rezazavareh7.jokermovie.ui.main
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,14 +37,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
-
         setContent {
             val viewModel = hiltViewModel<MainViewModel>()
             val mainUiState by viewModel.mainState.collectAsStateWithLifecycle()
             val context = this
             LaunchedEffect(mainUiState.currentLanguage) {
-                if (::localeManager.isInitialized && mainUiState.currentLanguage != null) {
-                    triggerRecreation()
+                if (mainUiState.currentLanguage.isNotEmpty() && ::localeManager.isInitialized &&
+                    mainUiState.currentLanguage.split("-")
+                        .first() != context.resources.configuration.locales[0].language
+                ) {
+                    restartApp(context)
                 }
             }
             JokerMovieTheme(darkTheme = mainUiState.currentTheme == ThemeSegmentButtonType.DARK) {
@@ -52,15 +56,15 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                Box(modifier = Modifier.Companion.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     Surface(
-                        modifier = Modifier.Companion.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.surface,
                     ) {
                         Scaffold { innerPadding ->
                             Box(
                                 modifier =
-                                    Modifier.Companion
+                                    Modifier
                                         .padding(innerPadding)
                                         .consumeWindowInsets(innerPadding),
                             ) {
@@ -76,14 +80,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun triggerRecreation() {
-        recreate()
-    }
-
-    override fun onResume() {
+    fun restartApp(activity: Activity) {
         if (::localeManager.isInitialized) {
-            localeManager.setLocale(this)
+            localeManager.setLocale(this) {
+                val intent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
+                intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                activity.startActivity(intent)
+                activity.finishAffinity()
+            }
         }
-        super.onResume()
     }
 }

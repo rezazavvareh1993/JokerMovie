@@ -6,7 +6,6 @@ import com.rezazavareh7.designsystem.R
 data class JokerMovieIconPalette(
     val icSearch: Int = R.drawable.ic_search,
     val icBack: Int = R.drawable.ic_back,
-    val imgJokerBackground: Int = R.drawable.img_background,
     val icMovie: Int = R.drawable.ic_movie,
     val icStar: Int = R.drawable.ic_star,
     val icEmptyStar: Int = R.drawable.ic_empty_star,
@@ -17,6 +16,9 @@ data class JokerMovieIconPalette(
     val icDislike: Int = R.drawable.ic_dislike,
     val icEmpty: Int = R.drawable.ic_empty,
     val icInfo: Int = R.drawable.ic_info,
+    val icMoon: Int = R.drawable.ic_moon,
+    val icSun: Int = R.drawable.ic_sun,
+    val icSetting: Int = R.drawable.ic_settings,
 )
 
 val LocalJokerIconPalette = staticCompositionLocalOf { JokerMovieIconPalette() }

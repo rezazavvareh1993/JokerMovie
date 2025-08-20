@@ -63,6 +63,7 @@ fun SingleChoiceSegmentButtonComponent(
                     index = index,
                     key = item.key,
                     count = options.size,
+                    colors = colors,
                     selected = index == selectedIndex,
                     onClick = {
                         buttonClicked(it, index)

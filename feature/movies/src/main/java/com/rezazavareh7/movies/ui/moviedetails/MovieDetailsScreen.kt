@@ -20,12 +20,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.icon.ImageComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
@@ -44,7 +44,6 @@ fun MovieDetailsScreen(
     onBackClicked: () -> Unit,
 ) {
     val context = LocalContext.current
-    val lazyColumnState = rememberLazyListState()
     if (movieDetailsUiState.errorMessage.isNotEmpty()) {
         showToast(context, movieDetailsUiState.errorMessage)
         movieDetailsUiEvent(MovieDetailsUiEvent.OnToastMessageShown)
@@ -72,100 +71,122 @@ fun MovieDetailsScreen(
         },
         modifier = Modifier.fillMaxSize(),
     ) { padding ->
-        Box(
+        Column(
             modifier =
                 Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 8.dp),
         ) {
-            ImageComponent(
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                painterId = LocalJokerIconPalette.current.imgJokerBackground,
-            )
-            LazyColumn {
-                item {
-                    Column(
-                        modifier =
-                            Modifier
-                                .padding(padding)
-                                .padding(horizontal = 8.dp),
-                    ) {
-                        if (movieDetailsUiState.movieDetailsData != null) {
-                            TitleLargeTextComponent(
-                                text = movieDetailsUiState.movieDetailsData.name,
+            movieDetailsUiState.movieDetailsData?.let { data ->
+                with(data) {
+
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                                    .clip(Shape.highRoundCorner)
+                                    .padding(vertical = 16.dp),
+                        ) {
+                            ShowGlideImageByUrl(
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight()
-                                        .padding(8.dp),
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                        .matchParentSize()
+                                        .clip(Shape.highRoundCorner),
+                                imageUrlPath = backdrop,
+                                context = LocalContext.current,
                             )
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                Box(
+
+                    }
+
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize(),
+                        ) {
+                            ShowGlideImageByUrl(
+                                modifier =
+                                    Modifier
+                                        .matchParentSize(),
+                                imageUrlPath = poster,
+                                context = LocalContext.current,
+                            )
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .matchParentSize()
+                                        .background(
+                                            brush =
+                                                Brush.verticalGradient(
+                                                    0.5f to
+                                                            Color.Black.copy(
+                                                                alpha = 0.7f,
+                                                            ),
+                                                    0.85f to
+                                                            Color.Black.copy(
+                                                                alpha = 0.2f,
+                                                            ),
+                                                    1f to Color.Transparent,
+                                                ),
+                                        ),
+                            )
+
+                            Column(modifier = Modifier) {
+                                TitleLargeTextComponent(
+                                    text = movieDetailsUiState.movieDetailsData.name,
                                     modifier =
                                         Modifier
-                                            .weight(1f)
-                                            .height(350.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = Shape.highRoundCorner,
-                                            ),
-                                ) {
-                                    ShowGlideImageByUrl(
+                                            .fillMaxWidth()
+                                            .wrapContentHeight()
+                                            .padding(8.dp),
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Column(
                                         modifier =
                                             Modifier
-                                                .fillMaxSize()
-                                                .clip(Shape.highRoundCorner),
-                                        imageUrlPath = movieDetailsUiState.movieDetailsData.banner,
-                                        contentScale = ContentScale.FillBounds,
-                                        context = LocalContext.current,
-                                        placeHolder = LocalJokerIconPalette.current.icMovie,
-                                    )
-                                }
-                                Column(
-                                    modifier =
-                                        Modifier
-                                            .weight(1f)
-                                            .padding(start = 8.dp),
-                                ) {
-                                    Spacer(Modifier.height(8.dp))
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        TitleSmallTextComponent(text = "Release Date: ")
-                                        BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.releaseDate)
-                                    }
-                                    Spacer(Modifier.height(8.dp))
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        TitleSmallTextComponent(text = "Rate: ")
-                                        BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.rate.toString())
-                                    }
-                                    Spacer(Modifier.height(8.dp))
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        TitleSmallTextComponent(text = "Vote Count: ")
-                                        BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.voteCount.toString())
-                                    }
-                                    Spacer(Modifier.height(8.dp))
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        TitleSmallTextComponent(text = "Genres: ")
-                                        var genres = ""
-                                        movieDetailsUiState.movieDetailsData.genres.forEachIndexed { index, item ->
-                                            genres +=
-                                                if (index == movieDetailsUiState.movieDetailsData.genres.lastIndex) {
-                                                    item
-                                                } else {
-                                                    "$item,"
-                                                }
+                                                .padding(start = 8.dp),
+                                    ) {
+                                        Spacer(Modifier.height(8.dp))
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            TitleSmallTextComponent(text = "Release Date: ")
+                                            BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.releaseDate)
                                         }
-                                        BodyMediumTextComponent(genres)
+                                        Spacer(Modifier.height(8.dp))
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            TitleSmallTextComponent(text = "Rate: ")
+                                            BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.rate.toString())
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            TitleSmallTextComponent(text = "Vote Count: ")
+                                            BodyMediumTextComponent(movieDetailsUiState.movieDetailsData.voteCount.toString())
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            TitleSmallTextComponent(text = "Genres: ")
+                                            var genres = ""
+                                            movieDetailsUiState.movieDetailsData.genres.forEachIndexed { index, item ->
+                                                genres +=
+                                                    if (index == movieDetailsUiState.movieDetailsData.genres.lastIndex) {
+                                                        item
+                                                    } else {
+                                                        "$item,"
+                                                    }
+                                            }
+                                            BodyMediumTextComponent(genres)
+                                        }
                                     }
                                 }
-                            }
 
-                            TitleMediumTextComponent(text = "Overview: ")
-                            Spacer(Modifier.height(8.dp))
-                            BodyMediumTextComponent(text = movieDetailsUiState.movieDetailsData.overview)
+                                TitleMediumTextComponent(text = "Overview: ")
+                                Spacer(Modifier.height(8.dp))
+                                BodyMediumTextComponent(text = movieDetailsUiState.movieDetailsData.overview)
+                            }
                         }
-                    }
+
                 }
             }
         }

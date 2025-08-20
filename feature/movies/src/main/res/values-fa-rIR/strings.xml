@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="search_movie">جستجو فیلم</string>
+    <string name="upcoming">بزودی</string>
+    <string name="top_rated">برترین</string>
+    <string name="popular">محبوب</string>
+    <string name="now_playing">در حال اکران</string>
+    <string name="theme">تم</string>
+    <string name="language">زبان</string>
+    <string name="farsi">Farsi</string>
+    <string name="english">انگلیسی</string>
+    <string name="light">روشن</string>
+    <string name="dark">تاریک</string>
+    <string name="toolbar_title">Joker Movie</string>
 </resources>

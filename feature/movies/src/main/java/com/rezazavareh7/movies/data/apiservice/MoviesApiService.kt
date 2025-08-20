@@ -7,27 +7,27 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MoviesApiService {
-    @GET("movie/top_rated?language=en-US")
+    @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("page") page: Int,
     ): Result<MoviesResponse>
 
-    @GET("movie/now_playing?language=en-US")
+    @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("page") page: Int,
     ): Result<MoviesResponse>
 
-    @GET("movie/popular?language=en-US")
+    @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("page") page: Int,
     ): Result<MoviesResponse>
 
-    @GET("movie/upcoming?language=en-US")
+    @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("page") page: Int,
     ): Result<MoviesResponse>
 
-    @GET("movie/{movie_id}?language=fa-IR")
+    @GET("movie/{movie_id}")
     suspend fun getMovieDetails(
         @Path("movie_id") movieId: Long,
     ): Result<MovieDetailsResponse>

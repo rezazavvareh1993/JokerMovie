@@ -37,7 +37,7 @@ class SettingViewModel
                 is SettingUiEvent.OnThemeSegmentButtonClicked -> updateTheme(event.type, event.index)
 
                 is SettingUiEvent.OnLanguageSegmentButtonClicked ->
-                    updateLanguage(event.type, event.index)
+                    updateLanguage(event.locale, event.index)
             }
         }
 
@@ -76,7 +76,7 @@ class SettingViewModel
                 getLanguageUseCase().collect { currentLanguage ->
                     mSettingUiState.update {
                         it.copy(
-                            selectedLanguageSegmentButtonIndex = if (currentLanguage == LanguageSegmentButtonType.FARSI.toString()) 1 else 0,
+                            selectedLanguageSegmentButtonIndex = if (currentLanguage == LanguageSegmentButtonType.FARSI.locale) 1 else 0,
                         )
                     }
                 }

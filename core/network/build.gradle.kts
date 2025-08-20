@@ -64,6 +64,7 @@ dependencies {
 
     // Modules
     implementation(projects.core.common)
+    implementation(projects.core.database)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

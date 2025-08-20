@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rezazavareh.usecase.GetLanguageUseCase
 import com.rezazavareh.usecase.GetThemeUseCase
-import com.rezazavareh7.movies.ui.setting.LanguageSegmentButtonType
 import com.rezazavareh7.movies.ui.setting.ThemeSegmentButtonType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,10 +43,10 @@ class MainViewModel
 
         private fun getLanguage() {
             viewModelScope.launch {
-                getLanguageUseCase().collect { currentLanguage ->
+                getLanguageUseCase().collect { currentLanguageLocale ->
                     mMainState.update {
                         it.copy(
-                            currentLanguage = LanguageSegmentButtonType.getType(currentLanguage),
+                            currentLanguage = currentLanguageLocale,
                         )
                     }
                 }

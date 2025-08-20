@@ -1,18 +1,20 @@
 package com.rezazavareh7.movies.ui.movie
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,20 +57,23 @@ fun MoviesScreen(
     Scaffold(
         topBar = {
             ToolbarComponent(startContent = {
-                IconComponent(
-                    drawableId = LocalJokerIconPalette.current.icMainLogo,
-                    modifier = Modifier.padding(),
-                    isClickable = true,
-                    onClick = navigateToSetting,
-                )
-                TitleCustomTextComponent(text = "Joker Movies")
+                IconComponent(drawableId = LocalJokerIconPalette.current.icMainLogo)
+                TitleCustomTextComponent(text = stringResource(R.string.toolbar_title))
             }, endContent = {
-                TitleMediumTextComponent(
-                    text = stringResource(com.rezazavareh7.designsystem.R.string.favorite),
-                    modifier =
-                        Modifier.clickable {
-                            navigateToFavoriteScreen(Category.MOVIE.toString())
-                        },
+                IconComponent(
+                    drawableId = LocalJokerIconPalette.current.icLike,
+                    isClickable = true,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = {
+                        navigateToFavoriteScreen(Category.MOVIE.toString())
+                    },
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                IconComponent(
+                    drawableId = LocalJokerIconPalette.current.icSetting,
+                    isClickable = true,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = navigateToSetting,
                 )
             })
         },
@@ -81,11 +86,6 @@ fun MoviesScreen(
                     .padding(padding)
                     .consumeWindowInsets(padding),
         ) {
-//            ImageComponent(
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.Crop,
-//                painterId = LocalJokerIconPalette.current.imgJokerBackground,
-//            )
             Column(modifier = Modifier.padding(horizontal = 4.dp)) {
                 SearchBarComponent(
                     modifier = Modifier.padding(16.dp),
@@ -121,7 +121,7 @@ fun MoviesScreen(
                     ) {
                         item {
                             MovieList(
-                                title = "Upcoming",
+                                title = stringResource(R.string.upcoming),
                                 movies = upcomingMovies,
                                 favoriteIds = moviesUiState.favoriteIds,
                                 movieUiEvent = movieUiEvent,
@@ -130,7 +130,7 @@ fun MoviesScreen(
                         }
                         item {
                             MovieList(
-                                title = "Top Rated",
+                                title = stringResource(R.string.top_rated),
                                 movies = topRatedMovies,
                                 favoriteIds = moviesUiState.favoriteIds,
                                 movieUiEvent = movieUiEvent,
@@ -140,7 +140,7 @@ fun MoviesScreen(
 
                         item {
                             MovieList(
-                                title = "Now Playing",
+                                title = stringResource(R.string.now_playing),
                                 movies = nowPlayingMovies,
                                 favoriteIds = moviesUiState.favoriteIds,
                                 movieUiEvent = movieUiEvent,
@@ -150,7 +150,7 @@ fun MoviesScreen(
 
                         item {
                             MovieList(
-                                title = "Popular",
+                                title = stringResource(R.string.popular),
                                 movies = popularMovies,
                                 favoriteIds = moviesUiState.favoriteIds,
                                 movieUiEvent = movieUiEvent,
@@ -172,7 +172,7 @@ fun MovieList(
     onMovieClicked: (Long) -> Unit,
     movieUiEvent: (MoviesUiEvent) -> Unit,
 ) {
-    TitleMediumTextComponent(text = title)
+    TitleMediumTextComponent(text = title, modifier = Modifier.padding(start = 16.dp))
     LazyRow(
         state = rememberLazyListState(),
         modifier =
