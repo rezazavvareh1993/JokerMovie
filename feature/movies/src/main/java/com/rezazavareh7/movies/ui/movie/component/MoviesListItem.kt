@@ -2,8 +2,10 @@ package com.rezazavareh7.movies.ui.movie.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.rating.RatingBarComponent
 import com.rezazavareh7.designsystem.component.text.body.BodySmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
@@ -80,7 +82,25 @@ fun MovieListItem(
                 context = LocalContext.current,
                 placeHolder = LocalJokerIconPalette.current.icMovie,
             )
-
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(modifier = Modifier.weight(1f).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                IconComponent(
+                    drawableId = LocalJokerIconPalette.current.icStar,
+                    tint = Color.Yellow,
+                    iconSize = 16.dp,
+                    boxSize = 16.dp,
+                )
+                Spacer(Modifier.width(4.dp))
+                BodySmallTextComponent(
+                    text = movieItem.voteAverage.formattedStringOneDecimal(),
+                    color = MaterialTheme.colorScheme.surface,
+                )
+            }
             IconComponent(
                 drawableId =
                     if (isLiked) {
@@ -88,25 +108,17 @@ fun MovieListItem(
                     } else {
                         LocalJokerIconPalette.current.icDislike
                     },
-                tint = MaterialTheme.colorScheme.error,
+                tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
                 modifier =
                     Modifier
-                        .padding(8.dp)
-                        .align(Alignment.BottomStart),
+                        .padding(8.dp),
                 iconSize = 16.dp,
                 boxSize = 16.dp,
                 isClickable = true,
                 onClick = { onFavoriteClicked(!isLiked, movieItem) },
             )
         }
-
-        RatingBarComponent(
-            rating = movieItem.voteAverage,
-            starSize = 12.dp,
-            stars = 5,
-            onRatingChanged = {},
-        )
         Spacer(Modifier.height(4.dp))
-        BodySmallTextComponent(text = movieItem.releaseDate, color = Color.Gray)
+        BodySmallTextComponent(text = "movieItem.", color = Color.Gray)
     }
 }
