@@ -7,6 +7,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
+import com.rezazavareh7.designsystem.custom.JokerCustomColorPalette
+import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 
 private val DarkColorScheme =
@@ -25,6 +28,8 @@ private val DarkColorScheme =
         onSurface = JokerDarkOnSurface,
         onSurfaceVariant = JokerDarkOnSurfaceVariant,
         outline = JokerDarkOutline,
+        background = JokerDarkBackground,
+        onBackground = JokerDarkOnBackground,
     )
 
 private val LightColorScheme =
@@ -43,6 +48,18 @@ private val LightColorScheme =
         onSurface = JokerLightOnSurface,
         onSurfaceVariant = JokerLightOnSurfaceVariant,
         outline = JokerLightOutline,
+        background = JokerLightBackground,
+        onBackground = JokerLightOnBackground,
+    )
+
+val OnLightCustomJokerColorsPalette =
+    JokerCustomColorPalette(
+        yellow = Color(0XFFFFD54F),
+    )
+
+val OnDarkCustomJokerColorsPalette =
+    JokerCustomColorPalette(
+        yellow = Color(0XFFFFC107),
     )
 
 @Composable
@@ -62,9 +79,12 @@ fun JokerMovieTheme(
         }
 
     val customIconsPalette = LocalJokerIconPalette.current
+    val customColorPalette =
+        if (isSystemInDarkTheme()) OnDarkCustomJokerColorsPalette else OnLightCustomJokerColorsPalette
 
     CompositionLocalProvider(
         LocalJokerIconPalette provides customIconsPalette,
+        LocalJokerColorPalette provides customColorPalette,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

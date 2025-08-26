@@ -26,11 +26,11 @@ import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 @Composable
 fun ToolbarComponent(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     height: Dp = 56.dp,
     isBottomSheet: Boolean = false,
     hasBackButton: Boolean = false,
-    backButtonColor: Color = MaterialTheme.colorScheme.onSurface,
+    backButtonColor: Color = MaterialTheme.colorScheme.primary,
     startContent: @Composable RowScope.() -> Unit = {},
     onBackClicked: () -> Unit = {},
     endContent: @Composable RowScope.() -> Unit = {},

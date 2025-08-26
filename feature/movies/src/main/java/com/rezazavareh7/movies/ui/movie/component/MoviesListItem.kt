@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodySmallTextComponent
+import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.domain.model.MovieData
@@ -45,7 +46,7 @@ fun MovieListItem(
             Modifier
                 .width(175.dp)
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.onSurface, shape = Shape.highRoundCorner)
+                .background(MaterialTheme.colorScheme.onBackground, shape = Shape.highRoundCorner)
                 .padding(8.dp)
                 .clickable { onMovieClicked(movieItem.id) },
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -91,7 +92,7 @@ fun MovieListItem(
             Row(modifier = Modifier.weight(1f).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconComponent(
                     drawableId = LocalJokerIconPalette.current.icStar,
-                    tint = Color.Yellow,
+                    tint = LocalJokerColorPalette.current.yellow,
                     iconSize = 16.dp,
                     boxSize = 16.dp,
                 )
@@ -119,6 +120,6 @@ fun MovieListItem(
             )
         }
         Spacer(Modifier.height(4.dp))
-        BodySmallTextComponent(text = "movieItem.", color = Color.Gray)
+        BodySmallTextComponent(text = movieItem.releaseDate, color = Color.Gray)
     }
 }
