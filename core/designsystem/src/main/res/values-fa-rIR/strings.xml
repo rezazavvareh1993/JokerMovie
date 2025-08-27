@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">بازگشت</string>
+    <string name="home">خانه</string>
+    <string name="setting">تنظیمات</string>
+    <string name="search">جستجو</string>
+    <string name="cancel">لغو</string>
+    <string name="favorite">مورد علاقه</string>
+</resources>
