@@ -2,28 +2,28 @@ package com.rezazavareh7.movies.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.rezazavareh7.movies.data.apiservice.MoviesApiService
+import com.rezazavareh7.movies.data.apiservice.MovieApiService
 import com.rezazavareh7.movies.data.mapper.MoviesMapper
 import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaData
 import javax.inject.Inject
 
 class NowPlayingMoviePagingSource
     @Inject
     constructor(
-        private val moviesApiService: MoviesApiService,
+        private val movieApiService: MovieApiService,
         private val moviesMapper: MoviesMapper,
-    ) : PagingSource<Int, MovieData>() {
-        override fun getRefreshKey(state: PagingState<Int, MovieData>): Int? =
+    ) : PagingSource<Int, MediaData>() {
+        override fun getRefreshKey(state: PagingState<Int, MediaData>): Int? =
             state.anchorPosition?.let { anchorPosition ->
                 state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                     ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
             }
 
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieData> =
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MediaData> =
             try {
                 val page = params.key ?: 1
-                val response = moviesApiService.getNowPlayingMovies(page = page)
+                val response = movieApiService.getNowPlayingMovies(page = page)
                 val result = moviesMapper.mapToData(response)
 
                 when (result) {

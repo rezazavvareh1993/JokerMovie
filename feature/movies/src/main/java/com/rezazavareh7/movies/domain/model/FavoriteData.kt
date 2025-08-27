@@ -9,4 +9,5 @@ data class FavoriteData(
     val genres: List<String>,
     val overview: String,
     val voteCount: Long,
+    val category: MediaCategory,
 )

@@ -2,7 +2,8 @@ package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh.database.FavoriteEntity
 import com.rezazavareh7.movies.domain.model.FavoriteData
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import javax.inject.Inject
 
 class FavoritesMapper
@@ -21,6 +22,7 @@ class FavoritesMapper
                         overview = overview,
                         voteCount = voteCount,
                         genres = emptyList(),
+                        category = MediaCategory.valueOf(category),
                     )
                 }
             }
@@ -39,17 +41,18 @@ class FavoritesMapper
                         overview = overview,
                         voteCount = voteCount,
                         genres = "",
+                        category = category.name,
                     )
                 }
             }
         }
 
-        fun mapToEntity(vararg data: MovieData): List<FavoriteEntity> {
+        fun mapToEntity(vararg data: MediaData): List<FavoriteEntity> {
             val dataList = data.toList()
             return dataList.map {
                 with(it) {
                     FavoriteEntity(
-                        category = category.toString(),
+                        category = mediaCategory.name,
                         title = title,
                         id = id,
                         posterPath = posterPath,

@@ -22,7 +22,7 @@ fun FavoriteScreen(
     favoriteUiEvent: (FavoriteUiEvent) -> Unit,
     favoriteUiState: FavoriteUiState,
     onBackClicked: () -> Unit,
-    navigateToDetails: (Long) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String) -> Unit,
 ) {
     LaunchedEffect(category) {
         if (category.isNotEmpty()) {
@@ -56,7 +56,7 @@ fun FavoriteScreen(
                 items(favoriteUiState.favorites) { item ->
                     FavoriteListItem(
                         item = item,
-                        navigateToDetails = navigateToDetails,
+                        navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                         onRemoveFavoriteClicked = { favoriteData ->
                             favoriteUiEvent(FavoriteUiEvent.OnRemoveFavorite(favoriteData))
                         },

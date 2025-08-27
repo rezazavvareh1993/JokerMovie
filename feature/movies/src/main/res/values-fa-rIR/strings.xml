@@ -18,4 +18,6 @@
     <string name="rate">نمره: </string>
     <string name="vote_count">تعداد رای: </string>
     <string name="details">جزییات</string>
+    <string name="movie">فیلم</string>
+    <string name="series">سریال</string>
 </resources>

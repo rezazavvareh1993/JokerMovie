@@ -31,7 +31,7 @@ import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 @Composable
 fun FavoriteListItem(
     item: FavoriteData,
-    navigateToDetails: (Long) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String) -> Unit,
     onRemoveFavoriteClicked: (FavoriteData) -> Unit,
 ) {
     Box(
@@ -39,13 +39,8 @@ fun FavoriteListItem(
             Modifier
                 .fillMaxWidth()
                 .height(120.dp)
-                /*.background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = Shape.highRoundCorner,
-                )*/
                 .clip(shape = Shape.highRoundCorner)
-                .clickable { navigateToDetails(item.id) },
-//                .padding(horizontal = 8.dp, vertical = 16.dp),
+                .clickable { navigateToMediaDetailsScreen(item.id, item.category.name) },
     ) {
         ShowGlideImageByUrl(
             modifier = Modifier.matchParentSize(),

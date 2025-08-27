@@ -3,7 +3,7 @@ package com.rezazavareh7.movies.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rezazavareh7.movies.domain.model.FavoriteData
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
 import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
@@ -44,10 +44,10 @@ class FavoriteViewModel
             }
         }
 
-        private fun saveFavoriteMovie(movieData: MovieData) {
+        private fun saveFavoriteMovie(mediaData: MediaData) {
             viewModelScope.launch {
                 viewModelScope.launch {
-                    saveFavoriteItemUseCase(movieData)
+                    saveFavoriteItemUseCase(mediaData)
                 }
             }
         }

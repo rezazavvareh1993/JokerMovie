@@ -18,5 +18,7 @@
     <string name="rate">Rate: </string>
     <string name="vote_count">Vote count: </string>
     <string name="details">Details</string>
+    <string name="movie">Movie</string>
+    <string name="series">Series</string>
 
 </resources>

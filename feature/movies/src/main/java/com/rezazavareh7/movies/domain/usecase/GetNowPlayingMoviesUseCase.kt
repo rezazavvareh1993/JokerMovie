@@ -1,7 +1,7 @@
 package com.rezazavareh7.movies.domain.usecase
 
-import com.rezazavareh7.movies.domain.MoviesRepository
-import com.rezazavareh7.movies.domain.model.MoviesResult
+import com.rezazavareh7.movies.domain.model.MediaResult
+import com.rezazavareh7.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -12,9 +12,9 @@ class GetNowPlayingMoviesUseCase
         private val moviesRepository: MoviesRepository,
         private val dispatcher: CoroutineDispatcher,
     ) {
-        suspend operator fun invoke(): MoviesResult =
+        suspend operator fun invoke(): MediaResult =
             withContext(dispatcher) {
                 val result = moviesRepository.getNowPlayingMovies()
-                MoviesResult(nowPlayingMovies = result)
+                MediaResult(nowPlayingMovies = result)
             }
     }

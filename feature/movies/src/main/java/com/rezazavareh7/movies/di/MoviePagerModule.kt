@@ -3,7 +3,7 @@ package com.rezazavareh7.movies.di
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.rezazavareh7.movies.data.paging.SearchMoviePagingSource
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +15,7 @@ import javax.inject.Singleton
 object MoviePagerModule {
     @Provides
     @Singleton
-    fun providePagerFactory(searchPagingSourceFactory: SearchMoviePagingSource.Factory): (String) -> Pager<Int, MovieData> =
+    fun providePagerFactory(searchPagingSourceFactory: SearchMoviePagingSource.Factory): (String) -> Pager<Int, MediaData> =
         { query ->
             Pager(
                 config = PagingConfig(pageSize = 20),

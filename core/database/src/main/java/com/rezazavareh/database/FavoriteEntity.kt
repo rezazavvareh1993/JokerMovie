@@ -16,5 +16,5 @@ data class FavoriteEntity(
     val voteCount: Long,
     val overview: String,
     val genres: String,
-    val category: String = "movie",
+    val category: String,
 )

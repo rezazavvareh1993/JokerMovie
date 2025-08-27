@@ -12,10 +12,10 @@ import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.ui.favorite.FavoriteScreen
 import com.rezazavareh7.movies.ui.favorite.FavoriteViewModel
-import com.rezazavareh7.movies.ui.movie.MoviesScreen
-import com.rezazavareh7.movies.ui.movie.MoviesViewModel
-import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsScreen
-import com.rezazavareh7.movies.ui.moviedetails.MovieDetailsViewModel
+import com.rezazavareh7.movies.ui.media.MediaScreen
+import com.rezazavareh7.movies.ui.media.MediaViewModel
+import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsScreen
+import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsViewModel
 import com.rezazavareh7.movies.ui.setting.SettingScreen
 import com.rezazavareh7.movies.ui.setting.SettingViewModel
 
@@ -27,14 +27,14 @@ fun NavGraphBuilder.moviesNavGraph(
         startDestination = MoviesScreens.Movies.route,
     ) {
         composable<MoviesScreensGraph.Movies> {
-            val viewModel = hiltViewModel<MoviesViewModel>()
-            val moviesUiEvent = viewModel::onEvent
-            val moviesState by viewModel.moviesState.collectAsStateWithLifecycle()
-            MoviesScreen(
-                movieUiEvent = moviesUiEvent,
-                moviesUiState = moviesState,
-                navigateToMovieDetailsScreen = { movieId ->
-                    navController.navigate(MoviesScreens.MovieDetails(movieId).route)
+            val viewModel = hiltViewModel<MediaViewModel>()
+            val mediaUiEvent = viewModel::onEvent
+            val mediaUiState by viewModel.mediaState.collectAsStateWithLifecycle()
+            MediaScreen(
+                mediaUiEvent = mediaUiEvent,
+                mediaUiState = mediaUiState,
+                navigateToMediaDetailsScreen = { id, category ->
+                    navController.navigate(MoviesScreens.MediaDetails(id, category).route)
                 },
                 navigateToFavoriteScreen = { category ->
                     navController.navigate(MoviesScreens.Favorite(category = category).route)
@@ -48,15 +48,15 @@ fun NavGraphBuilder.moviesNavGraph(
             }
         }
 
-        composable<MoviesScreensGraph.MovieDetails> { backStackEntry ->
-            val movieDetailsInfo: MoviesScreensGraph.MovieDetails = backStackEntry.toRoute()
-            val viewModel = hiltViewModel<MovieDetailsViewModel>()
-            val movieDetailsUiEvent = viewModel::onEvent
-            val movieDetailsUiState by viewModel.movieDetailsState.collectAsStateWithLifecycle()
-            MovieDetailsScreen(
-                movieId = movieDetailsInfo.movieId,
-                movieDetailsUiEvent = movieDetailsUiEvent,
-                movieDetailsUiState = movieDetailsUiState,
+        composable<MoviesScreensGraph.MediaDetails> { backStackEntry ->
+            val mediaDetailsInfo: MoviesScreensGraph.MediaDetails = backStackEntry.toRoute()
+            val viewModel = hiltViewModel<MediaDetailsViewModel>()
+            val mediaDetailsUiEvent = viewModel::onEvent
+            val mediaDetailsUiState by viewModel.mediaDetailsState.collectAsStateWithLifecycle()
+            MediaDetailsScreen(
+                mediaId = mediaDetailsInfo.mediaId,
+                mediaDetailsUiEvent = mediaDetailsUiEvent,
+                mediaDetailsUiState = mediaDetailsUiState,
                 onBackClicked = {
                     navController.popBackStack()
                 },
@@ -72,8 +72,8 @@ fun NavGraphBuilder.moviesNavGraph(
                 category = favoriteInfo.category,
                 favoriteUiEvent = favoriteUiEvent,
                 favoriteUiState = favoriteUiState,
-                navigateToDetails = { id ->
-                    navController.navigate(MoviesScreens.MovieDetails(id).route)
+                navigateToMediaDetailsScreen = { id, category ->
+                    navController.navigate(MoviesScreens.MediaDetails(id, category).route)
                 },
                 onBackClicked = {
                     navController.popBackStack()

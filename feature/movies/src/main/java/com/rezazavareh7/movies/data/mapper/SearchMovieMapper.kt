@@ -1,8 +1,8 @@
 package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh7.movies.data.model.SearchMovieResponse
-import com.rezazavareh7.movies.domain.model.Category
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.networkstate.GetMoviesNetworkState
 import javax.inject.Inject
 
@@ -24,8 +24,8 @@ class SearchMovieMapper
             GetMoviesNetworkState.Success(
                 data =
                     data.results.map { movie ->
-                        MovieData(
-                            category = Category.MOVIE,
+                        MediaData(
+                            mediaCategory = MediaCategory.MOVIE,
                             title = movie.title,
                             id = movie.id.toLong(),
                             posterPath = movie.poster_path ?: "",
