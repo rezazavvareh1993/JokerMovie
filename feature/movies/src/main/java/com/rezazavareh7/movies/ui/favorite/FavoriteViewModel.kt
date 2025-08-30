@@ -31,13 +31,13 @@ class FavoriteViewModel
                 is FavoriteUiEvent.OnToastMessageShown ->
                     mFavoriteState.update { it.copy(errorMessage = "") }
 
-                is FavoriteUiEvent.GetFavorites -> getFavorites(event.category)
+                is FavoriteUiEvent.GetFavorites -> getFavorites()
             }
         }
 
-        private fun getFavorites(category: String) {
+        private fun getFavorites() {
             viewModelScope.launch {
-                val favoriteList = getFavoritesUseCase.invoke(category = category)
+                val favoriteList = getFavoritesUseCase.invoke()
                 favoriteList.collect { favorites ->
                     mFavoriteState.update { it.copy(favorites = favorites, isLoading = false) }
                 }

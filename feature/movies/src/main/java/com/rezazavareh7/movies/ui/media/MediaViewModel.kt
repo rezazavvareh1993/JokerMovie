@@ -44,7 +44,7 @@ class MediaViewModel
 
         private fun getFavorites() {
             viewModelScope.launch {
-                val favoriteList = getFavoritesUseCase.invoke(category = MediaCategory.MOVIE.toString())
+                val favoriteList = getFavoritesUseCase.invoke()
                 favoriteList.collect { favorites ->
                     mMediaState.update { it.copy(favoriteIds = favorites.map { item -> item.id }) }
                 }

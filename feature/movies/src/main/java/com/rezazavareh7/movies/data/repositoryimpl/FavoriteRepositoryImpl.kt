@@ -16,10 +16,10 @@ class FavoriteRepositoryImpl
         private val favoriteDao: FavoriteDao,
         private val favoritesMapper: FavoritesMapper,
     ) : FavoriteRepository {
-        override fun fetchFavorites(category: String): Flow<List<FavoriteData>> =
+        override fun getFavorites(): Flow<List<FavoriteData>> =
             flow {
                 val entities =
-                    favoriteDao.getFavorites(category).collect {
+                    favoriteDao.getFavorites().collect {
                         if (it.isNotEmpty()) {
                             val dataList = favoritesMapper.mapToData(*it.toTypedArray())
                             emit(dataList)

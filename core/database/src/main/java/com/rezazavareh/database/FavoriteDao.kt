@@ -22,8 +22,8 @@ interface FavoriteDao {
     @Query("DELETE FROM $FAVORITE_TABLE_NAME")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM $FAVORITE_TABLE_NAME WHERE :category = category")
-    fun getFavorites(category: String): Flow<List<FavoriteEntity>>
+    @Query("SELECT * FROM $FAVORITE_TABLE_NAME")
+    fun getFavorites(): Flow<List<FavoriteEntity>>
 
     @Query("SELECT * FROM $FAVORITE_TABLE_NAME  WHERE :id = id and :category = category")
     fun findItemById(

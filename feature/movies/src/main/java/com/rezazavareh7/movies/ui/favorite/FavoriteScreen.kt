@@ -26,7 +26,7 @@ fun FavoriteScreen(
 ) {
     LaunchedEffect(category) {
         if (category.isNotEmpty()) {
-            favoriteUiEvent(FavoriteUiEvent.GetFavorites(category))
+            favoriteUiEvent(FavoriteUiEvent.GetFavorites)
         }
     }
     Scaffold(

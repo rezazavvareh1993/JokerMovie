@@ -6,7 +6,7 @@ import com.rezazavareh7.movies.domain.model.MediaData
 import kotlinx.coroutines.flow.Flow
 
 interface FavoriteRepository {
-    fun fetchFavorites(category: String): Flow<List<FavoriteData>>
+    fun getFavorites(): Flow<List<FavoriteData>>
 
     suspend fun insertFavoriteItem(mediaData: MediaData)
 

@@ -14,8 +14,8 @@ class GetFavoritesUseCase
         private val repository: FavoriteRepository,
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
-        suspend operator fun invoke(category: String): Flow<List<FavoriteData>> =
+        suspend operator fun invoke(): Flow<List<FavoriteData>> =
             withContext(dispatcher) {
-                repository.fetchFavorites(category)
+                repository.getFavorites()
             }
     }

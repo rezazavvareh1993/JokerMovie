@@ -54,8 +54,8 @@ fun FavoriteListItem(
                     .background(
                         brush =
                             Brush.verticalGradient(
-                                0.5f to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                0.85f to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                                0.5f to MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                                0.85f to MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                                 1f to Color.Transparent,
                             ),
                     ),
@@ -75,7 +75,7 @@ fun FavoriteListItem(
                     text = item.title,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Row(
@@ -84,18 +84,31 @@ fun FavoriteListItem(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        BodyMediumTextComponent(text = "Release Date: ")
-                        BodyMediumTextComponent(item.releaseDate)
+                        BodyMediumTextComponent(
+                            text = "Release Date: ",
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        BodyMediumTextComponent(
+                            item.releaseDate,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        BodyMediumTextComponent(text = "Rate: ")
-                        BodyMediumTextComponent(item.voteAverage.toString())
+                        BodyMediumTextComponent(
+                            text = "Rate: ",
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        BodyMediumTextComponent(
+                            item.voteAverage.toString(),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     }
                 }
             }
             IconComponent(
                 drawableId = LocalJokerIconPalette.current.icCancel,
                 isClickable = true,
+                tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { onRemoveFavoriteClicked(item) },
             )
         }
