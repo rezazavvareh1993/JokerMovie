@@ -2,13 +2,10 @@ package com.rezazavareh7.movies.domain.repository
 
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.domain.model.MediaData
-import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import kotlinx.coroutines.flow.Flow
 
 interface SeriesRepository {
     fun searchSeries(query: String): Flow<PagingData<MediaData>>
-
-    suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<Unit>
 
     fun getTopRatedSeries(): Flow<PagingData<MediaData>>
 

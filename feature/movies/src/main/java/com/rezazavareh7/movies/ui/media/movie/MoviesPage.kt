@@ -1,9 +1,9 @@
 package com.rezazavareh7.movies.ui.media.movie
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +34,7 @@ fun MoviesPage(
     val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
     val popularMovies = moviesUiState.popularMovies.collectAsLazyPagingItems()
     val nowPlayingMovies = moviesUiState.nowPlayingMovies.collectAsLazyPagingItems()
+    val searchedMovies = moviesUiState.searchResult.collectAsLazyPagingItems()
     val context = LocalContext.current
     if (moviesUiState.errorMessage.isNotEmpty()) {
         showToast(context, moviesUiState.errorMessage)
@@ -42,7 +43,8 @@ fun MoviesPage(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
                 .padding(horizontal = 4.dp),
     ) {
         SearchBarComponent(
@@ -74,46 +76,66 @@ fun MoviesPage(
                 state = rememberLazyListState(),
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .weight(1f),
             ) {
-                item {
-                    MediaListComponent(
-                        title = stringResource(R.string.upcoming),
-                        movies = upcomingMovies,
-                        favoriteIds = moviesUiState.favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-                item {
-                    MediaListComponent(
-                        title = stringResource(R.string.top_rated),
-                        movies = topRatedMovies,
-                        favoriteIds = moviesUiState.favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
+                if (moviesUiState.hasSearchResult && searchedMovies.itemCount > 0) {
+                    item {
+                        MediaListComponent(
+                            title = stringResource(R.string.upcoming),
+                            movies = searchedMovies,
+                            favoriteIds = moviesUiState.favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                        )
+                    }
+                } else {
+                    if (upcomingMovies.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                title = stringResource(R.string.upcoming),
+                                movies = upcomingMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+                    }
+                    if (topRatedMovies.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                title = stringResource(R.string.top_rated),
+                                movies = topRatedMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+                    }
 
-                item {
-                    MediaListComponent(
-                        title = stringResource(R.string.now_playing),
-                        movies = nowPlayingMovies,
-                        favoriteIds = moviesUiState.favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
+                    if (nowPlayingMovies.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                title = stringResource(R.string.now_playing),
+                                movies = nowPlayingMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+                    }
 
-                item {
-                    MediaListComponent(
-                        title = stringResource(R.string.popular),
-                        movies = popularMovies,
-                        favoriteIds = moviesUiState.favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
+                    if (popularMovies.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                title = stringResource(R.string.popular),
+                                movies = popularMovies,
+                                favoriteIds = moviesUiState.favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+                    }
                 }
             }
         }

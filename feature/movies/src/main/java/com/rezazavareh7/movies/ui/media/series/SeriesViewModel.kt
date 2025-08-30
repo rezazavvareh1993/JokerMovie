@@ -75,10 +75,10 @@ class SeriesViewModel
                 mSeriesUiState.update {
                     it.copy(
                         isLoading = false,
-                        topRatedSeries = topRatedResult.await().topRatedMovies,
-                        popularSeries = popularResult.await().popularMovies,
-                        onTheAirSeries = onTheAirResult.await().upcomingMovies,
-                        airingTodaySeries = airingTodayResult.await().nowPlayingMovies,
+                        topRatedSeries = topRatedResult.await().topRatedSeries,
+                        popularSeries = popularResult.await().popularSeries,
+                        onTheAirSeries = onTheAirResult.await().onTheAirSeries,
+                        airingTodaySeries = airingTodayResult.await().airingTodaySeries,
                         hasSearchResult = false,
                     )
                 }

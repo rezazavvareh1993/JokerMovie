@@ -88,6 +88,7 @@ fun MediaScreen(
                     .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Spacer(Modifier.height(24.dp))
             MediaTabRowComponent(
                 currentTabIndex = mediaUiState.currentTabRowIndex,
                 onTabClick = { tab, index ->
@@ -104,6 +105,7 @@ fun MediaScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             MediaPagerComponent(
+                modifier = Modifier.weight(1f),
                 pagerState = pagerState,
                 uiState = mediaUiState,
                 mediaUiEvent = mediaUiEvent,

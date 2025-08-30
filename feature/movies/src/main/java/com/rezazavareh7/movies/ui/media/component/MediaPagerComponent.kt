@@ -1,7 +1,6 @@
 package com.rezazavareh7.movies.ui.media.component
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
@@ -26,7 +25,6 @@ fun MediaPagerComponent(
         beyondViewportPageCount = 0,
         modifier =
             modifier
-                .fillMaxWidth()
                 .animateContentSize(),
         pageSpacing = 24.dp,
         verticalAlignment = Alignment.Top,
