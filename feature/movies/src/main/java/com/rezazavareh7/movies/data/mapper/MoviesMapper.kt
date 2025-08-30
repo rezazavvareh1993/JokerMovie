@@ -2,29 +2,29 @@ package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh7.movies.data.model.MoviesResponse
 import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
-import com.rezazavareh7.movies.domain.model.Category
-import com.rezazavareh7.movies.domain.model.MovieData
+import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import javax.inject.Inject
 
 class MoviesMapper
     @Inject
     constructor() {
-        fun mapToData(result: Result<MoviesResponse>): BasicNetworkState<List<MovieData>> =
+        fun mapToData(result: Result<MoviesResponse>): BasicNetworkState<List<MediaData>> =
             result.fold(
                 onSuccess = { onSuccess(it) },
                 onFailure = { onFailure(it) },
             )
 
-        private fun onFailure(throwable: Throwable): BasicNetworkState<List<MovieData>> =
+        private fun onFailure(throwable: Throwable): BasicNetworkState<List<MediaData>> =
             BasicNetworkState.Error(throwable = throwable, message = throwable.message.toString())
 
-        private fun onSuccess(data: MoviesResponse): BasicNetworkState<List<MovieData>> =
+        private fun onSuccess(data: MoviesResponse): BasicNetworkState<List<MediaData>> =
             BasicNetworkState.Success(
                 data =
                     data.results.map {
                         with(it) {
-                            MovieData(
-                                category = Category.MOVIE,
+                            MediaData(
+                                mediaCategory = MediaCategory.MOVIE,
                                 title = title,
                                 id = id.toLong(),
                                 posterPath = poster_path ?: "",

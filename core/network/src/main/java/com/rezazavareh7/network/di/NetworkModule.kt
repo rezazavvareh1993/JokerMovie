@@ -75,16 +75,6 @@ object NetworkModule {
             val response = chain.proceed(newRequest.build())
 
             return@Interceptor response
-//            val request = chain.request()
-//
-//            val requestBuilder = request.newBuilder()
-//            val token = "Bearer $API_ACCESS_TOKEN"
-//            Timber.tag(AUTHORIZATION).i(token)
-//            requestBuilder.addHeader(AUTHORIZATION, token)
-//
-//            val response = chain.proceed(requestBuilder.build())
-//
-//            return@Interceptor response
         }
     }
 

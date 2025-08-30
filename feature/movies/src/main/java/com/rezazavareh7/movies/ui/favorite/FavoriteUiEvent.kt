@@ -7,7 +7,7 @@ sealed class FavoriteUiEvent {
         val favoriteData: FavoriteData,
     ) : FavoriteUiEvent()
 
-    data class GetFavorites(val category: String) : FavoriteUiEvent()
+    data object GetFavorites : FavoriteUiEvent()
 
     data object OnToastMessageShown : FavoriteUiEvent()
 }

@@ -13,8 +13,9 @@ object MoviesScreensGraph {
     object Setting
 
     @Serializable
-    data class MovieDetails(
-        val movieId: Long,
+    data class MediaDetails(
+        val mediaId: Long,
+        val mediaCategory: String,
     )
 }
 
@@ -38,9 +39,10 @@ sealed class MoviesScreens<T>(
     )
 
     @Serializable
-    data class MovieDetails(
-        val movieId: Long,
-    ) : MoviesScreens<MoviesScreensGraph.MovieDetails>(
-            route = MoviesScreensGraph.MovieDetails(movieId = movieId),
+    data class MediaDetails(
+        val mediaId: Long,
+        val mediaCategory: String,
+    ) : MoviesScreens<MoviesScreensGraph.MediaDetails>(
+            route = MoviesScreensGraph.MediaDetails(mediaId = mediaId, mediaCategory = mediaCategory),
         )
 }
