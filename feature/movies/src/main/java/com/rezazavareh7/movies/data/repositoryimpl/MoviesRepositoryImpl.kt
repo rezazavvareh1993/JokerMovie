@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.data.apiservice.MovieApiService
+import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
 import com.rezazavareh7.movies.data.mapper.MovieDetailsMapper
 import com.rezazavareh7.movies.data.paging.NowPlayingMoviePagingSource
 import com.rezazavareh7.movies.data.paging.PopularMoviePagingSource
@@ -12,10 +13,10 @@ import com.rezazavareh7.movies.data.paging.TopRatedMoviePagingSource
 import com.rezazavareh7.movies.data.paging.UpcomingMoviePagingSource
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
+import com.rezazavareh7.movies.domain.model.MediaImage
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class MoviesRepositoryImpl
@@ -28,6 +29,7 @@ class MoviesRepositoryImpl
         private val popularMoviePagingSource: PopularMoviePagingSource,
         private val nowPlayingMoviePagingSource: NowPlayingMoviePagingSource,
         private val searchMoviePagerFactory: SearchMoviePagingSource.Factory,
+        private val mediaImagesMapper: MediaImagesMapper,
     ) : MoviesRepository {
         override fun searchMovies(query: String): Flow<PagingData<MediaData>> =
             Pager(
@@ -63,4 +65,9 @@ class MoviesRepositoryImpl
                 config = PagingConfig(pageSize = 5),
                 pagingSourceFactory = { nowPlayingMoviePagingSource },
             ).flow
+
+        override suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>> =
+            mediaImagesMapper(
+                movieApiServices.getImages(seriesId),
+            )
     }

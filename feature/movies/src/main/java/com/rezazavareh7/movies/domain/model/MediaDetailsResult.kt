@@ -4,4 +4,5 @@ data class MediaDetailsResult(
     val hasError: Boolean = false,
     val mediaDetailsData: MediaDetailData? = null,
     val errorMessage: String = "",
+    val images: List<MediaImage> = emptyList(),
 )

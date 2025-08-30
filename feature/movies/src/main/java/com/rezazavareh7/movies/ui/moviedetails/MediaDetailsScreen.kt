@@ -2,6 +2,7 @@ package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +47,7 @@ fun MediaDetailsScreen(
     mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit,
     mediaDetailsUiState: MovieDetailsUiState,
     onBackClicked: () -> Unit,
+    navigateToMediaImages: (Long, MediaCategory) -> Unit,
 ) {
     val context = LocalContext.current
     if (mediaDetailsUiState.errorMessage.isNotEmpty()) {
@@ -94,7 +96,8 @@ fun MediaDetailsScreen(
                             modifier =
                                 Modifier
                                     .matchParentSize()
-                                    .clip(Shape.highRoundCorner),
+                                    .clip(Shape.highRoundCorner)
+                                    .clickable { navigateToMediaImages(mediaId, mediaCategory) },
                             imageUrlPath = backdrop,
                             context = LocalContext.current,
                         )

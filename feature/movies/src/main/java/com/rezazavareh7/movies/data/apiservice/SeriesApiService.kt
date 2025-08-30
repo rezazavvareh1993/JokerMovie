@@ -1,5 +1,6 @@
 package com.rezazavareh7.movies.data.apiservice
 
+import com.rezazavareh7.movies.data.model.MediaImagesResponse
 import com.rezazavareh7.movies.data.model.SeriesDetailResponse
 import com.rezazavareh7.movies.data.model.SeriesResponse
 import retrofit2.http.GET
@@ -37,4 +38,9 @@ interface SeriesApiService {
     suspend fun getSeriesDetails(
         @Path("series_id") seriesId: Long,
     ): Result<SeriesDetailResponse>
+
+    @GET("tv/{seriesId}/images")
+    suspend fun getImages(
+        @Path("seriesId") seriesId: Long,
+    ): Result<MediaImagesResponse>
 }

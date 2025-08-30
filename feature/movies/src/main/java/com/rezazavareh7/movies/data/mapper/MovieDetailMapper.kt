@@ -15,10 +15,8 @@ class MovieDetailsMapper
                 onFailure = { onFailure(it) },
             )
 
-        private fun onFailure(error: Throwable): BasicNetworkState<Nothing> =
-            BasicNetworkState.Error(
-                message = error.message.toString(),
-            )
+        private fun onFailure(throwable: Throwable): BasicNetworkState<Nothing> =
+            BasicNetworkState.Error(throwable = throwable, message = throwable.message.toString())
 
         private fun onSuccess(response: MovieDetailsResponse): BasicNetworkState<MediaDetailData> =
             with(response) {

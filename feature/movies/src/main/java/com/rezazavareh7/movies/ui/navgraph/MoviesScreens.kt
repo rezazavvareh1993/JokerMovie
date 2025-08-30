@@ -17,6 +17,12 @@ object MoviesScreensGraph {
         val mediaId: Long,
         val mediaCategory: String,
     )
+
+    @Serializable
+    data class MediaImages(
+        val mediaId: Long,
+        val mediaCategory: String,
+    )
 }
 
 @Serializable
@@ -44,5 +50,13 @@ sealed class MoviesScreens<T>(
         val mediaCategory: String,
     ) : MoviesScreens<MoviesScreensGraph.MediaDetails>(
             route = MoviesScreensGraph.MediaDetails(mediaId = mediaId, mediaCategory = mediaCategory),
+        )
+
+    @Serializable
+    data class MediaImages(
+        val mediaId: Long,
+        val mediaCategory: String,
+    ) : MoviesScreens<MoviesScreensGraph.MediaImages>(
+            route = MoviesScreensGraph.MediaImages(mediaId = mediaId, mediaCategory = mediaCategory),
         )
 }

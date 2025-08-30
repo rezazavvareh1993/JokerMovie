@@ -5,6 +5,7 @@ sealed class BasicNetworkState<out T> {
 
     data class Error(
         val message: String,
+        val throwable: Throwable,
         val errorCode: Int? = null,
     ) : BasicNetworkState<Nothing>()
 }

@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rezazavareh7.movies.data.apiservice.MovieApiService
 import com.rezazavareh7.movies.data.mapper.MoviesMapper
-import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -27,7 +27,7 @@ class SearchMoviePagingSource
             try {
                 val page = params.key ?: 1
                 val response = movieApiService.searchMovie(page = page, query = query)
-                val result = moviesMapper.mapToData(response)
+                val result = moviesMapper.invoke(response)
 
                 when (result) {
                     is BasicNetworkState.Success ->

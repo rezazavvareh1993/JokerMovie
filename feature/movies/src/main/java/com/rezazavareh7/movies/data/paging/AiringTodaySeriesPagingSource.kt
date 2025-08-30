@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rezazavareh7.movies.data.apiservice.SeriesApiService
 import com.rezazavareh7.movies.data.mapper.SeriesMapper
-import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import javax.inject.Inject
 
 class AiringTodaySeriesPagingSource
@@ -24,7 +24,7 @@ class AiringTodaySeriesPagingSource
             try {
                 val page = params.key ?: 1
                 val response = seriesApiService.getAiringTodaySeries(page = page)
-                val result = seriesMapper.mapToData(response)
+                val result = seriesMapper.invoke(response)
 
                 when (result) {
                     is BasicNetworkState.Success ->

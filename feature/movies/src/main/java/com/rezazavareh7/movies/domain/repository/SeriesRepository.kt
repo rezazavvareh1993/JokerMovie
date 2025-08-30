@@ -3,6 +3,7 @@ package com.rezazavareh7.movies.domain.repository
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
+import com.rezazavareh7.movies.domain.model.MediaImage
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import kotlinx.coroutines.flow.Flow
 
@@ -18,4 +19,6 @@ interface SeriesRepository {
     fun getAiringTodaySeries(): Flow<PagingData<MediaData>>
 
     suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<MediaDetailData>
+
+    suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>>
 }
