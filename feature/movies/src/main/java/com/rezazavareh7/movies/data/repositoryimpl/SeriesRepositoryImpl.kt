@@ -4,12 +4,15 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.data.apiservice.SeriesApiService
+import com.rezazavareh7.movies.data.mapper.SeriesDetailMapper
 import com.rezazavareh7.movies.data.paging.AiringTodaySeriesPagingSource
 import com.rezazavareh7.movies.data.paging.OnTheAirSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.PopularSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.SearchSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.TopRatedSeriesPagingSource
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.model.MediaDetailData
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.SeriesRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -23,6 +26,7 @@ class SeriesRepositoryImpl
         private val onTheAirSeriesPagingSource: OnTheAirSeriesPagingSource,
         private val airingTodaySeriesPagingSource: AiringTodaySeriesPagingSource,
         private val searchSeriesFactory: SearchSeriesPagingSource.Factory,
+        private val seriesDetailMapper: SeriesDetailMapper,
     ) : SeriesRepository {
         override fun searchSeries(query: String): Flow<PagingData<MediaData>> =
             Pager(
@@ -53,4 +57,7 @@ class SeriesRepositoryImpl
                 config = PagingConfig(pageSize = 5),
                 pagingSourceFactory = { airingTodaySeriesPagingSource },
             ).flow
+
+        override suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<MediaDetailData> =
+            seriesDetailMapper(seriesApiService.getSeriesDetails(seriesId))
     }

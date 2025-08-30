@@ -15,5 +15,4 @@ data class SeriesUiState(
     val airingTodaySeries: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val hasSearchResult: Boolean = false,
     val searchResult: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
-    val favoriteIds: List<Long> = emptyList(),
 )

@@ -1,7 +1,9 @@
 package com.rezazavareh7.movies.data.apiservice
 
+import com.rezazavareh7.movies.data.model.SeriesDetailResponse
 import com.rezazavareh7.movies.data.model.SeriesResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SeriesApiService {
@@ -30,4 +32,9 @@ interface SeriesApiService {
         @Query("page") page: Int,
         @Query("query") query: String,
     ): Result<SeriesResponse>
+
+    @GET("tv/{series_id}")
+    suspend fun getSeriesDetails(
+        @Path("series_id") seriesId: Long,
+    ): Result<SeriesDetailResponse>
 }

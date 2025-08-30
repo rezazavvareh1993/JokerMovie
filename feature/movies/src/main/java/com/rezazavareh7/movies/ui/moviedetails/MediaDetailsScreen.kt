@@ -35,24 +35,26 @@ import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.R
+import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 
 @Composable
 fun MediaDetailsScreen(
     mediaId: Long,
-    mediaDetailsUiEvent: (MovieDetailsUiEvent) -> Unit,
+    mediaCategory: MediaCategory,
+    mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit,
     mediaDetailsUiState: MovieDetailsUiState,
     onBackClicked: () -> Unit,
 ) {
     val context = LocalContext.current
     if (mediaDetailsUiState.errorMessage.isNotEmpty()) {
         showToast(context, mediaDetailsUiState.errorMessage)
-        mediaDetailsUiEvent(MovieDetailsUiEvent.OnToastMessageShown)
+        mediaDetailsUiEvent(MediaDetailsUiEvent.OnToastMessageShown)
     }
 
     LaunchedEffect(mediaId) {
-        mediaDetailsUiEvent(MovieDetailsUiEvent.OnGetMovieDetailsCalled(mediaId))
+        mediaDetailsUiEvent(MediaDetailsUiEvent.OnGetMediaDetailsCalled(mediaId, mediaCategory))
     }
 
     Scaffold(

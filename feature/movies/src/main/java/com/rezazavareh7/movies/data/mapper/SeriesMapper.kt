@@ -24,7 +24,7 @@ class SeriesMapper
                     data.results.map {
                         with(it) {
                             MediaData(
-                                mediaCategory = MediaCategory.MOVIE,
+                                mediaCategory = MediaCategory.SERIES,
                                 title = name,
                                 id = id.toLong(),
                                 posterPath = poster_path ?: "",

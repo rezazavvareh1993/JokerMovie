@@ -26,11 +26,12 @@ import com.rezazavareh7.movies.ui.media.MediaTabItem
 
 @Composable
 fun MediaTabRowComponent(
+    modifier: Modifier = Modifier,
     currentTabIndex: Int,
     onTabClick: (MediaCategory, Int) -> Unit,
 ) {
     TabRow(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         containerColor = Color.Transparent,
         selectedTabIndex = currentTabIndex,
         divider = { HorizontalDivider(thickness = 2.dp) },
@@ -80,7 +81,7 @@ private fun getTabRowItems(): List<MediaTabItem> =
         MediaTabItem(
             name = stringResource(R.string.series),
             type = MediaCategory.SERIES,
-            icon = LocalJokerIconPalette.current.icMovie,
+            icon = LocalJokerIconPalette.current.icTV,
         ),
     )
 

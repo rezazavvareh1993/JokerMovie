@@ -1,7 +1,7 @@
 package com.rezazavareh7.movies.domain.model
 
-data class MovieDetailsResult(
+data class MediaDetailsResult(
     val hasError: Boolean = false,
-    val movieDetailsData: MediaDetailData? = null,
+    val mediaDetailsData: MediaDetailData? = null,
     val errorMessage: String = "",
 )

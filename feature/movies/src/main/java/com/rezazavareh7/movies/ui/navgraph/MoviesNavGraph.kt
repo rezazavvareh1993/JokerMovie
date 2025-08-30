@@ -10,6 +10,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
+import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.ui.favorite.FavoriteScreen
 import com.rezazavareh7.movies.ui.favorite.FavoriteViewModel
 import com.rezazavareh7.movies.ui.media.MediaScreen
@@ -55,6 +56,7 @@ fun NavGraphBuilder.moviesNavGraph(
             val mediaDetailsUiState by viewModel.mediaDetailsState.collectAsStateWithLifecycle()
             MediaDetailsScreen(
                 mediaId = mediaDetailsInfo.mediaId,
+                mediaCategory = MediaCategory.valueOf(mediaDetailsInfo.mediaCategory),
                 mediaDetailsUiEvent = mediaDetailsUiEvent,
                 mediaDetailsUiState = mediaDetailsUiState,
                 onBackClicked = {

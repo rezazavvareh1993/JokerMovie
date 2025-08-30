@@ -16,5 +16,4 @@ data class MoviesUiState(
     val nowPlayingMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val searchResult: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val hasSearchResult: Boolean = false,
-    val favoriteIds: List<Long> = emptyList(),
 )

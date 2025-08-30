@@ -2,8 +2,6 @@ package com.rezazavareh7.movies.ui.media.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rezazavareh7.movies.domain.model.MediaCategory
-import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetNowPlayingMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetPopularMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetTopRatedMoviesUseCase
@@ -28,13 +26,11 @@ class MoviesViewModel
         private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
         private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
         private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
-        private val getFavoritesUseCase: GetFavoritesUseCase,
     ) : ViewModel() {
         private var mMoviesState = MutableStateFlow(MoviesUiState(isLoading = true))
         val moviesState =
             mMoviesState
                 .onStart {
-                    getFavorites()
                     getMovies()
                 }.stateIn(
                     viewModelScope,
@@ -81,15 +77,6 @@ class MoviesViewModel
                         nowPlayingMovies = nowPlayingResult.await().nowPlayingMovies,
                         hasSearchResult = false,
                     )
-                }
-            }
-        }
-
-        private fun getFavorites() {
-            viewModelScope.launch {
-                val favoriteList = getFavoritesUseCase.invoke(category = MediaCategory.MOVIE.toString())
-                favoriteList.collect { favorites ->
-                    mMoviesState.update { it.copy(favoriteIds = favorites.map { item -> item.id }) }
                 }
             }
         }

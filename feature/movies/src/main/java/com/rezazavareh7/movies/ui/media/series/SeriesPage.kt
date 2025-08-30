@@ -1,12 +1,12 @@
 package com.rezazavareh7.movies.ui.media.series
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarComponent
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
@@ -27,6 +28,7 @@ fun SeriesPage(
     viewModel: SeriesViewModel = hiltViewModel<SeriesViewModel>(),
     seriesUiEvent: (SeriesUiEvent) -> Unit = viewModel::onEvent,
     seriesUiState: SeriesUiState = viewModel.seriesState.collectAsStateWithLifecycle().value,
+    favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
     navigateToMediaDetailsScreen: (Long, String) -> Unit,
 ) {
@@ -70,7 +72,7 @@ fun SeriesPage(
             onTheAirSeries.loadState.refresh is LoadState.Loading ||
             popularSeries.loadState.refresh is LoadState.Loading
         ) {
-            CircularProgressIndicator()
+            CircularProgressBarComponent(modifier = Modifier.fillMaxSize())
         } else {
             LazyColumn(
                 state = rememberLazyListState(),
@@ -79,60 +81,52 @@ fun SeriesPage(
                         .weight(1f)
                         .fillMaxWidth(),
             ) {
-                if (seriesUiState.hasSearchResult && searchedSeries.itemCount > 0) {
+                if (seriesUiState.hasSearchResult) {
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.upcoming),
-                            movies = searchedSeries,
-                            favoriteIds = seriesUiState.favoriteIds,
+                            title = stringResource(R.string.searched),
+                            mediaList = searchedSeries,
+                            favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
                             onItemClicked = navigateToMediaDetailsScreen,
                         )
                     }
                 } else {
-                    if (airingTodaySeries.itemCount > 0) {
-                        item {
-                            MediaListComponent(
-                                title = stringResource(R.string.airing_today),
-                                movies = airingTodaySeries,
-                                favoriteIds = seriesUiState.favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
+                    item {
+                        MediaListComponent(
+                            title = stringResource(R.string.airing_today),
+                            mediaList = airingTodaySeries,
+                            favoriteIds = favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                        )
                     }
-                    if (topRatedSeries.itemCount > 0) {
-                        item {
-                            MediaListComponent(
-                                title = stringResource(R.string.top_rated),
-                                movies = topRatedSeries,
-                                favoriteIds = seriesUiState.favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
+                    item {
+                        MediaListComponent(
+                            title = stringResource(R.string.top_rated),
+                            mediaList = topRatedSeries,
+                            favoriteIds = favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                        )
                     }
-                    if (onTheAirSeries.itemCount > 0) {
-                        item {
-                            MediaListComponent(
-                                title = stringResource(R.string.on_the_air),
-                                movies = onTheAirSeries,
-                                favoriteIds = seriesUiState.favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
+                    item {
+                        MediaListComponent(
+                            title = stringResource(R.string.on_the_air),
+                            mediaList = onTheAirSeries,
+                            favoriteIds = favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                        )
                     }
-                    if (popularSeries.itemCount > 0) {
-                        item {
-                            MediaListComponent(
-                                title = stringResource(R.string.popular),
-                                movies = popularSeries,
-                                favoriteIds = seriesUiState.favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
+                    item {
+                        MediaListComponent(
+                            title = stringResource(R.string.popular),
+                            mediaList = popularSeries,
+                            favoriteIds = favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                        )
                     }
                 }
             }

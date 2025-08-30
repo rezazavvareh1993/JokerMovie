@@ -83,13 +83,13 @@ fun MediaScreen(
                     .fillMaxSize()
                     .padding(padding)
                     .consumeWindowInsets(padding)
-                    .padding(horizontal = 24.dp)
                     .verticalScroll(rememberScrollState())
                     .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
             MediaTabRowComponent(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 currentTabIndex = mediaUiState.currentTabRowIndex,
                 onTabClick = { tab, index ->
                     if (mediaUiState.currentTabRowIndex != index) {
@@ -105,9 +105,12 @@ fun MediaScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             MediaPagerComponent(
-                modifier = Modifier.weight(1f),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 4.dp)
+                        .weight(1f),
+                favoriteIds = mediaUiState.favoriteIds,
                 pagerState = pagerState,
-                uiState = mediaUiState,
                 mediaUiEvent = mediaUiEvent,
                 navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
             )

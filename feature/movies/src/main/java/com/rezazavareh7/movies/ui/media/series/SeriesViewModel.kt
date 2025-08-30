@@ -2,9 +2,7 @@ package com.rezazavareh7.movies.ui.media.series
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.usecase.GetAiringTodaySeriesUseCase
-import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetOnTheAirSeriesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetPopularSeriesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetTopRatedSeriesUseCase
@@ -28,13 +26,11 @@ class SeriesViewModel
         private val getOnTheAirSeriesUseCase: GetOnTheAirSeriesUseCase,
         private val getAiringTodaySeriesUseCase: GetAiringTodaySeriesUseCase,
         private val getPopularSeriesUseCase: GetPopularSeriesUseCase,
-        private val getFavoritesUseCase: GetFavoritesUseCase,
     ) : ViewModel() {
         private var mSeriesUiState = MutableStateFlow(SeriesUiState(isLoading = true))
         val seriesState =
             mSeriesUiState
                 .onStart {
-                    getFavorites()
                     getSeries()
                 }.stateIn(
                     viewModelScope,
@@ -81,15 +77,6 @@ class SeriesViewModel
                         airingTodaySeries = airingTodayResult.await().airingTodaySeries,
                         hasSearchResult = false,
                     )
-                }
-            }
-        }
-
-        private fun getFavorites() {
-            viewModelScope.launch {
-                val favoriteList = getFavoritesUseCase.invoke(category = MediaCategory.MOVIE.toString())
-                favoriteList.collect { favorites ->
-                    mSeriesUiState.update { it.copy(favoriteIds = favorites.map { item -> item.id }) }
                 }
             }
         }

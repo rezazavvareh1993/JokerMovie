@@ -2,6 +2,7 @@ package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.usecase.GetMediaDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,32 +17,35 @@ class MediaDetailsViewModel
     constructor(
         private val getMediaDetailsUseCase: GetMediaDetailsUseCase,
     ) : ViewModel() {
-        private var mMovieDetailsState = MutableStateFlow(MovieDetailsUiState(isLoading = true))
-        val mediaDetailsState = mMovieDetailsState.asStateFlow()
+        private var mMediaDetailsState = MutableStateFlow(MovieDetailsUiState(isLoading = true))
+        val mediaDetailsState = mMediaDetailsState.asStateFlow()
 
-        fun onEvent(event: MovieDetailsUiEvent) {
+        fun onEvent(event: MediaDetailsUiEvent) {
             when (event) {
-                is MovieDetailsUiEvent.OnGetMovieDetailsCalled -> getMovieDetails(event.movieId)
-                is MovieDetailsUiEvent.OnToastMessageShown ->
-                    mMovieDetailsState.update { it.copy(errorMessage = "") }
+                is MediaDetailsUiEvent.OnGetMediaDetailsCalled -> getMediaDetails(event.mediaId, event.mediaCategory)
+                is MediaDetailsUiEvent.OnToastMessageShown ->
+                    mMediaDetailsState.update { it.copy(errorMessage = "") }
             }
         }
 
-        private fun getMovieDetails(movieId: Long) {
+        private fun getMediaDetails(
+            mediaId: Long,
+            mediaCategory: MediaCategory,
+        ) {
             viewModelScope.launch {
-                val result = getMediaDetailsUseCase(movieId)
+                val result = getMediaDetailsUseCase(mediaId, mediaCategory)
                 when (result.hasError) {
                     false -> {
-                        mMovieDetailsState.update {
+                        mMediaDetailsState.update {
                             it.copy(
                                 isLoading = false,
-                                movieDetailsData = result.movieDetailsData,
+                                movieDetailsData = result.mediaDetailsData,
                             )
                         }
                     }
 
                     true -> {
-                        mMovieDetailsState.update {
+                        mMediaDetailsState.update {
                             it.copy(
                                 isLoading = false,
                                 errorMessage = result.errorMessage,

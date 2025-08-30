@@ -10,4 +10,5 @@ data class MediaDetailData(
     val voteCount: Long,
     val overview: String,
     val genres: List<String>,
+    val category: MediaCategory,
 )

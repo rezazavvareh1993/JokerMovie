@@ -8,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
-import com.rezazavareh7.movies.ui.media.MediaUiState
 import com.rezazavareh7.movies.ui.media.movie.MoviesPage
 import com.rezazavareh7.movies.ui.media.series.SeriesPage
 
@@ -16,7 +15,7 @@ import com.rezazavareh7.movies.ui.media.series.SeriesPage
 fun MediaPagerComponent(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    uiState: MediaUiState,
+    favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
     navigateToMediaDetailsScreen: (Long, String) -> Unit,
 ) {
@@ -33,11 +32,13 @@ fun MediaPagerComponent(
             MoviesPage(
                 navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                 mediaUiEvent = mediaUiEvent,
+                favoriteIds = favoriteIds,
             )
         } else {
             SeriesPage(
                 navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                 mediaUiEvent = mediaUiEvent,
+                favoriteIds = favoriteIds,
             )
         }
     }
