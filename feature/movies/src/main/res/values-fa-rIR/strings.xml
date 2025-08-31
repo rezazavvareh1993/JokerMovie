@@ -24,5 +24,12 @@
     <string name="on_the_air">در حال پخش</string>
     <string name="airing_today">پخش امروز</string>
     <string name="searched">جستجو شده</string>
+    <string name="favorite">مورد علاقه</string>
+    <string name="cancel">لغو</string>
+    <string name="save_photo">ذخیره کردن عکس</string>
+    <string name="yes_save_it">بله، اضافه شود</string>
+    <string name="photo_saved_successfully">عکس با موفقیت ذخیره شد</string>
+    <string name="photo_save_error">ذخیره سازی با خطا مواجه شد، لطفا دوباره تلاش کنید</string>
+    <string name="are_you_sure_to_save_photo">آیا از ذخیره این عکس مطمئنید؟</string>
 
 </resources>

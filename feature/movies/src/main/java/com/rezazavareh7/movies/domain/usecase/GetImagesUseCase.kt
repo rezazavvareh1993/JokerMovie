@@ -1,7 +1,7 @@
 package com.rezazavareh7.movies.domain.usecase
 
 import com.rezazavareh7.movies.domain.model.MediaCategory
-import com.rezazavareh7.movies.domain.model.MediaDetailsResult
+import com.rezazavareh7.movies.domain.model.MediaImageResult
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.MoviesRepository
 import com.rezazavareh7.movies.domain.repository.SeriesRepository
@@ -19,7 +19,7 @@ class GetImagesUseCase
         suspend operator fun invoke(
             mediaId: Long,
             mediaCategory: MediaCategory,
-        ): MediaDetailsResult =
+        ): MediaImageResult =
             withContext(dispatcher) {
                 val result =
                     if (mediaCategory == MediaCategory.MOVIE) {
@@ -30,9 +30,9 @@ class GetImagesUseCase
 
                 when (result) {
                     is BasicNetworkState.Error ->
-                        MediaDetailsResult(hasError = true, errorMessage = result.message)
+                        MediaImageResult(hasError = true, errorMessage = result.message)
 
-                    is BasicNetworkState.Success -> MediaDetailsResult(images = result.data)
+                    is BasicNetworkState.Success -> MediaImageResult(images = result.data)
                 }
             }
     }

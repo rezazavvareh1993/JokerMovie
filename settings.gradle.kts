@@ -1,21 +1,31 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
+//        google {
+//            content {
+//                includeGroupByRegex("com\\.android.*")
+//                includeGroupByRegex("com\\.google.*")
+//                includeGroupByRegex("androidx.*")
+//            }
+//        }
+//        mavenCentral()
+//        gradlePluginPortal()
+        maven {
+            url = uri("http://htscrepo.agri-bank.com:8000/repository/htsc-maven-group/")
+            isAllowInsecureProtocol = true
         }
-        mavenCentral()
-        gradlePluginPortal()
+
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        mavenCentral()
+//        google()
+//        mavenCentral()
+        maven {
+            url = uri("http://htscrepo.agri-bank.com:8000/repository/htsc-maven-group/")
+            isAllowInsecureProtocol = true
+        }
+
     }
 }
 

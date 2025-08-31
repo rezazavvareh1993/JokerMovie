@@ -12,9 +12,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
+import com.rezazavareh7.movies.R
 
 @Composable
 fun FavoriteScreen(
@@ -35,7 +37,7 @@ fun FavoriteScreen(
             ToolbarComponent(
                 hasBackButton = true,
                 startContent = {
-                    TitleMediumTextComponent(text = "مورد علاقه")
+                    TitleMediumTextComponent(text = stringResource(R.string.details))
                 },
                 onBackClicked = onBackClicked,
             )
