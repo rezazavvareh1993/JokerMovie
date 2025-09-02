@@ -12,11 +12,9 @@ import com.rezazavareh7.movies.data.generateShareablePhoto
 import com.rezazavareh7.movies.domain.networkstate.SharePhotoState
 import com.rezazavareh7.movies.domain.repository.MediaSaverRepository
 import com.rezazavareh7.ui.glide.GlideUtils
-import com.rezazavareh7.ui.util.Constants.IMAGE_BASE_URL
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -39,55 +37,51 @@ class MediaSaverRepositoryImpl
     ) : MediaSaverRepository {
         override suspend fun savePhotoToGallery(imageUrl: String): Result<Unit> {
             return try {
-                val photoFile = GlideUtils.getCachedImageFile(context, "$IMAGE_BASE_URL$imageUrl")
+                val photoFile = GlideUtils.getCachedImageFile(context, imageUrl)
                 val fileName = generateUniqueFileName()
                 movePhotoToGallery(context, photoFile, fileName)
                 Result.success(Unit)
             } catch (e: Exception) {
                 Timber.e(e)
                 Result.failure(e)
+                // TODO refactor states
             }
         }
 
-        override suspend fun sharePhoto(photoUrl: String): SharePhotoState =
-            withContext(dispatcher) {
-                deleteTemporarySharedFiles()
-                generateShareablePhoto(photoUrl, context)
-            }
+        override suspend fun sharePhoto(photoUrl: String): SharePhotoState {
+            deleteTemporarySharedFiles()
+            return generateShareablePhoto(photoUrl, context)
+        }
 
         override suspend fun deleteTempFile(filePath: String): Result<Unit> {
-            return withContext(dispatcher) {
-                val tempFile = File(filePath)
-                if (tempFile.exists()) {
-                    tempFile.delete()
-                    Result.success(Unit)
-                } else {
-                    Result.failure(Exception("Failed to delete temporary file: $filePath"))
-                }
+            val tempFile = File(filePath)
+            return if (tempFile.exists()) {
+                tempFile.delete()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Failed to delete temporary file: $filePath"))
             }
         }
 
-        private suspend fun movePhotoToGallery(
+        private fun movePhotoToGallery(
             context: Context,
             imageFile: File,
             fileName: String,
         ) {
-            withContext(dispatcher) {
-                val resolver = context.contentResolver
-                val contentValues = getContentValues(fileName)
+            val resolver = context.contentResolver
+            val contentValues = getContentValues(fileName)
 
-                val uri =
-                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                        ?: throw IOException("Failed to create new MediaStore record.")
+            val uri =
+                resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                    ?: throw IOException("Failed to create new MediaStore record.")
 
-                resolver.openOutputStream(uri)?.use { outputStream ->
-                    imageFile.inputStream().use { inputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                } ?: throw IOException("Failed to open output stream.")
+            resolver.openOutputStream(uri)?.use { outputStream ->
+                imageFile.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            } ?: throw IOException("Failed to open output stream.")
 
-                notifyGalleryOfNewPhoto(contentValues, resolver, uri, context)
-            }
+            notifyGalleryOfNewPhoto(contentValues, resolver, uri, context)
         }
 
         private fun notifyGalleryOfNewPhoto(
@@ -116,7 +110,8 @@ class MediaSaverRepositoryImpl
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 } else {
-                    val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath
+                    val picturesDir =
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath
                     val file = File(picturesDir, fileName)
                     put(MediaStore.Images.Media.DATA, file.absolutePath)
                 }
@@ -127,18 +122,16 @@ class MediaSaverRepositoryImpl
             return "$PHOTO_PREFIX$timestamp$PHOTO_EXTENSION"
         }
 
-        private suspend fun deleteTemporarySharedFiles() {
-            withContext(dispatcher) {
-                val tempDir = context.filesDir
-                val tempFiles =
-                    tempDir.listFiles { _, name ->
-                        name.startsWith(TEMP_PHOTO_PREFIX)
-                    }
+        private fun deleteTemporarySharedFiles() {
+            val tempDir = context.filesDir
+            val tempFiles =
+                tempDir.listFiles { _, name ->
+                    name.startsWith(TEMP_PHOTO_PREFIX)
+                }
 
-                tempFiles?.forEach { file ->
-                    if (file.exists()) {
-                        file.delete()
-                    }
+            tempFiles?.forEach { file ->
+                if (file.exists()) {
+                    file.delete()
                 }
             }
         }

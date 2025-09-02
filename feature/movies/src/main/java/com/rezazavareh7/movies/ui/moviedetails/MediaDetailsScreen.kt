@@ -27,13 +27,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
-import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
-import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
@@ -65,12 +63,9 @@ fun MediaDetailsScreen(
                 hasBackButton = true,
                 onBackClicked = onBackClicked,
                 startContent = {
-                    IconComponent(
-                        drawableId = LocalJokerIconPalette.current.icMainLogo,
-                        modifier = Modifier.padding(vertical = 2.dp),
-                    )
                     TitleLargeTextComponent(
                         text = stringResource(R.string.details),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 },
             )

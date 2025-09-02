@@ -1,5 +1,9 @@
 package com.rezazavareh7.movies.ui.images
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
@@ -35,6 +39,7 @@ import com.rezazavareh7.movies.ui.images.component.ShowFullSizePhotoComponent
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.util.getScreenDpSize
+import com.rezazavareh7.ui.util.shareProvider
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,12 +53,26 @@ fun MediaImagesScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val staggeredGridScope = rememberLazyStaggeredGridState()
+
     if (mediaImagesUiState.errorMessage.isNotEmpty()) {
         showToast(context, mediaImagesUiState.errorMessage)
         mediaImagesUiEvent(MediaImagesUiEvent.OnToastMessageShown)
     }
+
+    val shareLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+    ) { mediaImagesUiEvent(MediaImagesUiEvent.OnShareComplete) }
+
     LaunchedEffect(mediaId) {
         mediaImagesUiEvent(MediaImagesUiEvent.OnGetMediaImages(mediaId, mediaCategory))
+    }
+
+    LaunchedEffect(mediaImagesUiState.sharePhotoAbsolutePath) {
+        if (mediaImagesUiState.sharePhotoAbsolutePath.isNotEmpty()) {
+            shareProvider(context, mediaImagesUiState.sharePhotoAbsolutePath) { chooserIntent ->
+                shareLauncher.launch(chooserIntent)
+            }
+        }
     }
 
     LaunchedEffect(mediaImagesUiState.savePhotoState) {
@@ -63,27 +82,37 @@ fun MediaImagesScreen(
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AnimatedVisibility(visible = !mediaImagesUiState.shouldDisplayFullScreenPhotos) {
+                ToolbarComponent(
+                    hasBackButton = true,
+                    onBackClicked = onBackClicked,
+                    startContent = {
+                        TitleLargeTextComponent(
+                            text = stringResource(R.string.photos),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                )
+            }
+        },
     ) { padding ->
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             if (mediaImagesUiState.isLoading) {
                 CircularProgressBarComponent(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .align(Alignment.CenterHorizontally),
                 )
             } else {
                 LazyVerticalStaggeredGrid(
                     contentPadding = PaddingValues(1.dp),
                     state = staggeredGridScope,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 16.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 16.dp),
                     columns = StaggeredGridCells.Fixed(2),
                 ) {
                     if (mediaImagesUiState.lastDisplayedImageIndex != -1) {
@@ -97,14 +126,13 @@ fun MediaImagesScreen(
                     }
                     itemsIndexed(mediaImagesUiState.images) { index, item ->
                         ShowGlideImageByUrl(
-                            modifier =
-                                Modifier
-                                    .width(maxOf(100.dp, getScreenDpSize().width / 2))
-                                    .heightIn(
-                                        min = getScreenDpSize().width / 4,
-                                        max = item.height.dp / 6,
-                                    )
-                                    .padding(1.dp),
+                            modifier = Modifier
+                                .width(maxOf(100.dp, getScreenDpSize().width / 2))
+                                .heightIn(
+                                    min = getScreenDpSize().width / 4,
+                                    max = item.height.dp / 6,
+                                )
+                                .padding(1.dp),
                             clickOnItem = {
                                 mediaImagesUiEvent(MediaImagesUiEvent.OnItemClicked(item, index))
                             },
@@ -135,10 +163,9 @@ fun MediaImagesScreen(
                 },
                 topBarContent = { lastDisplayedPhoto ->
                     ShowImageDisplayTopBar(
-                        onBack = {
+                        onBackClicked = {
                             mediaImagesUiEvent(MediaImagesUiEvent.OnFullScreenExitClicked)
                         },
-                        title = stringResource(R.string.movie),
                         onDownloadClicked = {
                             mediaImagesUiEvent(
                                 MediaImagesUiEvent.OnSaveImageClicked(lastDisplayedPhoto.filePath),
@@ -167,13 +194,13 @@ fun MediaImagesScreen(
                 )
             }
         }
+        BackHandler { onBackClicked() }
     }
 }
 
 @Composable
 private fun ShowImageDisplayTopBar(
-    title: String,
-    onBack: () -> Unit,
+    onBackClicked: () -> Unit,
     onDownloadClicked: () -> Unit,
     onShareClicked: () -> Unit,
 ) {
@@ -182,13 +209,7 @@ private fun ShowImageDisplayTopBar(
         backgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
         hasBackButton = true,
         backButtonColor = MaterialTheme.colorScheme.surface,
-        onBackClicked = onBack,
-        startContent = {
-            TitleMediumTextComponent(
-                text = title,
-                color = MaterialTheme.colorScheme.surface,
-            )
-        },
+        onBackClicked = onBackClicked,
         endContent = {
             Row(
                 verticalAlignment = CenterVertically,

@@ -1,5 +1,6 @@
 package com.rezazavareh7.movies.ui.navgraph
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,12 +85,19 @@ fun NavGraphBuilder.moviesNavGraph(
             MediaImagesScreen(
                 mediaId = mediaImagesInfo.mediaId,
                 mediaCategory = MediaCategory.valueOf(mediaImagesInfo.mediaCategory),
-                mediaImagesUiEvent = viewModel::onEvent,
+                mediaImagesUiEvent = mediaImagesUiEvent,
                 mediaImagesUiState = mediaImagesUiState,
                 onBackClicked = {
                     navController.popBackStack()
                 },
             )
+            LaunchedEffect(mediaImagesUiState.shouldDisplayFullScreenPhotos) {
+                if (mediaImagesUiState.shouldDisplayFullScreenPhotos && systemBarManager.isLightBar.value) {
+                    systemBarManager.setDarkBar()
+                } else {
+                    systemBarManager.setLightBar()
+                }
+            }
         }
 
         composable<MoviesScreensGraph.Favorite> { backStackEntry ->

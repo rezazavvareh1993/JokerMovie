@@ -22,6 +22,8 @@ sealed class MediaImagesUiEvent {
 
     data object OnSavePhotoSuccessful : MediaImagesUiEvent()
 
+    data object OnShareComplete : MediaImagesUiEvent()
+
     data class OnItemClicked(val item: MediaImage, val index: Int) : MediaImagesUiEvent()
 
     data class OnSaveImageClicked(val imageUrl: String) : MediaImagesUiEvent()

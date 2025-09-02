@@ -15,8 +15,8 @@ suspend fun generateShareablePhoto(
     return try {
         createTempFile(photoUrl, context)
     } catch (error: Throwable) {
-        Timber.e(error)
-        handleSharePhotoFailure(error)
+        Timber.e(error, "Error in share process: ${error.message}")
+        SharePhotoState.Error(error.message.toString())
     }
 }
 
@@ -41,9 +41,4 @@ private fun createTemporaryFile(
     val tempFile = File(context.filesDir, tempFileName)
     cachedImageFile.copyTo(tempFile, overwrite = true)
     return tempFile
-}
-
-private fun handleSharePhotoFailure(error: Throwable): SharePhotoState {
-    Timber.e(error, "Error in share process: ${error.message}")
-    return SharePhotoState.Error(error.message.toString())
 }

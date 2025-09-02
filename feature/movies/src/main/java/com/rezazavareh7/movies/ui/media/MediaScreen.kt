@@ -60,7 +60,7 @@ fun MediaScreen(
                 TitleCustomTextComponent(text = stringResource(R.string.toolbar_title))
             }, endContent = {
                 IconComponent(
-                    drawableId = LocalJokerIconPalette.current.icLike,
+                    drawableId = LocalJokerIconPalette.current.icFavorite,
                     isClickable = true,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     onClick = {
