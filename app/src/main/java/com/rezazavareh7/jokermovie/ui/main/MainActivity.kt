@@ -23,7 +23,6 @@ import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 import com.rezazavareh7.jokermovie.navgraph.RootNavGraph
 import com.rezazavareh7.jokermovie.util.LocaleManager
-import com.rezazavareh7.jokermovie.util.SetStatusBarColor
 import com.rezazavareh7.jokermovie.util.requestPermission
 import com.rezazavareh7.movies.ui.setting.ThemeSegmentButtonType
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,7 +69,7 @@ class MainActivity : ComponentActivity() {
             JokerMovieTheme(darkTheme = mainUiState.currentTheme == ThemeSegmentButtonType.DARK) {
                 splashScreen.setKeepOnScreenCondition { false }
 
-                SetStatusBarColor(systemBarManager)
+//                SetStatusBarColor(systemBarManager)
 
                 val navController = rememberNavController()
 

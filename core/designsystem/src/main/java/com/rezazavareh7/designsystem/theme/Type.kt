@@ -56,16 +56,16 @@ val replyTypography =
         titleLarge =
             TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontFamily = AppFont.vazirFontFamily,
-                lineHeight = 32.sp,
+                lineHeight = 28.sp,
                 letterSpacing = 0.25.sp,
             ),
         titleMedium =
             TextStyle(
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
-                lineHeight = 32.sp,
+                lineHeight = 24.sp,
                 fontFamily = AppFont.vazirFontFamily,
                 letterSpacing = 0.sp,
             ),

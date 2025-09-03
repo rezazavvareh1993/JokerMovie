@@ -22,6 +22,7 @@ pagingCompose = "3.3.6"
 retrofit = "3.0.0"
 navigationCompose = "2.9.2"
 okhttp = "5.1.0"
+kotlinxCoroutinesTest = "1.10.2"
 jetbrainsKotlinJvm = "2.2.0"
 kotlinxSerialization = "2.2.0"
 kotlinxSerializationJson = "1.9.0"
@@ -58,15 +59,13 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 zoomable = { module = "me.saket.telephoto:zoomable", version.ref = "zoomable" }
-androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive" }
 androidx-compose-material3-navigationSuite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
@@ -89,12 +88,15 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 glide-compose = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideComposeVerions" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
 room-ktx = {group= "androidx.room", name = "room-ktx", version.ref = "roomVersion"}
 room-compiler = {group= "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
 room-paging = {group= "androidx.room", name = "room-paging", version.ref = "roomVersion"}
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 
 [plugins]
@@ -108,3 +110,13 @@ jetbrains-kotlin-serialization = { id ="org.jetbrains.kotlin.plugin.serializatio
 android-library = { id = "com.android.library", version.ref = "agp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
+android-library-convention = { id = "com.rezazavareh7.convention.android.library" }
+android-application-convention = { id = "com.rezazavareh7.convention.android.application" }
+kotlin-android-convention = {id = "com.rezazavareh7.convention.kotlin.android"}
+kotlin-compose-convention = {id = "com.rezazavareh7.convention.kotlin.compose"}
+hilt-convention = { id = "com.rezazavareh7.convention.hilt"}
+feature-convention = {id = "com.rezazavareh7.convention.feature"}
+okhttp-convention = {id = "com.rezazavareh7.convention.okhttp"}
+retrofit-convention = {id = "com.rezazavareh7.convention.retrofit"}
+moshi-convention = {id = "com.rezazavareh7.convention.moshi"}
+network-convention = {id = "com.rezazavareh7.convention.network"}

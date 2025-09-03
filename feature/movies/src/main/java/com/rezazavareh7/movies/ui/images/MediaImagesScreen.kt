@@ -59,9 +59,10 @@ fun MediaImagesScreen(
         mediaImagesUiEvent(MediaImagesUiEvent.OnToastMessageShown)
     }
 
-    val shareLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) { mediaImagesUiEvent(MediaImagesUiEvent.OnShareComplete) }
+    val shareLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult(),
+        ) { mediaImagesUiEvent(MediaImagesUiEvent.OnShareComplete) }
 
     LaunchedEffect(mediaId) {
         mediaImagesUiEvent(MediaImagesUiEvent.OnGetMediaImages(mediaId, mediaCategory))
@@ -102,17 +103,19 @@ fun MediaImagesScreen(
         ) {
             if (mediaImagesUiState.isLoading) {
                 CircularProgressBarComponent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .align(Alignment.CenterHorizontally),
                 )
             } else {
                 LazyVerticalStaggeredGrid(
                     contentPadding = PaddingValues(1.dp),
                     state = staggeredGridScope,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 16.dp),
                     columns = StaggeredGridCells.Fixed(2),
                 ) {
                     if (mediaImagesUiState.lastDisplayedImageIndex != -1) {
@@ -126,13 +129,14 @@ fun MediaImagesScreen(
                     }
                     itemsIndexed(mediaImagesUiState.images) { index, item ->
                         ShowGlideImageByUrl(
-                            modifier = Modifier
-                                .width(maxOf(100.dp, getScreenDpSize().width / 2))
-                                .heightIn(
-                                    min = getScreenDpSize().width / 4,
-                                    max = item.height.dp / 6,
-                                )
-                                .padding(1.dp),
+                            modifier =
+                                Modifier
+                                    .width(maxOf(100.dp, getScreenDpSize().width / 2))
+                                    .heightIn(
+                                        min = getScreenDpSize().width / 4,
+                                        max = item.height.dp / 6,
+                                    )
+                                    .padding(1.dp),
                             clickOnItem = {
                                 mediaImagesUiEvent(MediaImagesUiEvent.OnItemClicked(item, index))
                             },
