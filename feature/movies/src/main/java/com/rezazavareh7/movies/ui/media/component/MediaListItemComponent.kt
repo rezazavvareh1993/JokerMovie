@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
+import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.body.BodySmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
@@ -46,20 +46,24 @@ fun MovieListItemComponent(
             Modifier
                 .width(175.dp)
                 .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.onBackground, shape = Shape.highRoundCorner)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = Shape.highRoundCorner,
+                )
                 .padding(8.dp)
                 .clickable { onItemClicked(mediaData.id, mediaData.mediaCategory.name) },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BodySmallTextComponent(
+        BodyMediumTextComponent(
             text = mediaData.title,
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 4.dp)
                     .wrapContentHeight(),
             maxLines = 1,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.surface,
+            color = MaterialTheme.colorScheme.onSurface,
             overflow = TextOverflow.Ellipsis,
         )
         Box(
@@ -69,7 +73,7 @@ fun MovieListItemComponent(
                     .weight(1f)
                     .padding(4.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                         shape = Shape.highRoundCorner,
                     ),
         ) {
@@ -104,8 +108,9 @@ fun MovieListItemComponent(
                 )
                 Spacer(Modifier.width(4.dp))
                 BodySmallTextComponent(
+                    modifier = Modifier.padding(top = 4.dp),
                     text = mediaData.voteAverage.formattedStringOneDecimal(),
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             IconComponent(
@@ -115,10 +120,8 @@ fun MovieListItemComponent(
                     } else {
                         LocalJokerIconPalette.current.icDislike
                     },
-                tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
-                modifier =
-                    Modifier
-                        .padding(8.dp),
+                tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(8.dp),
                 iconSize = 16.dp,
                 boxSize = 16.dp,
                 isClickable = true,
@@ -126,6 +129,9 @@ fun MovieListItemComponent(
             )
         }
         Spacer(Modifier.height(4.dp))
-        BodySmallTextComponent(text = mediaData.releaseDate, color = Color.Gray)
+        BodySmallTextComponent(
+            text = mediaData.releaseDate,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }

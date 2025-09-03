@@ -136,7 +136,7 @@ fun MediaImagesScreen(
                                         min = getScreenDpSize().width / 4,
                                         max = item.height.dp / 6,
                                     )
-                                    .padding(1.dp),
+                                    .padding(2.dp),
                             clickOnItem = {
                                 mediaImagesUiEvent(MediaImagesUiEvent.OnItemClicked(item, index))
                             },

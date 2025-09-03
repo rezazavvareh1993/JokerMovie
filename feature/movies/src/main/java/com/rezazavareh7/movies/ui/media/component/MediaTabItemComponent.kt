@@ -24,7 +24,7 @@ fun MediaItemComponent(
         if (isSelected) {
             MaterialTheme.colorScheme.primary
         } else {
-            MaterialTheme.colorScheme.outlineVariant
+            MaterialTheme.colorScheme.outline
         }
 
     Row(

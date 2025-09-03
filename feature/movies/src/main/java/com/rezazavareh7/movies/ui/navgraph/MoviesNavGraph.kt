@@ -1,5 +1,10 @@
 package com.rezazavareh7.movies.ui.navgraph
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,7 +58,26 @@ fun NavGraphBuilder.moviesNavGraph(
             }
         }
 
-        composable<MoviesScreensGraph.MediaDetails> { backStackEntry ->
+        composable<MoviesScreensGraph.MediaDetails>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 400 },
+                    animationSpec =
+                        tween(
+                            durationMillis = 600,
+                        ),
+                ) + fadeIn(animationSpec = tween(600))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { 400 },
+                    animationSpec =
+                        tween(
+                            durationMillis = 600,
+                        ),
+                ) + fadeOut(animationSpec = tween(600))
+            },
+        ) { backStackEntry ->
             val mediaDetailsInfo: MoviesScreensGraph.MediaDetails = backStackEntry.toRoute()
             val viewModel = hiltViewModel<MediaDetailsViewModel>()
             val mediaDetailsUiEvent = viewModel::onEvent

@@ -8,4 +8,5 @@ object Shape {
     val lowRoundCorner: Shape = RoundedCornerShape(4.dp)
     val mediumRoundCorner: Shape = RoundedCornerShape(8.dp)
     val highRoundCorner: Shape = RoundedCornerShape(16.dp)
+    val highRoundCornerTop: Shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
 }

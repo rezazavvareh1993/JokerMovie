@@ -89,7 +89,7 @@ fun MediaScreen(
         ) {
             Spacer(Modifier.height(24.dp))
             MediaTabRowComponent(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 24.dp),
                 currentTabIndex = mediaUiState.currentTabRowIndex,
                 onTabClick = { tab, index ->
                     if (mediaUiState.currentTabRowIndex != index) {
@@ -103,7 +103,7 @@ fun MediaScreen(
                     }
                 },
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             MediaPagerComponent(
                 modifier =
                     Modifier

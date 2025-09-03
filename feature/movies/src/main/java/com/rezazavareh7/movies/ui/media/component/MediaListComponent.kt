@@ -27,14 +27,14 @@ fun MediaListComponent(
     mediaUiEvent: (MediaUiEvent) -> Unit,
 ) {
     if (mediaList.itemCount > 0) {
-        TitleMediumTextComponent(text = title, modifier = Modifier.padding(start = 16.dp))
+        TitleMediumTextComponent(text = title)
         LazyRow(
             state = rememberLazyListState(),
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .height(300.dp)
-                    .padding(vertical = 16.dp),
+                    .padding(top = 8.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(mediaList.itemCount) { index ->

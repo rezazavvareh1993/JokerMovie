@@ -2,7 +2,6 @@ package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,11 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
+import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
+import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
@@ -85,16 +86,28 @@ fun MediaDetailsScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .height(250.dp)
-                                .clip(Shape.highRoundCorner),
+                                .clip(Shape.highRoundCornerTop),
                     ) {
                         ShowGlideImageByUrl(
                             modifier =
                                 Modifier
-                                    .matchParentSize()
-                                    .clip(Shape.highRoundCorner)
-                                    .clickable { navigateToMediaImages(mediaId, mediaCategory) },
+                                    .matchParentSize(),
                             imageUrlPath = backdrop,
                             context = LocalContext.current,
+                        )
+                        CircleIconBoxComponent(
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(16.dp),
+                            icon = LocalJokerIconPalette.current.icGallery,
+                            borderColor = Color.Unspecified,
+                            backgroundColor = Color.Black.copy(alpha = 0.8f),
+                            iconTint = Color.White,
+                            iconSize = 20.dp,
+                            boxSize = 42.dp,
+                            isClickable = true,
+                            onClick = { navigateToMediaImages(mediaId, mediaCategory) },
                         )
                     }
 
@@ -118,13 +131,9 @@ fun MediaDetailsScreen(
                                         brush =
                                             Brush.verticalGradient(
                                                 0.5f to
-                                                    MaterialTheme.colorScheme.surface.copy(
-                                                        alpha = 0.7f,
-                                                    ),
-                                                0.85f to
-                                                    MaterialTheme.colorScheme.surface.copy(
-                                                        alpha = 0.2f,
-                                                    ),
+                                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                                1f to
+                                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
                                                 1f to Color.Transparent,
                                             ),
                                     ),

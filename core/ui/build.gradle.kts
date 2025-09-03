@@ -17,6 +17,10 @@ dependencies {
 //    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
 //    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
 
+    implementation("androidx.compose.ui:ui:1.7.0-SNAPSHOT")
+    implementation("androidx.compose.animation:animation-core:1.7.0-SNAPSHOT")
+    implementation("androidx.compose.animation:animation:1.7.0-SNAPSHOT")
+
     // telephoto
     api(libs.zoomable)
 
