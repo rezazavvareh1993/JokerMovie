@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleCustomTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
@@ -57,10 +57,10 @@ fun MediaScreen(
         topBar = {
             ToolbarComponent(startContent = {
                 IconComponent(drawableId = LocalJokerIconPalette.current.icMainLogo)
-                TitleCustomTextComponent(text = stringResource(R.string.toolbar_title))
+                TitleLargeTextComponent(text = stringResource(R.string.toolbar_title))
             }, endContent = {
                 IconComponent(
-                    drawableId = LocalJokerIconPalette.current.icLike,
+                    drawableId = LocalJokerIconPalette.current.icFavorite,
                     isClickable = true,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     onClick = {

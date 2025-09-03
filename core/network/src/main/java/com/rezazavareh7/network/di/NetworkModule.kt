@@ -60,14 +60,14 @@ object NetworkModule {
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url
 
-            val newUrl =
-                originalUrl.newBuilder()
-                    .setQueryParameter("language", language)
-                    .build()
+//            val newUrl =
+//                originalUrl.newBuilder()
+//                    .setQueryParameter("language", language)
+//                    .build()
             val token = "Bearer $API_ACCESS_TOKEN"
             val newRequest =
                 originalRequest.newBuilder()
-                    .url(newUrl)
+                    .url(originalUrl)
                     .addHeader(AUTHORIZATION, token)
 
             Timber.tag(AUTHORIZATION).i(token)

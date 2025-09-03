@@ -1,5 +1,6 @@
 package com.rezazavareh7.movies.data.apiservice
 
+import com.rezazavareh7.movies.data.model.MediaImagesResponse
 import com.rezazavareh7.movies.data.model.MovieDetailsResponse
 import com.rezazavareh7.movies.data.model.MoviesResponse
 import retrofit2.http.GET
@@ -37,4 +38,9 @@ interface MovieApiService {
         @Query("page") page: Int,
         @Query("query") query: String,
     ): Result<MoviesResponse>
+
+    @GET("movie/{movieId}/images")
+    suspend fun getImages(
+        @Path("movieId") movieId: Long,
+    ): Result<MediaImagesResponse>
 }

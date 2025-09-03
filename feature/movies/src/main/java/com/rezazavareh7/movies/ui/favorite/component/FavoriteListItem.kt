@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
@@ -99,14 +100,14 @@ fun FavoriteListItem(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         BodyMediumTextComponent(
-                            item.voteAverage.toString(),
+                            item.voteAverage.formattedStringOneDecimal(),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
             }
             IconComponent(
-                drawableId = LocalJokerIconPalette.current.icCancel,
+                drawableId = LocalJokerIconPalette.current.icDelete,
                 isClickable = true,
                 tint = MaterialTheme.colorScheme.onSurface,
                 onClick = { onRemoveFavoriteClicked(item) },

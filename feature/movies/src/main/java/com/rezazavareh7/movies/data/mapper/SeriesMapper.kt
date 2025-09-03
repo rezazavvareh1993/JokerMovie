@@ -1,15 +1,15 @@
 package com.rezazavareh7.movies.data.mapper
 
 import com.rezazavareh7.movies.data.model.SeriesResponse
-import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import javax.inject.Inject
 
 class SeriesMapper
     @Inject
     constructor() {
-        fun mapToData(result: Result<SeriesResponse>): BasicNetworkState<List<MediaData>> =
+        operator fun invoke(result: Result<SeriesResponse>): BasicNetworkState<List<MediaData>> =
             result.fold(
                 onSuccess = { onSuccess(it) },
                 onFailure = { onFailure(it) },

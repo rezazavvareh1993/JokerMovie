@@ -22,6 +22,8 @@
 /core/designsystem/build
 /core/database/build
 /feature/movies/build
+/build-logic/build
+/build-logic/convention/build
 
 *.apk
 *.ap_

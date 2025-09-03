@@ -12,7 +12,7 @@
     <string name="english">انگلیسی</string>
     <string name="light">روشن</string>
     <string name="dark">تاریک</string>
-    <string name="toolbar_title">Joker Movie</string>
+    <string name="toolbar_title">جوکر فیلم</string>
     <string name="overview">خلاصه داستان: </string>
     <string name="genres">ژانر: </string>
     <string name="release_date">تاریخ انتشار: </string>
@@ -24,5 +24,14 @@
     <string name="on_the_air">در حال پخش</string>
     <string name="airing_today">پخش امروز</string>
     <string name="searched">جستجو شده</string>
+    <string name="favorites">مورد علاقه ها</string>
+    <string name="cancel">لغو</string>
+    <string name="save_photo">ذخیره کردن عکس</string>
+    <string name="yes_save_it">بله، اضافه شود</string>
+    <string name="photo_saved_successfully">عکس با موفقیت ذخیره شد</string>
+    <string name="photo_save_error">ذخیره سازی با خطا مواجه شد، لطفا دوباره تلاش کنید</string>
+    <string name="are_you_sure_to_save_photo">آیا از ذخیره این عکس مطمئنید؟</string>
+    <string name="photos">عکس ها</string>
+
 
 </resources>

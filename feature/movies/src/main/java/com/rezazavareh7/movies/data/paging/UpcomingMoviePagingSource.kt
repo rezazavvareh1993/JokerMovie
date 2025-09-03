@@ -4,8 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rezazavareh7.movies.data.apiservice.MovieApiService
 import com.rezazavareh7.movies.data.mapper.MoviesMapper
-import com.rezazavareh7.movies.data.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import javax.inject.Inject
 
 class UpcomingMoviePagingSource
@@ -24,7 +24,7 @@ class UpcomingMoviePagingSource
             try {
                 val page = params.key ?: 1
                 val response = movieApiService.getUpcomingMovies(page = page)
-                val result = moviesMapper.mapToData(response)
+                val result = moviesMapper(response)
 
                 when (result) {
                     is BasicNetworkState.Success ->

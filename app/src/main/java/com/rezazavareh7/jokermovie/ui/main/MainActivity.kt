@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,7 +23,7 @@ import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 import com.rezazavareh7.jokermovie.navgraph.RootNavGraph
 import com.rezazavareh7.jokermovie.util.LocaleManager
-import com.rezazavareh7.jokermovie.util.SetStatusBarColor
+import com.rezazavareh7.jokermovie.util.requestPermission
 import com.rezazavareh7.movies.ui.setting.ThemeSegmentButtonType
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -36,7 +36,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge(
+            statusBarStyle =
+                SystemBarStyle.light(
+                    android.graphics.Color.TRANSPARENT,
+                    darkScrim = android.graphics.Color.TRANSPARENT,
+                ),
+            navigationBarStyle =
+                SystemBarStyle.light(
+                    android.graphics.Color.TRANSPARENT,
+                    darkScrim = android.graphics.Color.TRANSPARENT,
+                ),
+        )
+
         val splashScreen = installSplashScreen()
+        val permission =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
+
+        requestPermission(this, permission)
         setContent {
             val viewModel = hiltViewModel<MainViewModel>()
             val mainUiState by viewModel.mainState.collectAsStateWithLifecycle()
@@ -52,7 +69,7 @@ class MainActivity : ComponentActivity() {
             JokerMovieTheme(darkTheme = mainUiState.currentTheme == ThemeSegmentButtonType.DARK) {
                 splashScreen.setKeepOnScreenCondition { false }
 
-                SetStatusBarColor(systemBarManager)
+//                SetStatusBarColor(systemBarManager)
 
                 val navController = rememberNavController()
 
@@ -61,19 +78,10 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.surface,
                     ) {
-                        Scaffold { innerPadding ->
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .padding(innerPadding)
-                                        .consumeWindowInsets(innerPadding),
-                            ) {
-                                RootNavGraph(
-                                    navController = navController,
-                                    systemBarManager = systemBarManager,
-                                )
-                            }
-                        }
+                        RootNavGraph(
+                            navController = navController,
+                            systemBarManager = systemBarManager,
+                        )
                     }
                 }
             }

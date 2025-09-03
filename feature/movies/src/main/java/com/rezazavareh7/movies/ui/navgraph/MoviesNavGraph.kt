@@ -1,8 +1,10 @@
 package com.rezazavareh7.movies.ui.navgraph
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -13,6 +15,8 @@ import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.ui.favorite.FavoriteScreen
 import com.rezazavareh7.movies.ui.favorite.FavoriteViewModel
+import com.rezazavareh7.movies.ui.images.MediaImagesScreen
+import com.rezazavareh7.movies.ui.images.MediaImagesViewModel
 import com.rezazavareh7.movies.ui.media.MediaScreen
 import com.rezazavareh7.movies.ui.media.MediaViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsScreen
@@ -62,7 +66,38 @@ fun NavGraphBuilder.moviesNavGraph(
                 onBackClicked = {
                     navController.popBackStack()
                 },
+                navigateToMediaImages = { mediaId, mediaCategory ->
+                    navController.navigate(
+                        MoviesScreens.MediaImages(
+                            mediaId,
+                            mediaCategory.name,
+                        ).route,
+                    )
+                },
             )
+        }
+
+        composable<MoviesScreensGraph.MediaImages> { backStackEntry ->
+            val mediaImagesInfo: MoviesScreensGraph.MediaImages = backStackEntry.toRoute()
+            val viewModel = hiltViewModel<MediaImagesViewModel>()
+            val mediaImagesUiEvent = viewModel::onEvent
+            val mediaImagesUiState by viewModel.mediaImagesUiState.collectAsStateWithLifecycle()
+            MediaImagesScreen(
+                mediaId = mediaImagesInfo.mediaId,
+                mediaCategory = MediaCategory.valueOf(mediaImagesInfo.mediaCategory),
+                mediaImagesUiEvent = mediaImagesUiEvent,
+                mediaImagesUiState = mediaImagesUiState,
+                onBackClicked = {
+                    navController.popBackStack()
+                },
+            )
+            LaunchedEffect(mediaImagesUiState.shouldDisplayFullScreenPhotos) {
+                if (mediaImagesUiState.shouldDisplayFullScreenPhotos && systemBarManager.isLightBar.value) {
+                    systemBarManager.setDarkBar()
+                } else {
+                    systemBarManager.setLightBar()
+                }
+            }
         }
 
         composable<MoviesScreensGraph.Favorite> { backStackEntry ->
