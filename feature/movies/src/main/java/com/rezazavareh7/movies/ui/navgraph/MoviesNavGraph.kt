@@ -122,6 +122,8 @@ fun NavGraphBuilder.moviesNavGraph(
             val mediaImagesUiEvent = viewModel::onEvent
             val mediaImagesUiState by viewModel.mediaImagesUiState.collectAsStateWithLifecycle()
             MediaImagesScreen(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this,
                 mediaId = mediaImagesInfo.mediaId,
                 mediaCategory = MediaCategory.valueOf(mediaImagesInfo.mediaCategory),
                 mediaImagesUiEvent = mediaImagesUiEvent,
@@ -145,11 +147,13 @@ fun NavGraphBuilder.moviesNavGraph(
             val favoriteUiEvent = viewModel::onEvent
             val favoriteUiState by viewModel.favoriteState.collectAsStateWithLifecycle()
             FavoriteScreen(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this,
                 category = favoriteInfo.category,
                 favoriteUiEvent = favoriteUiEvent,
                 favoriteUiState = favoriteUiState,
-                navigateToMediaDetailsScreen = { id, category ->
-                    navController.navigate(MoviesScreens.MediaDetails(id, category, "favorite").route)
+                navigateToMediaDetailsScreen = { id, category, groupName ->
+                    navController.navigate(MoviesScreens.MediaDetails(id, category, groupName).route)
                 },
                 onBackClicked = {
                     navController.popBackStack()

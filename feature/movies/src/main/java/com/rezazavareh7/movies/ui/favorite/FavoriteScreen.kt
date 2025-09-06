@@ -1,6 +1,9 @@
 package com.rezazavareh7.movies.ui.favorite
 
 import FavoriteListItem
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,13 +22,16 @@ import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponen
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.movies.R
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun FavoriteScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     category: String,
     favoriteUiEvent: (FavoriteUiEvent) -> Unit,
     favoriteUiState: FavoriteUiState,
     onBackClicked: () -> Unit,
-    navigateToMediaDetailsScreen: (Long, String) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
 ) {
     LaunchedEffect(category) {
         if (category.isNotEmpty()) {
@@ -61,6 +67,9 @@ fun FavoriteScreen(
             ) {
                 items(favoriteUiState.favorites) { item ->
                     FavoriteListItem(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        groupName = stringResource(R.string.favorites),
                         item = item,
                         navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                         onRemoveFavoriteClicked = { favoriteData ->

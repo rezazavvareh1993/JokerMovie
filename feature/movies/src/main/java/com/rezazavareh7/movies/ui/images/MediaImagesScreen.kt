@@ -4,6 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,8 +45,11 @@ import com.rezazavareh7.ui.util.getScreenDpSize
 import com.rezazavareh7.ui.util.shareProvider
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MediaImagesScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     mediaImagesUiState: MediaImagesUiState,
     mediaImagesUiEvent: (MediaImagesUiEvent) -> Unit,
     mediaId: Long,
@@ -109,42 +115,54 @@ fun MediaImagesScreen(
                             .align(Alignment.CenterHorizontally),
                 )
             } else {
-                LazyVerticalStaggeredGrid(
-                    contentPadding = PaddingValues(1.dp),
-                    state = staggeredGridScope,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 16.dp),
-                    columns = StaggeredGridCells.Fixed(2),
-                ) {
-                    if (mediaImagesUiState.lastDisplayedImageIndex != -1) {
-                        scope.launch {
-                            staggeredGridScope.scrollToItem(
-                                index = mediaImagesUiState.lastDisplayedImageIndex,
-                                scrollOffset = -500,
-                            )
-                            mediaImagesUiEvent(MediaImagesUiEvent.OnResetLastDisplayedImage)
+                with(sharedTransitionScope) {
+                    LazyVerticalStaggeredGrid(
+                        contentPadding = PaddingValues(1.dp),
+                        state = staggeredGridScope,
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 16.dp),
+                        columns = StaggeredGridCells.Fixed(2),
+                    ) {
+                        if (mediaImagesUiState.lastDisplayedImageIndex != -1) {
+                            scope.launch {
+                                staggeredGridScope.scrollToItem(
+                                    index = mediaImagesUiState.lastDisplayedImageIndex,
+                                    scrollOffset = -500,
+                                )
+                                mediaImagesUiEvent(MediaImagesUiEvent.OnResetLastDisplayedImage)
+                            }
                         }
-                    }
-                    itemsIndexed(mediaImagesUiState.images) { index, item ->
-                        ShowGlideImageByUrl(
-                            modifier =
-                                Modifier
-                                    .width(maxOf(100.dp, getScreenDpSize().width / 2))
-                                    .heightIn(
-                                        min = getScreenDpSize().width / 4,
-                                        max = item.height.dp / 6,
+                        itemsIndexed(mediaImagesUiState.images) { index, item ->
+                            ShowGlideImageByUrl(
+                                modifier =
+                                    Modifier
+                                        .width(maxOf(100.dp, getScreenDpSize().width / 2))
+                                        .heightIn(
+                                            min = getScreenDpSize().width / 4,
+                                            max = item.height.dp / 6,
+                                        )
+                                        .padding(2.dp)
+                                        .sharedBounds(
+                                            sharedContentState = rememberSharedContentState(key = index),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                            renderInOverlayDuringTransition = false,
+                                        ),
+                                clickOnItem = {
+                                    mediaImagesUiEvent(
+                                        MediaImagesUiEvent.OnItemClicked(
+                                            item,
+                                            index,
+                                        ),
                                     )
-                                    .padding(2.dp),
-                            clickOnItem = {
-                                mediaImagesUiEvent(MediaImagesUiEvent.OnItemClicked(item, index))
-                            },
-                            context = context,
-                            isClickable = true,
-                            imageUrlPath = item.filePath,
-                            thumbnailPath = item.filePath,
-                        )
+                                },
+                                context = context,
+                                isClickable = true,
+                                imageUrlPath = item.filePath,
+                                thumbnailPath = item.filePath,
+                            )
+                        }
                     }
                 }
             }
@@ -152,6 +170,8 @@ fun MediaImagesScreen(
 
         if (mediaImagesUiState.images.isNotEmpty()) {
             ShowFullSizePhotoComponent(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 shouldShowFullScreen = mediaImagesUiState.shouldDisplayFullScreenPhotos,
                 allPhotos = mediaImagesUiState.images,
                 clickedPhotoIndex = mediaImagesUiState.indexOfFirstFullScreenPhoto,

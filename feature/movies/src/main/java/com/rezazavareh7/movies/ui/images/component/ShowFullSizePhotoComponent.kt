@@ -2,6 +2,9 @@ package com.rezazavareh7.movies.ui.images.component
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -27,8 +30,11 @@ import com.rezazavareh7.movies.domain.model.MediaImage
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ShowFullSizePhotoComponent(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     allPhotos: List<MediaImage>,
     clickedPhotoIndex: Int,
     onBack: (MediaImage) -> Unit,
@@ -37,27 +43,7 @@ fun ShowFullSizePhotoComponent(
     currentItem: (MediaImage, Int) -> Unit,
     topBarContent: @Composable (MediaImage) -> Unit,
 ) {
-    AnimatedVisibility(
-        shouldShowFullScreen,
-        enter =
-            slideInHorizontally(
-                initialOffsetX = { 400 },
-                animationSpec =
-                    tween(
-                        durationMillis = 600,
-                        easing = FastOutSlowInEasing,
-                    ),
-            ) + fadeIn(animationSpec = tween(600)),
-        exit =
-            slideOutHorizontally(
-                targetOffsetX = { 400 },
-                animationSpec =
-                    tween(
-                        durationMillis = 600,
-                        easing = FastOutSlowInEasing,
-                    ),
-            ) + fadeOut(animationSpec = tween(600)),
-    ) {
+    AnimatedVisibility(shouldShowFullScreen) {
         val pagerState =
             rememberPagerState(
                 pageCount = { allPhotos.size },
@@ -80,40 +66,68 @@ fun ShowFullSizePhotoComponent(
                 }
             },
         ) { padding ->
-            if (allPhotos.isNotEmpty()) {
-                val index = getIndex(pagerState.currentPage, allPhotos)
-                currentItem(allPhotos[index], index)
+            with(sharedTransitionScope) {
+                if (allPhotos.isNotEmpty()) {
+                    val index = getIndex(pagerState.currentPage, allPhotos)
+                    currentItem(allPhotos[index], index)
 
-                VerticalSwipeDetectorComponent(
-                    onSwipeUp = {},
-                    onSwipeDown = {
-                        onBack(allPhotos[pagerState.currentPage])
-                    },
-                ) {
-                    HorizontalPager(
-                        modifier =
-                            Modifier
-                                .consumeWindowInsets(padding)
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.onSurface),
-                        state = pagerState,
-                    ) { page ->
-                        ShowGlideImageByUrl(
-                            modifier = Modifier.fillMaxSize(),
-                            isClickable = true,
-                            isZoomable = true,
-                            clickOnItem = {
-                                isShowTopBarAndBottomBar = !isShowTopBarAndBottomBar
-                            },
-                            context = LocalContext.current,
-                            imageUrlPath = allPhotos[page].filePath,
-                            thumbnailPath = allPhotos[page].filePath,
-                            contentScale = ContentScale.Fit,
-                        )
+                    VerticalSwipeDetectorComponent(
+                        onSwipeUp = {},
+                        onSwipeDown = {
+                            onBack(allPhotos[pagerState.currentPage])
+                        },
+                    ) {
+                        HorizontalPager(
+                            modifier =
+                                Modifier
+                                    .consumeWindowInsets(padding)
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.onSurface),
+                            state = pagerState,
+                        ) { page ->
+                            val image = allPhotos[page]
+                            ShowGlideImageByUrl(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .sharedBounds(
+                                            exit =
+                                                slideOutHorizontally(
+                                                    targetOffsetX = { 400 },
+                                                    animationSpec =
+                                                        tween(
+                                                            durationMillis = 600,
+                                                            easing = FastOutSlowInEasing,
+                                                        ),
+                                                ) + fadeOut(animationSpec = tween(600)),
+                                            enter =
+                                                slideInHorizontally(
+                                                    initialOffsetX = { 400 },
+                                                    animationSpec =
+                                                        tween(
+                                                            durationMillis = 600,
+                                                            easing = FastOutSlowInEasing,
+                                                        ),
+                                                ) + fadeIn(animationSpec = tween(600)),
+                                            sharedContentState = rememberSharedContentState(key = index),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                            renderInOverlayDuringTransition = false,
+                                        ),
+                                isClickable = true,
+                                isZoomable = true,
+                                clickOnItem = {
+                                    isShowTopBarAndBottomBar = !isShowTopBarAndBottomBar
+                                },
+                                context = LocalContext.current,
+                                imageUrlPath = image.filePath,
+                                thumbnailPath = image.filePath,
+                                contentScale = ContentScale.Fit,
+                            )
+                        }
                     }
-                }
 
-                BackHandler { onBack(allPhotos[index]) }
+                    BackHandler { onBack(allPhotos[index]) }
+                }
             }
         }
     }
