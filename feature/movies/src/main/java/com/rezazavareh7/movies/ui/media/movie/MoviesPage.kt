@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.ui.media.movie
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,14 +26,17 @@ import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.ui.components.showToast
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MoviesPage(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: MoviesViewModel = hiltViewModel<MoviesViewModel>(),
     movieUiEvent: (MoviesUiEvent) -> Unit = viewModel::onEvent,
     moviesUiState: MoviesUiState = viewModel.moviesState.collectAsStateWithLifecycle().value,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
 ) {
     val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
     val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
@@ -84,7 +90,9 @@ fun MoviesPage(
                 if (moviesUiState.hasSearchResult) {
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.upcoming),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.upcoming),
                             mediaList = searchedMovies,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -94,7 +102,9 @@ fun MoviesPage(
                 } else {
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.upcoming),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.upcoming),
                             mediaList = upcomingMovies,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -104,7 +114,9 @@ fun MoviesPage(
 
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.top_rated),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.top_rated),
                             mediaList = topRatedMovies,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -114,7 +126,9 @@ fun MoviesPage(
 
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.now_playing),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.now_playing),
                             mediaList = nowPlayingMovies,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -124,7 +138,9 @@ fun MoviesPage(
 
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.popular),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.popular),
                             mediaList = popularMovies,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,

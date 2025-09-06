@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.ui.media.component
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,16 +21,19 @@ import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.ui.components.showToast
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MediaListComponent(
-    title: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    groupName: String,
     mediaList: LazyPagingItems<MediaData>,
     favoriteIds: List<Long>,
-    onItemClicked: (Long, String) -> Unit,
+    onItemClicked: (Long, String, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
 ) {
     if (mediaList.itemCount > 0) {
-        TitleMediumTextComponent(text = title)
+        TitleMediumTextComponent(text = groupName)
         LazyRow(
             state = rememberLazyListState(),
             modifier =
@@ -41,7 +47,10 @@ fun MediaListComponent(
                 val item = mediaList[index]
                 item?.let {
                     MovieListItemComponent(
-                        item,
+                        groupName = groupName,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        mediaData = item,
                         isLiked = favoriteIds.contains(item.id),
                         onFavoriteClicked = { isLiked, mediaItem ->
                             if (isLiked) {
@@ -50,7 +59,9 @@ fun MediaListComponent(
                                 mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
                             }
                         },
-                        onItemClicked = onItemClicked,
+                        onItemClicked = { id, category ->
+                            onItemClicked(id, category, groupName)
+                        },
                     )
                 }
             }

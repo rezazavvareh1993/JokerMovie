@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.ui.media.series
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,14 +26,17 @@ import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.ui.components.showToast
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SeriesPage(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: SeriesViewModel = hiltViewModel<SeriesViewModel>(),
     seriesUiEvent: (SeriesUiEvent) -> Unit = viewModel::onEvent,
     seriesUiState: SeriesUiState = viewModel.seriesState.collectAsStateWithLifecycle().value,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
 ) {
     val topRatedSeries = seriesUiState.topRatedSeries.collectAsLazyPagingItems()
     val onTheAirSeries = seriesUiState.onTheAirSeries.collectAsLazyPagingItems()
@@ -84,7 +90,9 @@ fun SeriesPage(
                 if (seriesUiState.hasSearchResult) {
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.searched),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.searched),
                             mediaList = searchedSeries,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -94,7 +102,9 @@ fun SeriesPage(
                 } else {
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.airing_today),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.airing_today),
                             mediaList = airingTodaySeries,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -103,7 +113,9 @@ fun SeriesPage(
                     }
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.top_rated),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.top_rated),
                             mediaList = topRatedSeries,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -112,7 +124,9 @@ fun SeriesPage(
                     }
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.on_the_air),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.on_the_air),
                             mediaList = onTheAirSeries,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,
@@ -121,7 +135,9 @@ fun SeriesPage(
                     }
                     item {
                         MediaListComponent(
-                            title = stringResource(R.string.popular),
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = stringResource(R.string.popular),
                             mediaList = popularSeries,
                             favoriteIds = favoriteIds,
                             mediaUiEvent = mediaUiEvent,

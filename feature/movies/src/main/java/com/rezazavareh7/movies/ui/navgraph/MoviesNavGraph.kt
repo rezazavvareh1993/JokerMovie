@@ -1,5 +1,7 @@
 package com.rezazavareh7.movies.ui.navgraph
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,7 +31,9 @@ import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsViewModel
 import com.rezazavareh7.movies.ui.setting.SettingScreen
 import com.rezazavareh7.movies.ui.setting.SettingViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.moviesNavGraph(
+    sharedTransitionScope: SharedTransitionScope,
     navController: NavHostController,
     systemBarManager: SystemBarManager,
 ) {
@@ -41,10 +45,18 @@ fun NavGraphBuilder.moviesNavGraph(
             val mediaUiEvent = viewModel::onEvent
             val mediaUiState by viewModel.mediaState.collectAsStateWithLifecycle()
             MediaScreen(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this,
                 mediaUiEvent = mediaUiEvent,
                 mediaUiState = mediaUiState,
-                navigateToMediaDetailsScreen = { id, category ->
-                    navController.navigate(MoviesScreens.MediaDetails(id, category).route)
+                navigateToMediaDetailsScreen = { id, category, groupName ->
+                    navController.navigate(
+                        MoviesScreens.MediaDetails(
+                            id,
+                            category,
+                            groupName,
+                        ).route,
+                    )
                 },
                 navigateToFavoriteScreen = { category ->
                     navController.navigate(MoviesScreens.Favorite(category = category).route)
@@ -83,7 +95,10 @@ fun NavGraphBuilder.moviesNavGraph(
             val mediaDetailsUiEvent = viewModel::onEvent
             val mediaDetailsUiState by viewModel.mediaDetailsState.collectAsStateWithLifecycle()
             MediaDetailsScreen(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = this,
                 mediaId = mediaDetailsInfo.mediaId,
+                groupName = mediaDetailsInfo.groupName,
                 mediaCategory = MediaCategory.valueOf(mediaDetailsInfo.mediaCategory),
                 mediaDetailsUiEvent = mediaDetailsUiEvent,
                 mediaDetailsUiState = mediaDetailsUiState,
@@ -94,7 +109,7 @@ fun NavGraphBuilder.moviesNavGraph(
                     navController.navigate(
                         MoviesScreens.MediaImages(
                             mediaId,
-                            mediaCategory.name,
+                            mediaCategory = mediaCategory.name,
                         ).route,
                     )
                 },
@@ -134,7 +149,7 @@ fun NavGraphBuilder.moviesNavGraph(
                 favoriteUiEvent = favoriteUiEvent,
                 favoriteUiState = favoriteUiState,
                 navigateToMediaDetailsScreen = { id, category ->
-                    navController.navigate(MoviesScreens.MediaDetails(id, category).route)
+                    navController.navigate(MoviesScreens.MediaDetails(id, category, "favorite").route)
                 },
                 onBackClicked = {
                     navController.popBackStack()
