@@ -35,7 +35,7 @@ import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.domain.model.MediaData
-import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
+import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable

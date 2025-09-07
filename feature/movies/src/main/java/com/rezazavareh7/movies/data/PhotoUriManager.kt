@@ -4,7 +4,7 @@ import android.content.Context
 import com.rezazavareh7.movies.data.repositoryimpl.PHOTO_EXTENSION
 import com.rezazavareh7.movies.data.repositoryimpl.TEMP_PHOTO_PREFIX
 import com.rezazavareh7.movies.domain.networkstate.SharePhotoState
-import com.rezazavareh7.ui.glide.GlideUtils
+import com.rezazavareh7.ui.components.glide.GlideUtils
 import timber.log.Timber
 import java.io.File
 

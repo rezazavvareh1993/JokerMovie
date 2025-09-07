@@ -39,8 +39,8 @@ import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.ui.images.component.ConfirmationBottomSheetComponent
 import com.rezazavareh7.movies.ui.images.component.ShowFullSizePhotoComponent
+import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
-import com.rezazavareh7.ui.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.util.getScreenDpSize
 import com.rezazavareh7.ui.util.shareProvider
 import kotlinx.coroutines.launch

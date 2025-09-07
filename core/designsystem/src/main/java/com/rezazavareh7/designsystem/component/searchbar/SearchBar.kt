@@ -7,10 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -28,15 +24,15 @@ fun SearchBarComponent(
     query: String = "",
     onSearch: () -> Unit,
     placeHolder: String,
+    isExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     content: @Composable () -> Unit = {},
     maxQueryLength: Int = Int.MAX_VALUE,
 ) {
-    var isActive by remember { mutableStateOf(false) }
-
     SearchBar(
         colors =
             SearchBarDefaults.colors(
-                containerColor = if (isActive) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer,
+                containerColor = if (isExpanded) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer,
             ),
         inputField = {
             SearchBarDefaults.InputField(
@@ -48,35 +44,37 @@ fun SearchBarComponent(
                 },
                 onSearch = {
                     onSearch()
-                    isActive = false
+                    onExpandedChange(false)
                 },
-                expanded = isActive,
-                onExpandedChange = { isActive = it },
+                expanded = isExpanded,
+                onExpandedChange = onExpandedChange,
                 placeholder = {
-                    BodyLargeTextComponent(text = placeHolder, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    BodyLargeTextComponent(
+                        text = placeHolder,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 },
-                leadingIcon = {
-                    if (isActive) {
+                trailingIcon = {
+                    if (isExpanded)
                         IconComponent(
                             drawableId = LocalJokerIconPalette.current.icCancel,
                             tint = MaterialTheme.colorScheme.onSurface,
                             isClickable = true,
-                            onClick = {
-                                onQueryChange("")
-                                isActive = false
-                            },
+                            onClick = { onExpandedChange(false) },
                         )
-                    } else {
-                        IconComponent(
-                            drawableId = LocalJokerIconPalette.current.icSearch,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                },
+                leadingIcon = {
+                    IconComponent(
+                        drawableId = LocalJokerIconPalette.current.icSearch,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        isClickable = isExpanded,
+                        onClick = onSearch,
+                    )
                 },
             )
         },
-        expanded = isActive,
-        onExpandedChange = { isActive = it },
+        expanded = isExpanded,
+        onExpandedChange = onExpandedChange,
         modifier =
             modifier
                 .fillMaxWidth()
@@ -95,6 +93,8 @@ fun SearchBarComponentPreview() {
             onQueryChange = {},
             onSearch = {},
             placeHolder = "Search",
+            isExpanded = false,
+            onExpandedChange = {}
         )
     }
 }

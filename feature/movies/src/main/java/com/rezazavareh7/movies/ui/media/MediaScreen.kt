@@ -49,12 +49,7 @@ fun MediaScreen(
 
     LaunchedEffect(pagerState.isScrollInProgress) {
         if (pagerState.settledPage != mediaUiState.currentTabRowIndex && !pagerState.isScrollInProgress) {
-            mediaUiEvent(
-                MediaUiEvent.OnCurrentTabRowChanged(
-                    pagerState.settledPage,
-                    mediaUiState.currentTabRowIndex,
-                ),
-            )
+            mediaUiEvent(MediaUiEvent.OnCurrentTabRowChanged(pagerState.settledPage))
         }
     }
 
@@ -99,12 +94,7 @@ fun MediaScreen(
                 currentTabIndex = mediaUiState.currentTabRowIndex,
                 onTabClick = { tab, index ->
                     if (mediaUiState.currentTabRowIndex != index) {
-                        mediaUiEvent(
-                            MediaUiEvent.OnCurrentTabRowChanged(
-                                index,
-                                mediaUiState.currentTabRowIndex,
-                            ),
-                        )
+                        mediaUiEvent(MediaUiEvent.OnCurrentTabRowChanged(index))
                         coroutineScope.launch { pagerState.scrollToPage(index) }
                     }
                 },

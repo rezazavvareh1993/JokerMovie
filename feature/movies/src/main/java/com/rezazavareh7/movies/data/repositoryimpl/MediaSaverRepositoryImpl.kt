@@ -11,7 +11,7 @@ import android.provider.MediaStore
 import com.rezazavareh7.movies.data.generateShareablePhoto
 import com.rezazavareh7.movies.domain.networkstate.SharePhotoState
 import com.rezazavareh7.movies.domain.repository.MediaSaverRepository
-import com.rezazavareh7.ui.glide.GlideUtils
+import com.rezazavareh7.ui.components.glide.GlideUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

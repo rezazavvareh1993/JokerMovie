@@ -16,9 +16,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.rezazavareh7.designsystem.R
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
+import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 import com.rezazavareh7.ui.components.showToast
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -29,6 +31,7 @@ fun MediaListComponent(
     groupName: String,
     mediaList: LazyPagingItems<MediaData>,
     favoriteIds: List<Long>,
+    isInSearchMode: Boolean = false,
     onItemClicked: (Long, String, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
 ) {
@@ -67,26 +70,31 @@ fun MediaListComponent(
             }
 
             mediaList.apply {
-                when {
-                    loadState.refresh is LoadState.Loading ->
+                when (loadState.append) {
+                    is LoadState.Loading ->
                         item {
                             CircularProgressIndicator()
                         }
 
-                    loadState.append is LoadState.Loading ->
-                        item {
-                            CircularProgressIndicator()
-                        }
-
-                    loadState.refresh is LoadState.Error ->
+                    is LoadState.Error ->
                         item {
                             showToast(
                                 LocalContext.current,
-                                (mediaList.loadState.refresh as LoadState.Error).error.message.toString(),
+                                (mediaList.loadState.append as LoadState.Error).error.message.toString(),
                             )
                         }
+
+                    else -> {}
                 }
             }
         }
+    } else if (isInSearchMode && mediaList.itemCount == 0) {
+        LottieAnimationComponent(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(400.dp),
+            lottieResource = R.raw.lottie_no_data,
+        ) { }
     }
 }

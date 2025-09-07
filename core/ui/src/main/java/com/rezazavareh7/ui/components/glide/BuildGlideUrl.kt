@@ -1,4 +1,4 @@
-package com.rezazavareh7.ui.glide
+package com.rezazavareh7.ui.components.glide
 
 fun buildUrl(
     baseUrl: String,

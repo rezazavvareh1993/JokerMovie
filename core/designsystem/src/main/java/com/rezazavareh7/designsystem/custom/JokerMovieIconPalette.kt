@@ -26,6 +26,8 @@ data class JokerMovieIconPalette(
     val icImages: Int = R.drawable.ic_images,
     val icFavorite: Int = R.drawable.ic_favorite,
     val icGallery: Int = R.drawable.ic_gallery,
+    val icSort: Int = R.drawable.ic_sort,
+    val icHistory: Int = R.drawable.ic_history,
 )
 
 val LocalJokerIconPalette = staticCompositionLocalOf { JokerMovieIconPalette() }
