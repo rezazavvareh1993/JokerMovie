@@ -1,6 +1,6 @@
 package com.rezazavareh7.movies.ui.favorite
 
-import FavoriteListItem
+import SearchedListItem
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -66,7 +66,7 @@ fun FavoriteScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(favoriteUiState.favorites) { item ->
-                    FavoriteListItem(
+                    SearchedListItem(
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                         groupName = stringResource(R.string.favorites),

@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -94,12 +96,11 @@ fun MediaDetailsScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(250.dp)
+                                    .clickable { navigateToMediaImages(mediaId, mediaCategory) }
                                     .clip(Shape.highRoundCornerTop),
                         ) {
                             ShowGlideImageByUrl(
-                                modifier =
-                                    Modifier
-                                        .matchParentSize(),
+                                modifier = Modifier.matchParentSize(),
                                 imageUrlPath = backdrop,
                                 context = LocalContext.current,
                             )
@@ -119,11 +120,7 @@ fun MediaDetailsScreen(
                             )
                         }
 
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize(),
-                        ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
                             ShowGlideImageByUrl(
                                 modifier =
                                     Modifier
@@ -177,35 +174,23 @@ fun MediaDetailsScreen(
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                                Spacer(Modifier.height(16.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    TitleSmallTextComponent(text = stringResource(R.string.release_date))
-                                    BodyMediumTextComponent(mediaDetailsUiState.movieDetailsData.releaseDate)
-                                }
                                 Spacer(Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    TitleSmallTextComponent(text = stringResource(R.string.rate))
-                                    BodyMediumTextComponent(mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal())
-                                }
-                                Spacer(Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    TitleSmallTextComponent(text = stringResource(R.string.vote_count))
-                                    BodyMediumTextComponent(mediaDetailsUiState.movieDetailsData.voteCount.toString())
-                                }
-                                Spacer(Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.Top) {
-                                    TitleSmallTextComponent(text = stringResource(R.string.genres))
-                                    var genres = ""
-                                    mediaDetailsUiState.movieDetailsData.genres.forEachIndexed { index, item ->
-                                        genres +=
-                                            if (index == mediaDetailsUiState.movieDetailsData.genres.lastIndex) {
-                                                item
-                                            } else {
-                                                "$item,"
-                                            }
-                                    }
-                                    BodyMediumTextComponent(genres, textAlign = TextAlign.Left)
-                                }
+                                TitleValueComponent(
+                                    title = stringResource(R.string.release_date),
+                                    value = mediaDetailsUiState.movieDetailsData.releaseDate,
+                                )
+                                TitleValueComponent(
+                                    title = stringResource(R.string.rate),
+                                    value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
+                                )
+                                TitleValueComponent(
+                                    title = stringResource(R.string.vote_count),
+                                    value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
+                                )
+                                TitleValueComponent(
+                                    title = stringResource(R.string.genres),
+                                    value = mediaDetailsUiState.movieDetailsData.genres,
+                                )
 
                                 HorizontalDividerComponent(
                                     modifier =
@@ -226,5 +211,18 @@ fun MediaDetailsScreen(
         BackHandler {
             onBackClicked()
         }
+    }
+}
+
+@Composable
+private fun TitleValueComponent(
+    title: String,
+    value: String,
+) {
+    Spacer(Modifier.height(8.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TitleSmallTextComponent(text = title)
+        Spacer(modifier = Modifier.width(4.dp))
+        BodyMediumTextComponent(text = value)
     }
 }

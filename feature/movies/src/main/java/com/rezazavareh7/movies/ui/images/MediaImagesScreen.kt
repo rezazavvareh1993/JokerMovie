@@ -105,7 +105,7 @@ fun MediaImagesScreen(
         },
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(padding),
         ) {
             if (mediaImagesUiState.isLoading) {
                 CircularProgressBarComponent(

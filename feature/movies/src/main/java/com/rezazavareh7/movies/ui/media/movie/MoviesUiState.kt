@@ -8,14 +8,15 @@ import kotlinx.coroutines.flow.flowOf
 data class MoviesUiState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
-    val movieQueryInput: String = "",
+    val queryInput: String = "",
     val moviesData: List<MediaData> = emptyList(),
     val topRatedMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val upcomingMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val popularMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val nowPlayingMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val searchResult: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
-    val hasSearchResult: Boolean = false,
     val isSearchBarExpanded: Boolean = false,
-    val movieSearchHistory: List<String> = emptyList(),
+    val hasSearched: Boolean = false,
+    val searchQueriesHistory: List<String> = emptyList(),
+    val shouldShowHistoryQueries: Boolean = false,
 )

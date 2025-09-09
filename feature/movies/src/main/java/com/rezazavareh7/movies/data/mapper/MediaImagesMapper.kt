@@ -18,12 +18,17 @@ class MediaImagesMapper
             BasicNetworkState.Error(throwable = throwable, message = throwable.message.toString())
 
         private fun onSuccess(response: MediaImagesResponse): BasicNetworkState<List<MediaImage>> {
-            val posterImages =
-                response.posters.filter { it.iso_639_1 == "en" }.map { poster ->
-                    with(poster) {
-                        MediaImage(filePath = file_path, height = height, width = width)
-                    }
+            val images = mutableListOf<MediaImage>()
+            response.posters.filter { it.iso_639_1 == "en" }.map { poster ->
+                with(poster) {
+                    images.add(MediaImage(filePath = file_path, height = height, width = width))
                 }
-            return BasicNetworkState.Success(data = posterImages)
+            }
+            response.backdrops.filter { it.iso_639_1 == "en" }.map { backdrop ->
+                with(backdrop) {
+                    images.add(MediaImage(filePath = file_path, height = height, width = width))
+                }
+            }
+            return BasicNetworkState.Success(data = images)
         }
     }

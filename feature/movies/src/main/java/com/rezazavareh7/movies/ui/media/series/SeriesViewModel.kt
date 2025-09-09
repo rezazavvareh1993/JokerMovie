@@ -2,9 +2,11 @@ package com.rezazavareh7.movies.ui.media.series
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.rezazavareh7.movies.domain.usecase.GetAiringTodaySeriesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetOnTheAirSeriesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetPopularSeriesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetSearchSeriesHistoryUseCase
 import com.rezazavareh7.movies.domain.usecase.GetTopRatedSeriesUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchSeriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,12 +28,14 @@ class SeriesViewModel
         private val getOnTheAirSeriesUseCase: GetOnTheAirSeriesUseCase,
         private val getAiringTodaySeriesUseCase: GetAiringTodaySeriesUseCase,
         private val getPopularSeriesUseCase: GetPopularSeriesUseCase,
+        private val getSearchSeriesHistoryUseCase: GetSearchSeriesHistoryUseCase,
     ) : ViewModel() {
         private var mSeriesUiState = MutableStateFlow(SeriesUiState(isLoading = true))
         val seriesState =
             mSeriesUiState
                 .onStart {
                     getSeries()
+                    getSearchSeriesHistory()
                 }.stateIn(
                     viewModelScope,
                     SharingStarted.WhileSubscribed(5000),
@@ -45,20 +49,33 @@ class SeriesViewModel
                     mSeriesUiState.update { it.copy(errorMessage = "") }
 
                 is SeriesUiEvent.OnSearchQueryChanged ->
-                    mSeriesUiState.update { it.copy(seriesNameInput = event.newMovieName) }
+                    mSeriesUiState.update { it.copy(queryInput = event.newSeriesName, shouldShowHistoryQueries = true) }
 
                 is SeriesUiEvent.OnSearched -> searchMovies(event.query)
 
-                is SeriesUiEvent.OnCancelSearch -> cancelSearch()
+                is SeriesUiEvent.OnSearchBarExpandStateChanged -> handelSearchBarExpandState(event.isExpanded)
             }
         }
 
-        private fun cancelSearch() {
+        private fun handelSearchBarExpandState(isExpanded: Boolean) {
             viewModelScope.launch {
-                mSeriesUiState.update {
-                    it.copy(seriesNameInput = "", hasSearchResult = false)
+                if (isExpanded) {
+                    mSeriesUiState.update {
+                        it.copy(isSearchBarExpanded = true, shouldShowHistoryQueries = true)
+                    }
+                    getSearchSeriesHistory()
+                } else {
+                    mSeriesUiState.update { it.copy(queryInput = "", isSearchBarExpanded = false, hasSearched = false) }
+                    getSeries()
                 }
-                getSeries()
+            }
+        }
+
+        private fun getSearchSeriesHistory() {
+            viewModelScope.launch {
+                getSearchSeriesHistoryUseCase().seriesQueriesHistory.collect { historyQueries ->
+                    mSeriesUiState.update { it.copy(searchQueriesHistory = historyQueries) }
+                }
             }
         }
 
@@ -71,11 +88,10 @@ class SeriesViewModel
                 mSeriesUiState.update {
                     it.copy(
                         isLoading = false,
-                        topRatedSeries = topRatedResult.await().topRatedSeries,
-                        popularSeries = popularResult.await().popularSeries,
-                        onTheAirSeries = onTheAirResult.await().onTheAirSeries,
-                        airingTodaySeries = airingTodayResult.await().airingTodaySeries,
-                        hasSearchResult = false,
+                        topRatedSeries = topRatedResult.await().topRatedSeries.cachedIn(viewModelScope),
+                        popularSeries = popularResult.await().popularSeries.cachedIn(viewModelScope),
+                        onTheAirSeries = onTheAirResult.await().onTheAirSeries.cachedIn(viewModelScope),
+                        airingTodaySeries = airingTodayResult.await().airingTodaySeries.cachedIn(viewModelScope),
                     )
                 }
             }
@@ -83,12 +99,14 @@ class SeriesViewModel
 
         private fun searchMovies(query: String) {
             viewModelScope.launch {
+                mSeriesUiState.update { it.copy(queryInput = query, isLoading = true) }
                 val result = searchSeriesUseCase(query)
                 mSeriesUiState.update {
                     it.copy(
                         isLoading = false,
                         searchResult = result.searchResult,
-                        hasSearchResult = true,
+                        hasSearched = true,
+                        shouldShowHistoryQueries = false,
                     )
                 }
             }

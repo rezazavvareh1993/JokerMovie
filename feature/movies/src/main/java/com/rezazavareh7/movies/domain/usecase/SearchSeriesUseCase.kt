@@ -24,14 +24,16 @@ class SearchSeriesUseCase
                 newHistoryList.add(query)
                 val querySeriesHistoryJson =
                     regularDataStoreManager.getString(SEARCH_SERIES_HISTORY).first()
-                val querySeriesHistoryList = querySeriesHistoryJson.fromJsonList<String>()
+                if (querySeriesHistoryJson.isNotEmpty()) {
+                    val querySeriesHistoryList = querySeriesHistoryJson.fromJsonList<String>()
 
-                if (!querySeriesHistoryList.isNullOrEmpty()) {
-                    querySeriesHistoryList.forEachIndexed forEachIndex@{ index, oldQuery ->
-                        if (index < 4) {
-                            newHistoryList.add(query)
-                        } else {
-                            return@forEachIndex
+                    if (!querySeriesHistoryList.isNullOrEmpty()) {
+                        querySeriesHistoryList.forEachIndexed forEachIndex@{ index, oldQuery ->
+                            if (newHistoryList.size < 5 && query != oldQuery) {
+                                newHistoryList.add(oldQuery)
+                            } else {
+                                return@forEachIndex
+                            }
                         }
                     }
                 }

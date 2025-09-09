@@ -3,7 +3,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,34 +24,35 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
-import com.rezazavareh7.movies.domain.model.FavoriteData
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SearchedListItem(
+fun SearchedListItemComponent(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
-    item: FavoriteData,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
-    onRemoveFavoriteClicked: (FavoriteData) -> Unit,
+    item: MediaData,
+    isLiked: Boolean,
+    onItemClicked: (Long, String, String) -> Unit,
+    onFavoriteClicked: (Boolean, MediaData) -> Unit,
 ) {
     with(sharedTransitionScope) {
         Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(240.dp)
                     .clip(shape = Shape.highRoundCorner)
                     .clickable {
-                        navigateToMediaDetailsScreen(
+                        onItemClicked(
                             item.id,
-                            item.category.name,
+                            item.mediaCategory.name,
                             groupName,
                         )
                     },
@@ -76,70 +76,66 @@ fun SearchedListItem(
                         .background(
                             brush =
                                 Brush.verticalGradient(
-                                    0.5f to MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                                    0.85f to MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                                    0.3f to MaterialTheme.colorScheme.surface.copy(alpha = 0.1f),
+                                    1f to MaterialTheme.colorScheme.surface.copy(alpha = 1f),
                                     1f to Color.Transparent,
                                 ),
                         ),
             )
-            Row(
+            Column(
                 modifier =
                     Modifier
-                        .matchParentSize()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(vertical = 24.dp, horizontal = 16.dp),
             ) {
-                Spacer(Modifier.width(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    modifier =
+                        Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        IconComponent(
+                            drawableId = LocalJokerIconPalette.current.icIMDB,
+                            iconSize = 20.dp,
+                            boxSize = 20.dp,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        TitleSmallTextComponent(
+                            modifier = Modifier.padding(top = 4.dp),
+                            text = item.voteAverage.formattedStringOneDecimal(),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                    val releasedYear = item.releaseDate.split("-").first()
                     TitleMediumTextComponent(
                         modifier =
                             Modifier
-                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(horizontal = 16.dp)
                                 .sharedElement(
                                     sharedContentState = rememberSharedContentState(key = "title$groupName${item.id}"),
                                     animatedVisibilityScope = animatedVisibilityScope,
                                     renderInOverlayDuringTransition = false,
                                 ),
-                        text = item.title,
-                        overflow = TextOverflow.Ellipsis,
+                        text = if (releasedYear.isNotEmpty()) "${item.title} - $releasedYear" else item.title,
+                        overflow = TextOverflow.MiddleEllipsis,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
                     )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            BodyMediumTextComponent(
-                                text = "Release Date: ",
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            BodyMediumTextComponent(
-                                item.releaseDate,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            BodyMediumTextComponent(
-                                text = "Rate: ",
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            BodyMediumTextComponent(
-                                item.voteAverage.formattedStringOneDecimal(),
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        }
-                    }
+                    IconComponent(
+                        drawableId = if (isLiked) LocalJokerIconPalette.current.icLike else LocalJokerIconPalette.current.icDislike,
+                        isClickable = true,
+                        tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                        onClick = { onFavoriteClicked(!isLiked, item) },
+                    )
                 }
-                IconComponent(
-                    drawableId = LocalJokerIconPalette.current.icDelete,
-                    isClickable = true,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    onClick = { onRemoveFavoriteClicked(item) },
-                )
             }
         }
     }

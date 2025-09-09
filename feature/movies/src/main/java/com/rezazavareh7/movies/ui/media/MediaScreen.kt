@@ -99,7 +99,6 @@ fun MediaScreen(
                     }
                 },
             )
-            Spacer(modifier = Modifier.height(16.dp))
             MediaPagerComponent(
                 modifier =
                     Modifier

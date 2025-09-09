@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,12 +20,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarComponent
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
-import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
+import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
+import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 import com.rezazavareh7.ui.components.showToast
+import com.rezazavareh7.designsystem.R as DesignSystemResource
+import com.rezazavareh7.movies.R as MediaResource
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -53,24 +56,57 @@ fun SeriesPage(
             Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(horizontal = 4.dp),
+                .padding(horizontal = if (seriesUiState.isSearchBarExpanded) 0.dp else 4.dp),
     ) {
         SearchBarComponent(
-            modifier = Modifier.padding(16.dp),
-            query = seriesUiState.seriesNameInput,
+            modifier =
+                if (seriesUiState.isSearchBarExpanded) {
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = 16.dp)
+                } else {
+                    Modifier.padding(8.dp)
+                },
+            query = seriesUiState.queryInput,
             maxQueryLength = 30,
+            containerColor = if (seriesUiState.isSearchBarExpanded) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.surfaceContainer,
             onQueryChange = { query ->
-                seriesUiEvent(SeriesUiEvent.OnSearchQueryChanged(newMovieName = query))
+                seriesUiEvent(SeriesUiEvent.OnSearchQueryChanged(newSeriesName = query))
             },
             onSearch = {
-                if (seriesUiState.seriesNameInput.isEmpty() && seriesUiState.hasSearchResult) {
-                    seriesUiEvent(SeriesUiEvent.OnCancelSearch)
+                if (seriesUiState.queryInput.isEmpty()) {
+                    seriesUiEvent(SeriesUiEvent.OnSearchBarExpandStateChanged(false))
                 } else {
-                    seriesUiEvent(SeriesUiEvent.OnSearched(seriesUiState.seriesNameInput))
+                    seriesUiEvent(SeriesUiEvent.OnSearched(seriesUiState.queryInput))
                 }
             },
-            placeHolder = stringResource(R.string.search_series),
+            onExpandedChange = { isExpanded ->
+                seriesUiEvent(SeriesUiEvent.OnSearchBarExpandStateChanged(isExpanded))
+            },
+            isExpanded = seriesUiState.isSearchBarExpanded,
+            placeHolder = stringResource(MediaResource.string.search_series),
             content = {
+                SearchedContentComponent(
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(top = 8.dp, bottom = 20.dp),
+                    groupName = stringResource(MediaResource.string.searched),
+                    mediaList = searchedSeries,
+                    shouldShowHistoryQueries = seriesUiState.shouldShowHistoryQueries && seriesUiState.searchQueriesHistory.isNotEmpty(),
+                    historyQueryList = seriesUiState.searchQueriesHistory,
+                    hasSearchResult = seriesUiState.hasSearched,
+                    favoriteIds = favoriteIds,
+                    mediaUiEvent = mediaUiEvent,
+                    onItemClicked = navigateToMediaDetailsScreen,
+                    clickOnQueryItem = { query ->
+                        seriesUiEvent(SeriesUiEvent.OnSearched(query))
+                    },
+                )
             },
         )
         if (topRatedSeries.loadState.refresh is LoadState.Loading ||
@@ -78,72 +114,61 @@ fun SeriesPage(
             onTheAirSeries.loadState.refresh is LoadState.Loading ||
             popularSeries.loadState.refresh is LoadState.Loading
         ) {
-            CircularProgressBarComponent(modifier = Modifier.fillMaxSize())
-        } else {
+            LottieAnimationComponent(
+                lottieResource = DesignSystemResource.raw.lottie_video_loading,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else if (!seriesUiState.isSearchBarExpanded) {
             LazyColumn(
                 state = rememberLazyListState(),
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .weight(1f),
             ) {
-                if (seriesUiState.hasSearchResult) {
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = stringResource(R.string.searched),
-                            mediaList = searchedSeries,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                        )
-                    }
-                } else {
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = stringResource(R.string.airing_today),
-                            mediaList = airingTodaySeries,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                        )
-                    }
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = stringResource(R.string.top_rated),
-                            mediaList = topRatedSeries,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                        )
-                    }
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = stringResource(R.string.on_the_air),
-                            mediaList = onTheAirSeries,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                        )
-                    }
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = stringResource(R.string.popular),
-                            mediaList = popularSeries,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                        )
-                    }
+                item {
+                    MediaListComponent(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        groupName = stringResource(MediaResource.string.airing_today),
+                        mediaList = airingTodaySeries,
+                        favoriteIds = favoriteIds,
+                        mediaUiEvent = mediaUiEvent,
+                        onItemClicked = navigateToMediaDetailsScreen,
+                    )
+                }
+                item {
+                    MediaListComponent(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        groupName = stringResource(MediaResource.string.top_rated),
+                        mediaList = topRatedSeries,
+                        favoriteIds = favoriteIds,
+                        mediaUiEvent = mediaUiEvent,
+                        onItemClicked = navigateToMediaDetailsScreen,
+                    )
+                }
+                item {
+                    MediaListComponent(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        groupName = stringResource(MediaResource.string.on_the_air),
+                        mediaList = onTheAirSeries,
+                        favoriteIds = favoriteIds,
+                        mediaUiEvent = mediaUiEvent,
+                        onItemClicked = navigateToMediaDetailsScreen,
+                    )
+                }
+                item {
+                    MediaListComponent(
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        groupName = stringResource(MediaResource.string.popular),
+                        mediaList = popularSeries,
+                        favoriteIds = favoriteIds,
+                        mediaUiEvent = mediaUiEvent,
+                        onItemClicked = navigateToMediaDetailsScreen,
+                    )
                 }
             }
         }

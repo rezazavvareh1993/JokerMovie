@@ -44,7 +44,7 @@ data class Season(
     val id: Int,
     val name: String,
     val overview: String,
-    val poster_path: String,
+    val poster_path: String? = null,
     val season_number: Int,
     val vote_average: Double,
 )
@@ -52,7 +52,7 @@ data class Season(
 @JsonClass(generateAdapter = true)
 data class Network(
     val id: Int,
-    val logo_path: String,
+    val logo_path: String? = null,
     val name: String,
     val origin_country: String,
 )
