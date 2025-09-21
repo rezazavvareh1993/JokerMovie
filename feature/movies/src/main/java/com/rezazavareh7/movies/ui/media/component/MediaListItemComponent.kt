@@ -39,7 +39,7 @@ import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MovieListItemComponent(
+fun MediaListItemComponent(
     groupName: String,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
@@ -55,7 +55,7 @@ fun MovieListItemComponent(
                     .width(175.dp)
                     .fillMaxHeight()
                     .background(
-                        MaterialTheme.colorScheme.surfaceContainerHigh,
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
                         shape = Shape.highRoundCorner,
                     )
                     .padding(8.dp)
@@ -99,7 +99,10 @@ fun MovieListItemComponent(
                                 sharedContentState = rememberSharedContentState(key = "poster$groupName${mediaData.id}"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 renderInOverlayDuringTransition = false,
-                                clipInOverlayDuringTransition = sharedTransitionScope.OverlayClip(Shape.highRoundCorner),
+                                clipInOverlayDuringTransition =
+                                    sharedTransitionScope.OverlayClip(
+                                        Shape.highRoundCorner,
+                                    ),
                             ),
                     imageUrlPath = mediaData.posterPath,
                     contentScale = ContentScale.FillBounds,

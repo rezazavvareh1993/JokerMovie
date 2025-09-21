@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -19,6 +20,7 @@ fun LabelMediumTextComponent(
     color: Color = MaterialTheme.colorScheme.onSurface,
     maxLines: Int = Int.MAX_VALUE,
     textAlign: TextAlign = TextAlign.Start,
+    overflow: TextOverflow = TextOverflow.Visible,
     isClickable: Boolean = false,
     onClickable: () -> Unit = {},
 ) {
@@ -28,6 +30,7 @@ fun LabelMediumTextComponent(
         maxLines = maxLines,
         textAlign = textAlign,
         style = MaterialTheme.typography.labelMedium,
+        overflow = overflow,
         modifier = modifier,
         isClickable = isClickable,
         onClickable = onClickable,

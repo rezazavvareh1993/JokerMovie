@@ -16,6 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -41,6 +45,7 @@ import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.ui.moviedetails.component.CreditListItemComponent
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
 
@@ -87,7 +92,8 @@ fun MediaDetailsScreen(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .verticalScroll(rememberScrollState()),
             ) {
                 mediaDetailsUiState.movieDetailsData?.let { data ->
                     with(data) {
@@ -201,16 +207,32 @@ fun MediaDetailsScreen(
                                 TitleMediumTextComponent(text = stringResource(R.string.overview))
                                 Spacer(Modifier.height(8.dp))
                                 BodyMediumTextComponent(text = mediaDetailsUiState.movieDetailsData.overview)
+                                if (mediaDetailsUiState.mediaCredits.isNotEmpty()) {
+                                    LazyRow(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .wrapContentHeight()
+                                                .padding(vertical = 24.dp),
+                                    ) {
+                                        items(mediaDetailsUiState.mediaCredits) { item ->
+                                            CreditListItemComponent(
+                                                credit = item,
+                                                onItemClicked = {},
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        BackHandler {
-            onBackClicked()
-        }
+    BackHandler {
+        onBackClicked()
     }
 }
 

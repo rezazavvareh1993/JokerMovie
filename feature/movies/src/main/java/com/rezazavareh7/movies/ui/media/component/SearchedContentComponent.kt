@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,61 +53,72 @@ fun SearchedContentComponent(
             clickOnItem = clickOnQueryItem,
         )
     }
-    if (hasSearchResult) {
-        if (mediaList.itemCount > 0) {
-            LazyColumn(
-                state = rememberLazyListState(),
-                modifier = modifier,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                items(mediaList.itemCount) { index ->
-                    val item = mediaList[index]
-                    item?.let {
-                        SearchedListItemComponent(
-                            groupName = groupName,
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            item = item,
-                            isLiked = favoriteIds.contains(item.id),
-                            onFavoriteClicked = { isLiked, mediaItem ->
-                                if (isLiked) {
-                                    mediaUiEvent(MediaUiEvent.OnLikeMovie(mediaItem))
-                                } else {
-                                    mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
-                                }
-                            },
-                            onItemClicked = onItemClicked,
-                        )
+    AnimatedVisibility(hasSearchResult) {
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            mediaList.apply {
+                when {
+                    mediaList.loadState.refresh is LoadState.Loading ->
+                        item {
+                            LottieAnimationComponent(
+                                lottieResource = R.raw.lottie_video_loading,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+
+                    mediaList.loadState.refresh is LoadState.Error ->
+                        item {
+                            showToast(
+                                LocalContext.current,
+                                (mediaList.loadState.append as LoadState.Error).error.message.toString(),
+                            )
+                        }
+
+                    mediaList.loadState.refresh is LoadState.NotLoading && mediaList.itemCount == 0 -> {
+                        item {
+                            LottieAnimationComponent(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(400.dp),
+                                lottieResource = R.raw.lottie_no_search_data,
+                            )
+                        }
                     }
-                }
 
-                mediaList.apply {
-                    when (loadState.append) {
-                        is LoadState.Loading ->
-                            item {
-                                CircularProgressIndicator()
-                            }
-
-                        is LoadState.Error ->
-                            item {
-                                showToast(
-                                    LocalContext.current,
-                                    (mediaList.loadState.append as LoadState.Error).error.message.toString(),
+                    else -> {
+                        items(mediaList.itemCount) { index ->
+                            val item = mediaList[index]
+                            item?.let {
+                                SearchedListItemComponent(
+                                    groupName = groupName,
+                                    sharedTransitionScope = sharedTransitionScope,
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    item = item,
+                                    isLiked = favoriteIds.contains(item.id),
+                                    onFavoriteClicked = { isLiked, mediaItem ->
+                                        if (isLiked) {
+                                            mediaUiEvent(MediaUiEvent.OnLikeMovie(mediaItem))
+                                        } else {
+                                            mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
+                                        }
+                                    },
+                                    onItemClicked = onItemClicked,
                                 )
                             }
+                        }
 
-                        else -> {}
+                        if (mediaList.loadState.append is LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(modifier = Modifier.fillMaxWidth())
+                            }
+                        }
                     }
                 }
             }
-        } else {
-            LottieAnimationComponent(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(400.dp),
-                lottieResource = R.raw.lottie_no_data,
-            )
         }
     }
 }

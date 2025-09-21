@@ -18,7 +18,7 @@ subprojects {
         afterEvaluate {
             extensions.findByType(org.jlleitschuh.gradle.ktlint.KtlintExtension::class.java)
                 ?.apply {
-                    android.set(true) //  Keep this as it won't affect non-Android modules
+                    android.set(true) // Keep this as it won't affect non-Android modules
                     outputToConsole.set(true)
                     ignoreFailures.set(true)
                     reporters {

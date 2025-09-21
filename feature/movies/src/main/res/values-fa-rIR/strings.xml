@@ -32,6 +32,7 @@
     <string name="photo_save_error">ذخیره سازی با خطا مواجه شد، لطفا دوباره تلاش کنید</string>
     <string name="are_you_sure_to_save_photo">آیا از ذخیره این عکس مطمئنید؟</string>
     <string name="photos">عکس ها</string>
+    <string name="no_data">موردی یافت نشد.</string>
 
 
 </resources>

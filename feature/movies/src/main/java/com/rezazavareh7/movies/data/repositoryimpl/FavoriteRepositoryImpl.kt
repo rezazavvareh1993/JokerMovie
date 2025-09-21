@@ -20,10 +20,8 @@ class FavoriteRepositoryImpl
             flow {
                 val entities =
                     favoriteDao.getFavorites().collect {
-                        if (it.isNotEmpty()) {
-                            val dataList = favoritesMapper.mapToData(*it.toTypedArray())
-                            emit(dataList)
-                        }
+                        val dataList = favoritesMapper.mapToData(*it.toTypedArray())
+                        emit(dataList)
                     }
             }
 

@@ -49,7 +49,7 @@ fun MediaListComponent(
             items(mediaList.itemCount) { index ->
                 val item = mediaList[index]
                 item?.let {
-                    MovieListItemComponent(
+                    MediaListItemComponent(
                         groupName = groupName,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
@@ -94,7 +94,7 @@ fun MediaListComponent(
                 Modifier
                     .fillMaxWidth()
                     .height(400.dp),
-            lottieResource = R.raw.lottie_no_data,
+            lottieResource = R.raw.lottie_no_search_data,
         ) { }
     }
 }
