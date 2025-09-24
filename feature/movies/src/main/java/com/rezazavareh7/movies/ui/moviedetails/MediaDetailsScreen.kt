@@ -92,7 +92,7 @@ fun MediaDetailsScreen(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(padding)
+                        .padding(padding),
             ) {
                 mediaDetailsUiState.movieDetailsData?.let { data ->
                     with(data) {
@@ -146,13 +146,13 @@ fun MediaDetailsScreen(
                                             brush =
                                                 Brush.verticalGradient(
                                                     0.5f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.9f,
-                                                            ),
+                                                        MaterialTheme.colorScheme.surface.copy(
+                                                            alpha = 0.9f,
+                                                        ),
                                                     1f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.2f,
-                                                            ),
+                                                        MaterialTheme.colorScheme.surface.copy(
+                                                            alpha = 0.2f,
+                                                        ),
                                                     1f to Color.Transparent,
                                                 ),
                                         ),
@@ -226,7 +226,7 @@ fun MediaDetailsScreen(
                                         items(mediaDetailsUiState.mediaCredits) { item ->
                                             CreditListItemComponent(
                                                 credit = item,
-                                                onItemClicked = {}
+                                                onItemClicked = {},
                                             )
                                         }
                                     }
