@@ -34,7 +34,7 @@ class MediaViewModel
         fun onEvent(event: MediaUiEvent) {
             when (event) {
                 is MediaUiEvent.OnCurrentTabRowChanged ->
-                    currentTabRowChangeHandler(newTab = event.tabIndex, oldTab = event.oldIndex)
+                    currentTabRowChangeHandler(newTab = event.tabIndex)
 
                 is MediaUiEvent.OnLikeMovie -> saveFavoriteMovie(event.mediaData)
 
@@ -51,10 +51,7 @@ class MediaViewModel
             }
         }
 
-        private fun currentTabRowChangeHandler(
-            newTab: Int,
-            oldTab: Int,
-        ) {
+        private fun currentTabRowChangeHandler(newTab: Int) {
             val currentTabRowType = MediaCategory.entries[newTab]
             mMediaState.update {
                 it.copy(

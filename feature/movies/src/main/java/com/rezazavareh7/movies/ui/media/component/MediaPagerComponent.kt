@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.ui.media.component
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -11,13 +14,16 @@ import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.movie.MoviesPage
 import com.rezazavareh7.movies.ui.media.series.SeriesPage
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MediaPagerComponent(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
 ) {
     HorizontalPager(
         state = pagerState,
@@ -30,12 +36,16 @@ fun MediaPagerComponent(
     ) { page ->
         if (page == 0) {
             MoviesPage(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                 mediaUiEvent = mediaUiEvent,
                 favoriteIds = favoriteIds,
             )
         } else {
             SeriesPage(
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 navigateToMediaDetailsScreen = navigateToMediaDetailsScreen,
                 mediaUiEvent = mediaUiEvent,
                 favoriteIds = favoriteIds,

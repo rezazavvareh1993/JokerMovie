@@ -2,8 +2,10 @@ package com.rezazavareh7.movies.ui.media.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.rezazavareh7.movies.domain.usecase.GetNowPlayingMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetPopularMoviesUseCase
+import com.rezazavareh7.movies.domain.usecase.GetSearchMovieHistoryUseCase
 import com.rezazavareh7.movies.domain.usecase.GetTopRatedMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetUpcomingMoviesUseCase
 import com.rezazavareh7.movies.domain.usecase.SearchMoviesUseCase
@@ -26,12 +28,14 @@ class MoviesViewModel
         private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
         private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase,
         private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
+        private val getSearchMovieHistoryUseCase: GetSearchMovieHistoryUseCase,
     ) : ViewModel() {
         private var mMoviesState = MutableStateFlow(MoviesUiState(isLoading = true))
         val moviesState =
             mMoviesState
                 .onStart {
                     getMovies()
+                    getSearchMovieHistory()
                 }.stateIn(
                     viewModelScope,
                     SharingStarted.WhileSubscribed(5000),
@@ -41,24 +45,34 @@ class MoviesViewModel
         fun onEvent(event: MoviesUiEvent) {
             when (event) {
                 is MoviesUiEvent.OnGetMoviesCalled -> getMovies()
-                is MoviesUiEvent.OnToastMessageShown ->
-                    mMoviesState.update { it.copy(errorMessage = "") }
+                is MoviesUiEvent.OnToastMessageShown -> mMoviesState.update { it.copy(errorMessage = "") }
 
-                is MoviesUiEvent.OnSearchMovieChanged ->
-                    mMoviesState.update { it.copy(movieNameInput = event.newMovieName) }
+                is MoviesUiEvent.OnSearchQueryChanged ->
+                    mMoviesState.update { it.copy(queryInput = event.newMovieName, shouldShowHistoryQueries = true) }
 
-                is MoviesUiEvent.OnSearchedMovie -> searchMovies(event.query)
+                is MoviesUiEvent.OnSearched -> searchMovies(event.query)
 
-                is MoviesUiEvent.OnCancelSearch -> cancelSearch()
+                is MoviesUiEvent.OnSearchBarExpandStateChanged -> handelSearchBarExpandState(event.isExpanded)
             }
         }
 
-        private fun cancelSearch() {
+        private fun getSearchMovieHistory() {
             viewModelScope.launch {
-                mMoviesState.update {
-                    it.copy(movieNameInput = "", hasSearchResult = false)
+                getSearchMovieHistoryUseCase().movieQueriesHistory.collect { historyQueries ->
+                    mMoviesState.update { it.copy(searchQueriesHistory = historyQueries) }
                 }
-                getMovies()
+            }
+        }
+
+        private fun handelSearchBarExpandState(isExpanded: Boolean) {
+            viewModelScope.launch {
+                if (isExpanded) {
+                    mMoviesState.update { it.copy(isSearchBarExpanded = true, shouldShowHistoryQueries = true) }
+                    getSearchMovieHistory()
+                } else {
+                    mMoviesState.update { it.copy(queryInput = "", isSearchBarExpanded = false, hasSearched = false) }
+                    getMovies()
+                }
             }
         }
 
@@ -71,11 +85,11 @@ class MoviesViewModel
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
-                        topRatedMovies = topRatedResult.await().topRatedMovies,
-                        popularMovies = popularResult.await().popularMovies,
-                        upcomingMovies = upcomingResult.await().upcomingMovies,
-                        nowPlayingMovies = nowPlayingResult.await().nowPlayingMovies,
-                        hasSearchResult = false,
+                        topRatedMovies = topRatedResult.await().topRatedMovies.cachedIn(viewModelScope),
+                        popularMovies = popularResult.await().popularMovies.cachedIn(viewModelScope),
+                        upcomingMovies = upcomingResult.await().upcomingMovies.cachedIn(viewModelScope),
+                        nowPlayingMovies =
+                            nowPlayingResult.await().nowPlayingMovies.cachedIn(viewModelScope),
                     )
                 }
             }
@@ -83,12 +97,14 @@ class MoviesViewModel
 
         private fun searchMovies(query: String) {
             viewModelScope.launch {
+                mMoviesState.update { it.copy(isLoading = true, queryInput = query) }
                 val result = searchMoviesUseCase(query)
                 mMoviesState.update {
                     it.copy(
                         isLoading = false,
                         searchResult = result.searchResult,
-                        hasSearchResult = true,
+                        hasSearched = true,
+                        shouldShowHistoryQueries = false,
                     )
                 }
             }

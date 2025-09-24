@@ -17,7 +17,10 @@ dependencies {
 //    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
 //    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
 
-    // telephoto
+    // Lottie
+    api(libs.lottie.compose)
+
+    // Telephoto
     api(libs.zoomable)
 
     // Material

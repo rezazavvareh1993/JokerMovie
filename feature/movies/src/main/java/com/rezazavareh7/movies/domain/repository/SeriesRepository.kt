@@ -1,6 +1,7 @@
 package com.rezazavareh7.movies.domain.repository
 
 import androidx.paging.PagingData
+import com.rezazavareh7.movies.domain.model.Credit
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
@@ -21,4 +22,6 @@ interface SeriesRepository {
     suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<MediaDetailData>
 
     suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>>
+
+    suspend fun getSeriesCredits(seriesId: Long): BasicNetworkState<List<Credit>>
 }

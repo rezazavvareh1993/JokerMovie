@@ -9,6 +9,6 @@ data class MediaDetailData(
     val rate: Float,
     val voteCount: Long,
     val overview: String,
-    val genres: List<String>,
+    val genres: String,
     val category: MediaCategory,
 )

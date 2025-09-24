@@ -27,6 +27,7 @@ private val DarkColorScheme =
         surface = JokerDarkSurface,
         onSurface = JokerDarkOnSurface,
         onSurfaceVariant = JokerDarkOnSurfaceVariant,
+        surfaceVariant = JokerDarkSurfaceVariant,
         outline = JokerDarkOutline,
         background = JokerDarkBackground,
         onBackground = JokerDarkOnBackground,
@@ -47,6 +48,7 @@ private val LightColorScheme =
         surface = JokerLightSurface,
         onSurface = JokerLightOnSurface,
         onSurfaceVariant = JokerLightOnSurfaceVariant,
+        surfaceVariant = JokerLightSurfaceVariant,
         outline = JokerLightOutline,
         background = JokerLightBackground,
         onBackground = JokerLightOnBackground,
@@ -54,12 +56,12 @@ private val LightColorScheme =
 
 val OnLightCustomJokerColorsPalette =
     JokerCustomColorPalette(
-        yellow = Color(0XFFFFD54F),
+        yellow = Color(0XFFFFC107),
     )
 
 val OnDarkCustomJokerColorsPalette =
     JokerCustomColorPalette(
-        yellow = Color(0XFFFFC107),
+        yellow = Color(0XFFFFD54F),
     )
 
 @Composable
@@ -80,7 +82,7 @@ fun JokerMovieTheme(
 
     val customIconsPalette = LocalJokerIconPalette.current
     val customColorPalette =
-        if (isSystemInDarkTheme()) OnDarkCustomJokerColorsPalette else OnLightCustomJokerColorsPalette
+        if (darkTheme) OnDarkCustomJokerColorsPalette else OnLightCustomJokerColorsPalette
 
     CompositionLocalProvider(
         LocalJokerIconPalette provides customIconsPalette,

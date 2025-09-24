@@ -17,4 +17,6 @@ data class MediaResult(
     val airingTodaySeries: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val searchResult: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
     val errorMessage: String = "",
+    val movieQueriesHistory: Flow<List<String>> = flowOf(emptyList()),
+    val seriesQueriesHistory: Flow<List<String>> = flowOf(emptyList()),
 )

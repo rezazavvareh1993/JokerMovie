@@ -13,11 +13,12 @@
     <string name="light">روشن</string>
     <string name="dark">تاریک</string>
     <string name="toolbar_title">جوکر فیلم</string>
-    <string name="overview">خلاصه داستان: </string>
-    <string name="genres">ژانر: </string>
-    <string name="release_date">تاریخ انتشار: </string>
-    <string name="rate">نمره: </string>
-    <string name="vote_count">تعداد رای: </string>
+    <string name="overview">خلاصه داستان:</string>
+    <string name="credits">عوامل:</string>
+    <string name="genres">ژانر:</string>
+    <string name="release_date">تاریخ انتشار:</string>
+    <string name="rate">نمره:</string>
+    <string name="vote_count">تعداد رای:</string>
     <string name="details">جزییات</string>
     <string name="movie">فیلم</string>
     <string name="series">سریال</string>
@@ -32,6 +33,8 @@
     <string name="photo_save_error">ذخیره سازی با خطا مواجه شد، لطفا دوباره تلاش کنید</string>
     <string name="are_you_sure_to_save_photo">آیا از ذخیره این عکس مطمئنید؟</string>
     <string name="photos">عکس ها</string>
-
+    <string name="no_data">موردی یافت نشد.</string>
+    <string name="version">version:%s</string>
+    <string name="director">Director</string>
 
 </resources>

@@ -5,12 +5,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.data.apiservice.SeriesApiService
 import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
+import com.rezazavareh7.movies.data.mapper.SeriesCreditsMapper
 import com.rezazavareh7.movies.data.mapper.SeriesDetailMapper
 import com.rezazavareh7.movies.data.paging.AiringTodaySeriesPagingSource
 import com.rezazavareh7.movies.data.paging.OnTheAirSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.PopularSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.SearchSeriesPagingSource
 import com.rezazavareh7.movies.data.paging.TopRatedSeriesPagingSource
+import com.rezazavareh7.movies.domain.model.Credit
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
@@ -30,6 +32,7 @@ class SeriesRepositoryImpl
         private val searchSeriesFactory: SearchSeriesPagingSource.Factory,
         private val seriesDetailMapper: SeriesDetailMapper,
         private val mediaImagesMapper: MediaImagesMapper,
+        private val seriesCreditsMapper: SeriesCreditsMapper,
     ) : SeriesRepository {
         override fun searchSeries(query: String): Flow<PagingData<MediaData>> =
             Pager(
@@ -67,5 +70,10 @@ class SeriesRepositoryImpl
         override suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>> =
             mediaImagesMapper(
                 seriesApiService.getImages(seriesId),
+            )
+
+        override suspend fun getSeriesCredits(seriesId: Long): BasicNetworkState<List<Credit>> =
+            seriesCreditsMapper(
+                seriesApiService.getCredits(seriesId),
             )
     }

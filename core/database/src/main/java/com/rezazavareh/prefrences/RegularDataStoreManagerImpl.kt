@@ -13,6 +13,8 @@ import javax.inject.Inject
 const val REGULAR_USER_PREFS_KEY = "app_prefs.preferences_pb"
 const val LANGUAGE_KEY = "languageKey"
 const val THEME_KEY = "themeKey"
+const val SEARCH_MOVIE_HISTORY = "searchMovieHistory"
+const val SEARCH_SERIES_HISTORY = "searchSeriesHistory"
 const val VERSION = "version"
 
 val Context.dataStore by preferencesDataStore(name = REGULAR_USER_PREFS_KEY)
@@ -56,23 +58,6 @@ internal class RegularDataStoreManagerImpl
             context.dataStore.data.map { prefs ->
                 prefs[booleanPreferencesKey(key)] ?: defaultValue
             }
-
-        override suspend fun <T : Any> getObject(
-            key: String,
-            mapper: (String) -> Result<T>,
-        ): Flow<Result<T>> =
-            getString(key).map { jsonString ->
-                mapper(jsonString)
-            }
-
-        override suspend fun <T : Any> saveObject(
-            key: String,
-            value: T,
-            toJson: (T) -> String,
-        ) {
-            val jsonString = toJson(value)
-            saveData(key, jsonString)
-        }
 
         override suspend fun clearAllData() {
             context.dataStore.edit { prefs ->

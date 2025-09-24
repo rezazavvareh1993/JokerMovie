@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.ui.media
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -30,25 +33,23 @@ import com.rezazavareh7.movies.ui.media.component.MediaPagerComponent
 import com.rezazavareh7.movies.ui.media.component.MediaTabRowComponent
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MediaScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     mediaUiEvent: (MediaUiEvent) -> Unit,
     mediaUiState: MediaUiState,
     navigateToFavoriteScreen: (String) -> Unit,
     navigateToSetting: () -> Unit,
-    navigateToMediaDetailsScreen: (Long, String) -> Unit,
+    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { MediaCategory.entries.size })
 
     LaunchedEffect(pagerState.isScrollInProgress) {
         if (pagerState.settledPage != mediaUiState.currentTabRowIndex && !pagerState.isScrollInProgress) {
-            mediaUiEvent(
-                MediaUiEvent.OnCurrentTabRowChanged(
-                    pagerState.settledPage,
-                    mediaUiState.currentTabRowIndex,
-                ),
-            )
+            mediaUiEvent(MediaUiEvent.OnCurrentTabRowChanged(pagerState.settledPage))
         }
     }
 
@@ -89,26 +90,22 @@ fun MediaScreen(
         ) {
             Spacer(Modifier.height(24.dp))
             MediaTabRowComponent(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 24.dp),
                 currentTabIndex = mediaUiState.currentTabRowIndex,
                 onTabClick = { tab, index ->
                     if (mediaUiState.currentTabRowIndex != index) {
-                        mediaUiEvent(
-                            MediaUiEvent.OnCurrentTabRowChanged(
-                                index,
-                                mediaUiState.currentTabRowIndex,
-                            ),
-                        )
+                        mediaUiEvent(MediaUiEvent.OnCurrentTabRowChanged(index))
                         coroutineScope.launch { pagerState.scrollToPage(index) }
                     }
                 },
             )
-            Spacer(modifier = Modifier.height(32.dp))
             MediaPagerComponent(
                 modifier =
                     Modifier
                         .padding(horizontal = 4.dp)
                         .weight(1f),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 favoriteIds = mediaUiState.favoriteIds,
                 pagerState = pagerState,
                 mediaUiEvent = mediaUiEvent,

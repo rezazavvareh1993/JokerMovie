@@ -62,7 +62,7 @@ fun CircleIconBoxComponent(
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun CircleIconBoxComponentPreview() {
+private fun CircleIconBoxComponentPreview() {
     JokerMovieTheme {
         CircleIconBoxComponent(
             icon = LocalJokerIconPalette.current.icSearch,

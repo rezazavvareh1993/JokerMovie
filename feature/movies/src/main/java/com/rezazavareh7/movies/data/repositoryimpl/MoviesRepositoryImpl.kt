@@ -5,12 +5,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.data.apiservice.MovieApiService
 import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
+import com.rezazavareh7.movies.data.mapper.MovieCreditsMapper
 import com.rezazavareh7.movies.data.mapper.MovieDetailsMapper
 import com.rezazavareh7.movies.data.paging.NowPlayingMoviePagingSource
 import com.rezazavareh7.movies.data.paging.PopularMoviePagingSource
 import com.rezazavareh7.movies.data.paging.SearchMoviePagingSource
 import com.rezazavareh7.movies.data.paging.TopRatedMoviePagingSource
 import com.rezazavareh7.movies.data.paging.UpcomingMoviePagingSource
+import com.rezazavareh7.movies.domain.model.Credit
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
@@ -24,6 +26,7 @@ class MoviesRepositoryImpl
     constructor(
         private val movieApiServices: MovieApiService,
         private val movieDetailMapper: MovieDetailsMapper,
+        private val movieCreditsMapper: MovieCreditsMapper,
         private val topRatedMoviePagingSource: TopRatedMoviePagingSource,
         private val upcomingMoviePagingSource: UpcomingMoviePagingSource,
         private val popularMoviePagingSource: PopularMoviePagingSource,
@@ -66,8 +69,13 @@ class MoviesRepositoryImpl
                 pagingSourceFactory = { nowPlayingMoviePagingSource },
             ).flow
 
-        override suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>> =
+        override suspend fun getImages(moviesId: Long): BasicNetworkState<List<MediaImage>> =
             mediaImagesMapper(
-                movieApiServices.getImages(seriesId),
+                movieApiServices.getImages(moviesId),
+            )
+
+        override suspend fun getMovieCredits(moviesId: Long): BasicNetworkState<List<Credit>> =
+            movieCreditsMapper(
+                movieApiServices.getCredits(moviesId),
             )
     }
