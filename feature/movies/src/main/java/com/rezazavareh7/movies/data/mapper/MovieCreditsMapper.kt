@@ -20,7 +20,7 @@ class MovieCreditsMapper
 
         private fun onSuccess(response: MovieCreditsResponse): BasicNetworkState<List<Credit>> {
             val credits = mutableListOf<Credit>()
-            response.crew.filter { it.known_for_department == "Directing" }.map { crew ->
+            response.crew.filter { it.job == "Director" }.map { crew ->
                 with(crew) {
                     credits.add(
                         Credit(
@@ -28,7 +28,7 @@ class MovieCreditsMapper
                             name = name,
                             pathUrl = profile_path ?: "",
                             characterName = "",
-                            role = Role.DIRECTING,
+                            role = Role.DIRECTOR,
                         ),
                     )
                 }
@@ -41,7 +41,7 @@ class MovieCreditsMapper
                             name = name,
                             characterName = character,
                             pathUrl = profile_path ?: "",
-                            role = Role.ACTING,
+                            role = Role.ACTOR,
                         ),
                     )
                 }

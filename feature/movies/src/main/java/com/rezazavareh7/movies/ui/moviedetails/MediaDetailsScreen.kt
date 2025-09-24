@@ -93,7 +93,6 @@ fun MediaDetailsScreen(
                     Modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .verticalScroll(rememberScrollState()),
             ) {
                 mediaDetailsUiState.movieDetailsData?.let { data ->
                     with(data) {
@@ -147,13 +146,13 @@ fun MediaDetailsScreen(
                                             brush =
                                                 Brush.verticalGradient(
                                                     0.5f to
-                                                        MaterialTheme.colorScheme.surface.copy(
-                                                            alpha = 0.9f,
-                                                        ),
+                                                            MaterialTheme.colorScheme.surface.copy(
+                                                                alpha = 0.9f,
+                                                            ),
                                                     1f to
-                                                        MaterialTheme.colorScheme.surface.copy(
-                                                            alpha = 0.2f,
-                                                        ),
+                                                            MaterialTheme.colorScheme.surface.copy(
+                                                                alpha = 0.2f,
+                                                            ),
                                                     1f to Color.Transparent,
                                                 ),
                                         ),
@@ -206,19 +205,28 @@ fun MediaDetailsScreen(
                                 )
                                 TitleMediumTextComponent(text = stringResource(R.string.overview))
                                 Spacer(Modifier.height(8.dp))
-                                BodyMediumTextComponent(text = mediaDetailsUiState.movieDetailsData.overview)
+                                BodyMediumTextComponent(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .verticalScroll(rememberScrollState()),
+                                    text = mediaDetailsUiState.movieDetailsData.overview,
+                                )
                                 if (mediaDetailsUiState.mediaCredits.isNotEmpty()) {
+                                    Spacer(Modifier.height(8.dp))
+                                    TitleMediumTextComponent(text = stringResource(R.string.credits))
                                     LazyRow(
                                         modifier =
                                             Modifier
                                                 .fillMaxWidth()
                                                 .wrapContentHeight()
-                                                .padding(vertical = 24.dp),
+                                                .padding(vertical = 16.dp),
                                     ) {
                                         items(mediaDetailsUiState.mediaCredits) { item ->
                                             CreditListItemComponent(
                                                 credit = item,
-                                                onItemClicked = {},
+                                                onItemClicked = {}
                                             )
                                         }
                                     }

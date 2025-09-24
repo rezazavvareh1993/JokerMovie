@@ -31,7 +31,7 @@ class SeriesCreditsMapper
                                 name = name,
                                 pathUrl = profile_path ?: "",
                                 characterName = "",
-                                role = Role.DIRECTING,
+                                role = Role.DIRECTOR,
                             ),
                         )
                     }
@@ -45,7 +45,7 @@ class SeriesCreditsMapper
                                 name = name,
                                 characterName = character,
                                 pathUrl = profile_path ?: "",
-                                role = Role.ACTING,
+                                role = Role.ACTOR,
                             ),
                         )
                     }

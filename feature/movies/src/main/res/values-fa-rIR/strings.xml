@@ -14,6 +14,7 @@
     <string name="dark">تاریک</string>
     <string name="toolbar_title">جوکر فیلم</string>
     <string name="overview">خلاصه داستان:</string>
+    <string name="credits">عوامل:</string>
     <string name="genres">ژانر:</string>
     <string name="release_date">تاریخ انتشار:</string>
     <string name="rate">نمره:</string>
@@ -33,6 +34,7 @@
     <string name="are_you_sure_to_save_photo">آیا از ذخیره این عکس مطمئنید؟</string>
     <string name="photos">عکس ها</string>
     <string name="no_data">موردی یافت نشد.</string>
-
+    <string name="version">version:%s</string>
+    <string name="director">Director</string>
 
 </resources>

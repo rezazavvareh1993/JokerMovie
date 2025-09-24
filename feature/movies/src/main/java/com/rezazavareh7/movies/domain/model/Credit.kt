@@ -9,6 +9,6 @@ data class Credit(
 )
 
 enum class Role {
-    ACTING,
-    DIRECTING,
+    ACTOR,
+    DIRECTOR,
 }

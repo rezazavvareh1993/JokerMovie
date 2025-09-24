@@ -6,6 +6,7 @@ import com.rezazavareh.usecase.GetLanguageUseCase
 import com.rezazavareh.usecase.GetThemeUseCase
 import com.rezazavareh.usecase.SaveLanguageUseCase
 import com.rezazavareh.usecase.SaveThemeUseCase
+import com.rezazavareh7.movies.domain.usecase.GetVersionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,12 +25,14 @@ class SettingViewModel
         private val getLanguageUseCase: GetLanguageUseCase,
         private val saveThemeUseCase: SaveThemeUseCase,
         private val getThemeUseCase: GetThemeUseCase,
+        private val getVersionUseCase: GetVersionUseCase,
     ) : ViewModel() {
         private val mSettingUiState = MutableStateFlow<SettingUiState>(SettingUiState())
         val settingUiState: StateFlow<SettingUiState> =
             mSettingUiState.onStart {
                 getTheme()
                 getLanguage()
+                getVersion()
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingUiState())
 
         fun onEvent(event: SettingUiEvent) {
@@ -47,6 +50,13 @@ class SettingViewModel
         ) {
             viewModelScope.launch {
                 saveThemeUseCase(selectedTheme)
+            }
+        }
+
+        private fun getVersion() {
+            viewModelScope.launch {
+                val version = getVersionUseCase.invoke()
+                mSettingUiState.update { it.copy(version = version) }
             }
         }
 
