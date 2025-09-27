@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.text.label.LabelMediumTextComponent
@@ -78,6 +79,7 @@ fun CreditListItemComponent(
                     .padding(horizontal = 4.dp),
             maxLines = 2,
             color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
             overflow = TextOverflow.MiddleEllipsis,
         )
         LabelMediumTextComponent(
@@ -86,6 +88,7 @@ fun CreditListItemComponent(
                     .fillMaxWidth()
                     .padding(4.dp),
             text = if (credit.role == Role.DIRECTOR) stringResource(R.string.director) else credit.characterName,
+            textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             overflow = TextOverflow.MiddleEllipsis,
         )

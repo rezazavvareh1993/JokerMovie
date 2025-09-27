@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -215,15 +216,22 @@ fun MediaDetailsScreen(
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                                Spacer(Modifier.height(8.dp))
-                                TitleValueComponent(
-                                    title = stringResource(R.string.release_date),
-                                    value = mediaDetailsUiState.movieDetailsData.releaseDate,
-                                )
-                                ImageValueComponent(
-                                    image = LocalJokerIconPalette.current.icIMDB,
-                                    value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    TitleValueComponent(
+                                        title = stringResource(R.string.release_date),
+                                        modifier = Modifier.weight(1f),
+                                        value = mediaDetailsUiState.movieDetailsData.releaseDate,
+                                    )
+
+                                    ImageValueComponent(
+                                        image = LocalJokerIconPalette.current.icIMDB,
+                                        value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
+                                    )
+                                }
+
                                 TitleValueComponent(
                                     title = stringResource(R.string.vote_count),
                                     value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
@@ -237,7 +245,7 @@ fun MediaDetailsScreen(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .padding(16.dp),
+                                            .padding(horizontal = 16.dp, vertical = 8.dp),
                                 )
                                 TitleMediumTextComponent(text = stringResource(R.string.overview))
                                 Spacer(Modifier.height(8.dp))
@@ -282,11 +290,12 @@ fun MediaDetailsScreen(
 
 @Composable
 private fun TitleValueComponent(
+    modifier: Modifier = Modifier,
     title: String,
     value: String,
 ) {
     Spacer(Modifier.height(8.dp))
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         TitleSmallTextComponent(text = title)
         Spacer(modifier = Modifier.width(4.dp))
         BodyMediumTextComponent(text = value)
@@ -295,13 +304,13 @@ private fun TitleValueComponent(
 
 @Composable
 private fun ImageValueComponent(
+    modifier: Modifier = Modifier,
     image: Int,
     value: String,
 ) {
     Spacer(Modifier.height(8.dp))
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         IconComponent(drawableId = image, iconSize = 20.dp)
-        BodyMediumTextComponent(text = ":")
         Spacer(modifier = Modifier.width(4.dp))
         BodyMediumTextComponent(text = value)
     }
