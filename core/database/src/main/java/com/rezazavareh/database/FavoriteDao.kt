@@ -24,10 +24,4 @@ interface FavoriteDao {
 
     @Query("SELECT * FROM $FAVORITE_TABLE_NAME")
     fun getFavorites(): Flow<List<FavoriteEntity>>
-
-    @Query("SELECT * FROM $FAVORITE_TABLE_NAME  WHERE :id = id and :category = category")
-    fun findItemById(
-        category: String,
-        id: Long,
-    ): FavoriteEntity?
 }

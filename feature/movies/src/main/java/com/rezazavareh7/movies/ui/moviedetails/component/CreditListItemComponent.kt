@@ -52,7 +52,7 @@ fun CreditListItemComponent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(140.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                         shape = Shape.highRoundCorner,

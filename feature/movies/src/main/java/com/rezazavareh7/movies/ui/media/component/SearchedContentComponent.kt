@@ -38,7 +38,7 @@ fun SearchedContentComponent(
     groupName: String,
     mediaList: LazyPagingItems<MediaData>,
     favoriteIds: List<Long>,
-    onItemClicked: (Long, String, String) -> Unit,
+    onItemClicked: (MediaData, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
     clickOnQueryItem: (String) -> Unit,
 ) {

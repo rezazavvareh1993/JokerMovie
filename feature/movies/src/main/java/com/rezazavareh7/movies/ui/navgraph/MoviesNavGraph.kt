@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -20,6 +19,7 @@ import androidx.navigation.toRoute
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.favorite.FavoriteScreen
 import com.rezazavareh7.movies.ui.favorite.FavoriteViewModel
 import com.rezazavareh7.movies.ui.images.MediaImagesScreen
@@ -30,6 +30,7 @@ import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsScreen
 import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsViewModel
 import com.rezazavareh7.movies.ui.setting.SettingScreen
 import com.rezazavareh7.movies.ui.setting.SettingViewModel
+import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.moviesNavGraph(
@@ -49,11 +50,10 @@ fun NavGraphBuilder.moviesNavGraph(
                 animatedVisibilityScope = this,
                 mediaUiEvent = mediaUiEvent,
                 mediaUiState = mediaUiState,
-                navigateToMediaDetailsScreen = { id, category, groupName ->
+                navigateToMediaDetailsScreen = { mediaData, groupName ->
                     navController.navigate(
                         MoviesScreens.MediaDetails(
-                            id,
-                            category,
+                            mediaData,
                             groupName,
                         ).route,
                     )
@@ -71,6 +71,7 @@ fun NavGraphBuilder.moviesNavGraph(
         }
 
         composable<MoviesScreensGraph.MediaDetails>(
+            typeMap = mapOf(typeOf<MediaData>() to customNavType<MediaData>()),
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { 400 },
@@ -97,9 +98,8 @@ fun NavGraphBuilder.moviesNavGraph(
             MediaDetailsScreen(
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = this,
-                mediaId = mediaDetailsInfo.mediaId,
+                mediaData = mediaDetailsInfo.mediaData,
                 groupName = mediaDetailsInfo.groupName,
-                mediaCategory = MediaCategory.valueOf(mediaDetailsInfo.mediaCategory),
                 mediaDetailsUiEvent = mediaDetailsUiEvent,
                 mediaDetailsUiState = mediaDetailsUiState,
                 onBackClicked = {
@@ -152,8 +152,13 @@ fun NavGraphBuilder.moviesNavGraph(
                 category = favoriteInfo.category,
                 favoriteUiEvent = favoriteUiEvent,
                 favoriteUiState = favoriteUiState,
-                navigateToMediaDetailsScreen = { id, category, groupName ->
-                    navController.navigate(MoviesScreens.MediaDetails(id, category, groupName).route)
+                navigateToMediaDetailsScreen = { mediaData, groupName ->
+                    navController.navigate(
+                        MoviesScreens.MediaDetails(
+                            mediaData,
+                            groupName,
+                        ).route,
+                    )
                 },
                 onBackClicked = {
                     navController.popBackStack()

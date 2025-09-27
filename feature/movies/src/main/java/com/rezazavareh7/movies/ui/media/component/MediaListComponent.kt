@@ -32,7 +32,7 @@ fun MediaListComponent(
     mediaList: LazyPagingItems<MediaData>,
     favoriteIds: List<Long>,
     isInSearchMode: Boolean = false,
-    onItemClicked: (Long, String, String) -> Unit,
+    onItemClicked: (MediaData, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
 ) {
     if (mediaList.itemCount > 0) {
@@ -62,8 +62,8 @@ fun MediaListComponent(
                                 mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
                             }
                         },
-                        onItemClicked = { id, category ->
-                            onItemClicked(id, category, groupName)
+                        onItemClicked = { mediaData ->
+                            onItemClicked(mediaData, groupName)
                         },
                     )
                 }

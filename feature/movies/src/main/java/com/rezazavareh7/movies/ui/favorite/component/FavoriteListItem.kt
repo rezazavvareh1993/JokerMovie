@@ -37,7 +37,7 @@ import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
-import com.rezazavareh7.movies.domain.model.FavoriteData
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import kotlinx.coroutines.delay
 
@@ -47,10 +47,10 @@ fun SearchedListItem(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
-    item: FavoriteData,
-    favoriteList: List<FavoriteData>,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
-    onRemoveFavoriteClicked: (FavoriteData) -> Unit,
+    item: MediaData,
+    favoriteList: List<MediaData>,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
+    onRemoveFavoriteClicked: (MediaData) -> Unit,
 ) {
     var deletedItemId by remember { mutableLongStateOf(-1L) }
 
@@ -78,8 +78,7 @@ fun SearchedListItem(
                         .clip(shape = Shape.highRoundCorner)
                         .clickable {
                             navigateToMediaDetailsScreen(
-                                item.id,
-                                item.category.name,
+                                item,
                                 groupName,
                             )
                         },

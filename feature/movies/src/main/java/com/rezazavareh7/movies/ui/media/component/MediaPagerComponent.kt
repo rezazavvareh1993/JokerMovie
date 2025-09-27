@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.movie.MoviesPage
 import com.rezazavareh7.movies.ui.media.series.SeriesPage
@@ -23,7 +24,7 @@ fun MediaPagerComponent(
     pagerState: PagerState,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
     HorizontalPager(
         state = pagerState,
