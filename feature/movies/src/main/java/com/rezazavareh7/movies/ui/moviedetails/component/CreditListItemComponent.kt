@@ -54,7 +54,7 @@ fun CreditListItemComponent(
                     .fillMaxWidth()
                     .height(140.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = Shape.highRoundCorner,
                     ),
         ) {
