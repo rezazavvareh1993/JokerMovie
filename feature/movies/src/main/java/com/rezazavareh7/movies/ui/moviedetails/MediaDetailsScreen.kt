@@ -6,7 +6,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -183,13 +182,13 @@ fun MediaDetailsScreen(
                                             brush =
                                                 Brush.verticalGradient(
                                                     0.5f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.9f,
-                                                            ),
+                                                        MaterialTheme.colorScheme.surface.copy(
+                                                            alpha = 0.9f,
+                                                        ),
                                                     1f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.2f,
-                                                            ),
+                                                        MaterialTheme.colorScheme.surface.copy(
+                                                            alpha = 0.2f,
+                                                        ),
                                                     1f to Color.Transparent,
                                                 ),
                                         ),
