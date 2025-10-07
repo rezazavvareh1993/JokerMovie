@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "115304090757",
+    "project_id": "joker-movie-d1421",
+    "storage_bucket": "joker-movie-d1421.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115304090757:android:3881c3c97a03f71427adec",
+        "android_client_info": {
+          "package_name": "com.rezazavareh7.jokermovie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0X8plcyUXIyEAeRuHQfbGtReFBmxvBCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

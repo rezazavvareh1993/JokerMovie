@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application.convention)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 dependencies {
@@ -16,4 +18,5 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.network)
     implementation(projects.feature.movies)
+    implementation(libs.firebase.crashlytics)
 }

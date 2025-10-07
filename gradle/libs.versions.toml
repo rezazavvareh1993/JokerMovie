@@ -42,6 +42,9 @@ roomVersion = "2.7.2"
 foundation = "1.8.3"
 zoomable = "0.14.0"
 lottieCompose = "6.6.7"
+firebaseCrashlytics = "19.2.1"
+googleGmsGoogleServices = "4.4.2"
+googleFirebaseCrashlytics = "3.0.2"
 
 
 
@@ -99,6 +102,7 @@ room-paging = { group = "androidx.room", name = "room-paging", version.ref = "ro
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 
 
 [plugins]
@@ -122,3 +126,5 @@ okhttp-convention = { id = "com.rezazavareh7.convention.okhttp" }
 retrofit-convention = { id = "com.rezazavareh7.convention.retrofit" }
 moshi-convention = { id = "com.rezazavareh7.convention.moshi" }
 network-convention = { id = "com.rezazavareh7.convention.network" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
