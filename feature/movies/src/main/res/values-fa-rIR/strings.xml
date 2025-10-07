@@ -36,5 +36,6 @@
     <string name="no_data">موردی یافت نشد.</string>
     <string name="version">version:%s</string>
     <string name="director">Director</string>
-
+    <string name="error_connection">اینترنت یا VPN شما متصل نیست.</string>
+    <string name="default_error">مشکلی پیش آمده است.</string>
 </resources>
