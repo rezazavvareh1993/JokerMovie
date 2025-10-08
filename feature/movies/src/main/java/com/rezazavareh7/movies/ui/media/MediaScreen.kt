@@ -29,6 +29,7 @@ import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.component.MediaPagerComponent
 import com.rezazavareh7.movies.ui.media.component.MediaTabRowComponent
 import kotlinx.coroutines.launch
@@ -42,7 +43,7 @@ fun MediaScreen(
     mediaUiState: MediaUiState,
     navigateToFavoriteScreen: (String) -> Unit,
     navigateToSetting: () -> Unit,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { MediaCategory.entries.size })

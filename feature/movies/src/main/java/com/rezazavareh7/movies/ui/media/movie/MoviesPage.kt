@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
@@ -40,7 +41,7 @@ fun MoviesPage(
     moviesUiState: MoviesUiState = viewModel.moviesState.collectAsStateWithLifecycle().value,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
     val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
     val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()

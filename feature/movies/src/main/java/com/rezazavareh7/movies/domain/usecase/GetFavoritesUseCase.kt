@@ -1,6 +1,6 @@
 package com.rezazavareh7.movies.domain.usecase
 
-import com.rezazavareh7.movies.domain.model.FavoriteData
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.repository.FavoriteRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,7 @@ class GetFavoritesUseCase
         private val repository: FavoriteRepository,
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
-        suspend operator fun invoke(): Flow<List<FavoriteData>> =
+        suspend operator fun invoke(): Flow<List<MediaData>> =
             withContext(dispatcher) {
                 repository.getFavorites()
             }

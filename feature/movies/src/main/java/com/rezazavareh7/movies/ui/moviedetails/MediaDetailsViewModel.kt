@@ -2,10 +2,11 @@ package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetMediaCreditsUseCase
 import com.rezazavareh7.movies.domain.usecase.GetMediaDetailsUseCase
+import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ class MediaDetailsViewModel
         private val getMediaCreditsUseCase: GetMediaCreditsUseCase,
         private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
         private val getFavoritesUseCase: GetFavoritesUseCase,
+        private val removeFavoriteItemUseCase: RemoveFavoriteItemUseCase,
     ) : ViewModel() {
         private var mMediaDetailsState = MutableStateFlow(MovieDetailsUiState(isLoading = true))
         val mediaDetailsState = mMediaDetailsState.asStateFlow()
@@ -29,23 +31,23 @@ class MediaDetailsViewModel
         fun onEvent(event: MediaDetailsUiEvent) {
             when (event) {
                 is MediaDetailsUiEvent.OnGetMediaDetailsCalled -> {
-                    getMediaDetails(event.mediaId, event.mediaCategory)
-                    getMediaCredits(event.mediaId, event.mediaCategory)
+                    getFavorites(event.mediaData)
+                    getMediaDetails(event.mediaData)
+                    getMediaCredits(event.mediaData)
                 }
 
                 is MediaDetailsUiEvent.OnToastMessageShown ->
-                    mMediaDetailsState.update {
-                        it.copy(errorMessage = "")
-                    }
+                    mMediaDetailsState.update { it.copy(errorMessage = "") }
+
+                is MediaDetailsUiEvent.OnLikeMedia -> saveFavoriteMovie(event.mediaData)
+
+                is MediaDetailsUiEvent.OnDislikeMedia -> removeFavoriteMovie(event.mediaData)
             }
         }
 
-        private fun getMediaCredits(
-            mediaId: Long,
-            mediaCategory: MediaCategory,
-        ) {
+        private fun getMediaCredits(mediaData: MediaData) {
             viewModelScope.launch {
-                val result = getMediaCreditsUseCase(mediaId, mediaCategory)
+                val result = getMediaCreditsUseCase(mediaData.id, mediaData.mediaCategory)
                 when (result.hasError) {
                     false -> {
                         mMediaDetailsState.update {
@@ -68,30 +70,47 @@ class MediaDetailsViewModel
             }
         }
 
-        private fun getMediaDetails(
-            mediaId: Long,
-            mediaCategory: MediaCategory,
-        ) {
+        private fun getMediaDetails(mediaData: MediaData) {
             viewModelScope.launch {
-                val result = getMediaDetailsUseCase(mediaId, mediaCategory)
+                val result =
+                    getMediaDetailsUseCase(mediaData.id, mediaCategory = mediaData.mediaCategory)
                 when (result.hasError) {
                     false -> {
                         mMediaDetailsState.update {
-                            it.copy(
-                                movieDetailsData = result.mediaDetailsData,
-                                isLoading = false,
-                            )
+                            it.copy(movieDetailsData = result.mediaDetailsData, isLoading = false)
                         }
                     }
 
                     true -> {
                         mMediaDetailsState.update {
-                            it.copy(
-                                errorMessage = result.errorMessage,
-                                isLoading = false,
-                            )
+                            it.copy(errorMessage = result.errorMessage, isLoading = false)
                         }
                     }
+                }
+            }
+        }
+
+        private fun getFavorites(mediaData: MediaData) {
+            viewModelScope.launch {
+                getFavoritesUseCase().collect { favoriteItems ->
+                    val isFavorite = favoriteItems.contains(mediaData)
+                    mMediaDetailsState.update { it.copy(isFavorite = isFavorite) }
+                }
+            }
+        }
+
+        private fun saveFavoriteMovie(mediaData: MediaData) {
+            viewModelScope.launch {
+                viewModelScope.launch {
+                    saveFavoriteItemUseCase(mediaData)
+                }
+            }
+        }
+
+        private fun removeFavoriteMovie(mediaData: MediaData) {
+            viewModelScope.launch {
+                viewModelScope.launch {
+                    removeFavoriteItemUseCase(mediaData.id)
                 }
             }
         }

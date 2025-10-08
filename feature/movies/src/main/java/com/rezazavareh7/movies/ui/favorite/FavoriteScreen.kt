@@ -27,6 +27,7 @@ import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponen
 import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.movies.R
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -38,7 +39,7 @@ fun FavoriteScreen(
     favoriteUiEvent: (FavoriteUiEvent) -> Unit,
     favoriteUiState: FavoriteUiState,
     onBackClicked: () -> Unit,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
     LaunchedEffect(category) {
         if (category.isNotEmpty()) {

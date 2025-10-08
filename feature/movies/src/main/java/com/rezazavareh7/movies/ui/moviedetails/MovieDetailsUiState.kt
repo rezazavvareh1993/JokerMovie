@@ -7,5 +7,6 @@ data class MovieDetailsUiState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
     val movieDetailsData: MediaDetailData? = null,
+    val isFavorite: Boolean = false,
     val mediaCredits: List<Credit> = emptyList(),
 )

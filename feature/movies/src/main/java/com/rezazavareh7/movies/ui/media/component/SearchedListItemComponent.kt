@@ -39,7 +39,7 @@ fun SearchedListItemComponent(
     groupName: String,
     item: MediaData,
     isLiked: Boolean,
-    onItemClicked: (Long, String, String) -> Unit,
+    onItemClicked: (MediaData, String) -> Unit,
     onFavoriteClicked: (Boolean, MediaData) -> Unit,
 ) {
     with(sharedTransitionScope) {
@@ -50,11 +50,7 @@ fun SearchedListItemComponent(
                     .height(240.dp)
                     .clip(shape = Shape.highRoundCorner)
                     .clickable {
-                        onItemClicked(
-                            item.id,
-                            item.mediaCategory.name,
-                            groupName,
-                        )
+                        onItemClicked(item, groupName)
                     },
         ) {
             ShowGlideImageByUrl(

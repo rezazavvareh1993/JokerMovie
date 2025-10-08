@@ -1,5 +1,6 @@
 package com.rezazavareh7.movies.ui.navgraph
 
+import com.rezazavareh7.movies.domain.model.MediaData
 import kotlinx.serialization.Serializable
 
 object MoviesScreensGraph {
@@ -13,17 +14,10 @@ object MoviesScreensGraph {
     object Setting
 
     @Serializable
-    data class MediaDetails(
-        val mediaId: Long,
-        val mediaCategory: String,
-        val groupName: String,
-    )
+    data class MediaDetails(val mediaData: MediaData, val groupName: String)
 
     @Serializable
-    data class MediaImages(
-        val mediaId: Long,
-        val mediaCategory: String,
-    )
+    data class MediaImages(val mediaId: Long, val mediaCategory: String)
 }
 
 @Serializable
@@ -47,16 +41,11 @@ sealed class MoviesScreens<T>(
 
     @Serializable
     data class MediaDetails(
-        val mediaId: Long,
-        val mediaCategory: String,
+        val mediaData: MediaData,
         val groupName: String,
     ) : MoviesScreens<MoviesScreensGraph.MediaDetails>(
             route =
-                MoviesScreensGraph.MediaDetails(
-                    mediaId = mediaId,
-                    mediaCategory = mediaCategory,
-                    groupName = groupName,
-                ),
+                MoviesScreensGraph.MediaDetails(mediaData = mediaData, groupName = groupName),
         )
 
     @Serializable
@@ -65,9 +54,6 @@ sealed class MoviesScreens<T>(
         val mediaCategory: String,
     ) : MoviesScreens<MoviesScreensGraph.MediaImages>(
             route =
-                MoviesScreensGraph.MediaImages(
-                    mediaId = mediaId,
-                    mediaCategory = mediaCategory,
-                ),
+                MoviesScreensGraph.MediaImages(mediaId = mediaId, mediaCategory = mediaCategory),
         )
 }
