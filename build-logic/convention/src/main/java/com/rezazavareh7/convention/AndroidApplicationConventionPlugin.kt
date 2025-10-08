@@ -48,7 +48,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 debug {
                     isMinifyEnabled = false
                     isDebuggable = true
-                    applicationIdSuffix = JokerMovieBuildType.DEBUG.applicationIdSuffix
                     versionNameSuffix = JokerMovieBuildType.DEBUG.versionNameSuffix
                 }
 

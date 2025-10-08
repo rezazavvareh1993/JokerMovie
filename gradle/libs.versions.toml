@@ -45,6 +45,7 @@ lottieCompose = "6.6.7"
 firebaseCrashlytics = "19.2.1"
 googleGmsGoogleServices = "4.4.2"
 googleFirebaseCrashlytics = "3.0.2"
+firebaseVersion = "33.6.0"
 
 
 
@@ -103,6 +104,8 @@ androidx-foundation = { group = "androidx.compose.foundation", name = "foundatio
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseVersion" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
 
 [plugins]

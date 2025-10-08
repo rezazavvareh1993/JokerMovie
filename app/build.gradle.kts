@@ -18,5 +18,9 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.network)
     implementation(projects.feature.movies)
+    // Firebase
+    val firebaseBom = platform(libs.firebase.bom)
+    implementation(firebaseBom)
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 }
