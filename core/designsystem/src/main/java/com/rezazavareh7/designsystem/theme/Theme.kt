@@ -11,6 +11,11 @@ import androidx.compose.ui.graphics.Color
 import com.rezazavareh7.designsystem.custom.JokerCustomColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
+import com.rezazavareh7.designsystem.theme.type.LargeTypography.largeTypography
+import com.rezazavareh7.designsystem.theme.type.MediumTypography.mediumTypography
+import com.rezazavareh7.designsystem.theme.type.SmallTypography.smallTypography
+import com.rezazavareh7.designsystem.util.ScreenSize
+import com.rezazavareh7.designsystem.util.getScreenSizeType
 
 private val DarkColorScheme =
     darkColorScheme(
@@ -84,13 +89,20 @@ fun JokerMovieTheme(
     val customColorPalette =
         if (darkTheme) OnDarkCustomJokerColorsPalette else OnLightCustomJokerColorsPalette
 
+    val typography =
+        when (getScreenSizeType()) {
+            ScreenSize.LARGE -> largeTypography
+            ScreenSize.MEDIUM -> mediumTypography
+            ScreenSize.SMALL -> smallTypography
+        }
+
     CompositionLocalProvider(
         LocalJokerIconPalette provides customIconsPalette,
         LocalJokerColorPalette provides customColorPalette,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = replyTypography,
+            typography = typography,
             content = content,
         )
     }

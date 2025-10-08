@@ -36,6 +36,7 @@
     <string name="no_data">No data</string>
     <string name="version">version:%s</string>
     <string name="director">Director</string>
-    <string name="error_connection">No internet or VPN connection</string>
+    <string name="vpn_error_connection">No internet or VPN connection</string>
     <string name="default_error">There is a problem</string>
+    <string name="internet_error_connection">No Internet.</string>
 </resources>

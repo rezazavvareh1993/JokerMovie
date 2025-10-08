@@ -1,4 +1,4 @@
-package com.rezazavareh7.ui.util
+package com.rezazavareh7.designsystem.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,4 +19,22 @@ fun getScreenDpSize(): DpSize {
             )
         }
     }
+}
+
+@Composable
+fun getScreenSizeType(): ScreenSize {
+    val screenWidth = getScreenDpSize().width.value
+    return if (screenWidth >= 400f) {
+        ScreenSize.LARGE
+    } else if (screenWidth >= 360f) {
+        ScreenSize.MEDIUM
+    } else {
+        ScreenSize.SMALL
+    }
+}
+
+enum class ScreenSize {
+    LARGE,
+    MEDIUM,
+    SMALL,
 }

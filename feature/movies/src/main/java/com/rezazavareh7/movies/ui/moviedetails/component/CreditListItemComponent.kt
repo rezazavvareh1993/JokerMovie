@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.rezazavareh7.designsystem.component.text.label.LabelMediumTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
+import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.Credit
 import com.rezazavareh7.movies.domain.model.Role
@@ -40,7 +41,7 @@ fun CreditListItemComponent(
         modifier =
             Modifier
                 .padding(horizontal = 4.dp)
-                .width(120.dp)
+                .width(getScreenDpSize().width * 0.25f)
                 .wrapContentHeight()
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -53,7 +54,7 @@ fun CreditListItemComponent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(getScreenDpSize().height * 0.14f)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
                         shape = Shape.highRoundCorner,
