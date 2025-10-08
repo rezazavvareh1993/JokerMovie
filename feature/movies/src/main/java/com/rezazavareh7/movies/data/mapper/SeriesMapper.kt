@@ -28,7 +28,7 @@ class SeriesMapper
                                 title = name,
                                 id = id.toLong(),
                                 posterPath = poster_path ?: "",
-                                releaseDate = first_air_date,
+                                releaseDate = first_air_date ?: "",
                                 voteAverage = vote_average.toFloat(),
                                 overview = overview,
                                 voteCount = vote_count.toLong(),

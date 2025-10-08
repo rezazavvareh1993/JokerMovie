@@ -30,11 +30,12 @@ class MainViewModel
     ) : ViewModel() {
         val mMainState = MutableStateFlow(MainUiState())
         val mainState: StateFlow<MainUiState> =
-            mMainState.onStart {
-                getTheme()
-                getLanguage()
-                saveVersion()
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState())
+            mMainState
+                .onStart {
+                    getTheme()
+                    getLanguage()
+                    saveVersion()
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MainUiState())
 
         private fun getTheme() {
             viewModelScope.launch {

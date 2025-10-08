@@ -20,6 +20,7 @@ import com.rezazavareh7.designsystem.R
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
+import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 import com.rezazavareh7.ui.components.showToast
 
@@ -80,7 +81,7 @@ fun MediaListComponent(
                         item {
                             showToast(
                                 LocalContext.current,
-                                (mediaList.loadState.append as LoadState.Error).error.message.toString(),
+                                exceptionHandling((loadState.append as LoadState.Error).error),
                             )
                         }
 

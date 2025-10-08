@@ -20,7 +20,8 @@ class GetSearchMovieHistoryUseCase
             withContext(dispatcher) {
                 val movieQueriesHistory: Flow<List<String>> =
                     flow {
-                        regularDataStoreManager.getString(SEARCH_MOVIE_HISTORY)
+                        regularDataStoreManager
+                            .getString(SEARCH_MOVIE_HISTORY)
                             .collect { queryMovieHistoryJson ->
                                 if (queryMovieHistoryJson.isNotEmpty()) {
                                     val queryMovieHistoryList = queryMovieHistoryJson.fromJsonList<String>()

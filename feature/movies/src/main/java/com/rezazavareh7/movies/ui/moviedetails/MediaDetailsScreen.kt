@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -36,18 +35,19 @@ import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
 import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
-import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
+import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.moviedetails.component.CreditListItemComponent
+import com.rezazavareh7.movies.ui.moviedetails.component.ImageValueComponent
+import com.rezazavareh7.movies.ui.moviedetails.component.TitleValueComponent
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
 
@@ -101,14 +101,13 @@ fun MediaDetailsScreen(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height(250.dp)
+                                    .height(getScreenDpSize().height * 0.25f)
                                     .clickable {
                                         navigateToMediaImages(
                                             mediaData.id,
                                             mediaData.mediaCategory,
                                         )
-                                    }
-                                    .clip(Shape.highRoundCornerTop),
+                                    }.clip(Shape.highRoundCornerBottom),
                         ) {
                             ShowGlideImageByUrl(
                                 modifier = Modifier.matchParentSize(),
@@ -160,44 +159,45 @@ fun MediaDetailsScreen(
                                 },
                             )
                         }
-
                         Box(modifier = Modifier.fillMaxSize()) {
-                            ShowGlideImageByUrl(
-                                modifier =
-                                    Modifier
-                                        .matchParentSize()
-                                        .sharedElement(
-                                            sharedContentState = rememberSharedContentState(key = "poster$groupName$id"),
-                                            animatedVisibilityScope = animatedVisibilityScope,
-                                            renderInOverlayDuringTransition = false,
-                                        ),
-                                imageUrlPath = poster,
-                                context = LocalContext.current,
-                            )
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .matchParentSize()
-                                        .background(
-                                            brush =
-                                                Brush.verticalGradient(
-                                                    0.5f to
-                                                        MaterialTheme.colorScheme.surface.copy(
-                                                            alpha = 0.9f,
-                                                        ),
-                                                    1f to
-                                                        MaterialTheme.colorScheme.surface.copy(
-                                                            alpha = 0.2f,
-                                                        ),
-                                                    1f to Color.Transparent,
-                                                ),
-                                        ),
-                            )
+                            Box(modifier = Modifier.matchParentSize()) {
+                                ShowGlideImageByUrl(
+                                    modifier =
+                                        Modifier
+                                            .matchParentSize()
+                                            .sharedElement(
+                                                sharedContentState = rememberSharedContentState(key = "poster$groupName$id"),
+                                                animatedVisibilityScope = animatedVisibilityScope,
+                                                renderInOverlayDuringTransition = false,
+                                            ),
+                                    imageUrlPath = poster,
+                                    context = LocalContext.current,
+                                )
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .matchParentSize()
+                                            .background(
+                                                brush =
+                                                    Brush.verticalGradient(
+                                                        0.5f to
+                                                            MaterialTheme.colorScheme.surface.copy(
+                                                                alpha = 0.9f,
+                                                            ),
+                                                        1f to
+                                                            MaterialTheme.colorScheme.surface.copy(
+                                                                alpha = 0.2f,
+                                                            ),
+                                                        1f to Color.Transparent,
+                                                    ),
+                                            ),
+                                )
+                            }
 
                             Column(
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth()
+                                        .matchParentSize()
                                         .padding(horizontal = 8.dp),
                             ) {
                                 TitleLargeTextComponent(
@@ -206,7 +206,7 @@ fun MediaDetailsScreen(
                                         Modifier
                                             .fillMaxWidth()
                                             .wrapContentHeight()
-                                            .padding(top = 24.dp)
+                                            .padding(top = 8.dp)
                                             .sharedElement(
                                                 rememberSharedContentState(key = "title$groupName$mediaData"),
                                                 animatedVisibilityScope = animatedVisibilityScope,
@@ -215,47 +215,53 @@ fun MediaDetailsScreen(
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    TitleValueComponent(
-                                        title = stringResource(R.string.release_date),
-                                        modifier = Modifier.weight(1f),
-                                        value = mediaDetailsUiState.movieDetailsData.releaseDate,
-                                    )
-
-                                    ImageValueComponent(
-                                        image = LocalJokerIconPalette.current.icIMDB,
-                                        value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
-                                    )
-                                }
-
-                                TitleValueComponent(
-                                    title = stringResource(R.string.vote_count),
-                                    value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
-                                )
-                                TitleValueComponent(
-                                    title = stringResource(R.string.genres),
-                                    value = mediaDetailsUiState.movieDetailsData.genres,
-                                )
-
-                                HorizontalDividerComponent(
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                                )
-                                TitleMediumTextComponent(text = stringResource(R.string.overview))
-                                Spacer(Modifier.height(8.dp))
-                                BodyMediumTextComponent(
+                                Column(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
                                             .weight(1f)
                                             .verticalScroll(rememberScrollState()),
-                                    text = mediaDetailsUiState.movieDetailsData.overview,
-                                )
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        TitleValueComponent(
+                                            title = stringResource(R.string.release_date),
+                                            modifier = Modifier.weight(1f),
+                                            value = mediaDetailsUiState.movieDetailsData.releaseDate,
+                                        )
+
+                                        ImageValueComponent(
+                                            image = LocalJokerIconPalette.current.icIMDB,
+                                            value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
+                                        )
+                                    }
+
+                                    TitleValueComponent(
+                                        title = stringResource(R.string.vote_count),
+                                        value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
+                                    )
+                                    TitleValueComponent(
+                                        title = stringResource(R.string.genres),
+                                        value = mediaDetailsUiState.movieDetailsData.genres,
+                                    )
+
+                                    HorizontalDividerComponent(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                                    )
+                                    TitleMediumTextComponent(text = stringResource(R.string.overview))
+                                    Spacer(Modifier.height(4.dp))
+                                    BodyMediumTextComponent(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth(),
+                                        text = mediaDetailsUiState.movieDetailsData.overview,
+                                    )
+                                }
                                 if (mediaDetailsUiState.mediaCredits.isNotEmpty()) {
                                     Spacer(Modifier.height(8.dp))
                                     TitleMediumTextComponent(text = stringResource(R.string.credits))
@@ -264,7 +270,7 @@ fun MediaDetailsScreen(
                                             Modifier
                                                 .fillMaxWidth()
                                                 .wrapContentHeight()
-                                                .padding(vertical = 16.dp),
+                                                .padding(bottom = 16.dp, top = 8.dp),
                                     ) {
                                         items(mediaDetailsUiState.mediaCredits) { item ->
                                             CreditListItemComponent(
@@ -284,33 +290,5 @@ fun MediaDetailsScreen(
 
     BackHandler {
         onBackClicked()
-    }
-}
-
-@Composable
-private fun TitleValueComponent(
-    modifier: Modifier = Modifier,
-    title: String,
-    value: String,
-) {
-    Spacer(Modifier.height(8.dp))
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        TitleSmallTextComponent(text = title)
-        Spacer(modifier = Modifier.width(4.dp))
-        BodyMediumTextComponent(text = value)
-    }
-}
-
-@Composable
-private fun ImageValueComponent(
-    modifier: Modifier = Modifier,
-    image: Int,
-    value: String,
-) {
-    Spacer(Modifier.height(8.dp))
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        IconComponent(drawableId = image, iconSize = 20.dp)
-        Spacer(modifier = Modifier.width(4.dp))
-        BodyMediumTextComponent(text = value)
     }
 }

@@ -35,13 +35,13 @@ import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarCo
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
+import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.ui.images.component.ConfirmationBottomSheetComponent
 import com.rezazavareh7.movies.ui.images.component.ShowFullSizePhotoComponent
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
-import com.rezazavareh7.ui.util.getScreenDpSize
 import com.rezazavareh7.ui.util.shareProvider
 import kotlinx.coroutines.launch
 
@@ -142,8 +142,7 @@ fun MediaImagesScreen(
                                         .heightIn(
                                             min = getScreenDpSize().width / 4,
                                             max = item.height.dp / 6,
-                                        )
-                                        .padding(2.dp)
+                                        ).padding(2.dp)
                                         .sharedBounds(
                                             sharedContentState = rememberSharedContentState(key = index),
                                             animatedVisibilityScope = animatedVisibilityScope,

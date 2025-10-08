@@ -35,8 +35,8 @@ class MediaSaverRepositoryImpl
         @param:ApplicationContext private val context: Context,
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) : MediaSaverRepository {
-        override suspend fun savePhotoToGallery(imageUrl: String): Result<Unit> {
-            return try {
+        override suspend fun savePhotoToGallery(imageUrl: String): Result<Unit> =
+            try {
                 val photoFile = GlideUtils.getCachedImageFile(context, imageUrl)
                 val fileName = generateUniqueFileName()
                 movePhotoToGallery(context, photoFile, fileName)
@@ -46,7 +46,6 @@ class MediaSaverRepositoryImpl
                 Result.failure(e)
                 // TODO refactor states
             }
-        }
 
         override suspend fun sharePhoto(photoUrl: String): SharePhotoState {
             deleteTemporarySharedFiles()

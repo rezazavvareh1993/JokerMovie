@@ -69,8 +69,8 @@ private fun Modifier.zoomableClickableModifier(
     imageUrl: String,
     clickOnItem: (String) -> Unit,
     longClickOnItem: (String) -> Unit,
-): Modifier {
-    return when {
+): Modifier =
+    when {
         isZoomable ->
             this.then(
                 Modifier.zoomable(
@@ -94,4 +94,3 @@ private fun Modifier.zoomableClickableModifier(
 
         else -> this
     }
-}

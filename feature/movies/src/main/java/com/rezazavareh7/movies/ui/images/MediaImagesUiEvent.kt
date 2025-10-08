@@ -6,11 +6,14 @@ import com.rezazavareh7.movies.domain.model.MediaImage
 sealed class MediaImagesUiEvent {
     data object OnToastMessageShown : MediaImagesUiEvent()
 
-    data class OnGetMediaImages(val mediaId: Long, val mediaCategory: MediaCategory) :
-        MediaImagesUiEvent()
+    data class OnGetMediaImages(
+        val mediaId: Long,
+        val mediaCategory: MediaCategory,
+    ) : MediaImagesUiEvent()
 
-    data class LastPhotoDisplayed(val currentDisplayPhotoInfo: DisplayPhotoItemInfo?) :
-        MediaImagesUiEvent()
+    data class LastPhotoDisplayed(
+        val currentDisplayPhotoInfo: DisplayPhotoItemInfo?,
+    ) : MediaImagesUiEvent()
 
     data object OnResetLastDisplayedImage : MediaImagesUiEvent()
 
@@ -24,9 +27,16 @@ sealed class MediaImagesUiEvent {
 
     data object OnShareComplete : MediaImagesUiEvent()
 
-    data class OnItemClicked(val item: MediaImage, val index: Int) : MediaImagesUiEvent()
+    data class OnItemClicked(
+        val item: MediaImage,
+        val index: Int,
+    ) : MediaImagesUiEvent()
 
-    data class OnSaveImageClicked(val imageUrl: String) : MediaImagesUiEvent()
+    data class OnSaveImageClicked(
+        val imageUrl: String,
+    ) : MediaImagesUiEvent()
 
-    data class OnSharePhotoClicked(val imageUrl: String) : MediaImagesUiEvent()
+    data class OnSharePhotoClicked(
+        val imageUrl: String,
+    ) : MediaImagesUiEvent()
 }

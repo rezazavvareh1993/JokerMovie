@@ -25,6 +25,7 @@ import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
+import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.designsystem.R as DesignSystemResource
@@ -110,71 +111,85 @@ fun MoviesPage(
                 )
             },
         )
-        if (topRatedMovies.loadState.refresh is LoadState.Loading ||
-            nowPlayingMovies.loadState.refresh is LoadState.Loading ||
-            upcomingMovies.loadState.refresh is LoadState.Loading ||
-            popularMovies.loadState.refresh is LoadState.Loading
-        ) {
-            LottieAnimationComponent(
-                lottieResource = DesignSystemResource.raw.lottie_video_loading,
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else if (!moviesUiState.isSearchBarExpanded) {
-            LazyColumn(
-                state = rememberLazyListState(),
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-            ) {
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.upcoming),
-                        mediaList = upcomingMovies,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.top_rated),
-                        mediaList = topRatedMovies,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.now_playing),
-                        mediaList = nowPlayingMovies,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.popular),
-                        mediaList = popularMovies,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
+        when {
+            topRatedMovies.loadState.refresh is LoadState.Loading ||
+                nowPlayingMovies.loadState.refresh is LoadState.Loading ||
+                upcomingMovies.loadState.refresh is LoadState.Loading ||
+                popularMovies.loadState.refresh is LoadState.Loading -> {
+                LottieAnimationComponent(
+                    lottieResource = DesignSystemResource.raw.lottie_video_loading,
+                    modifier = Modifier.fillMaxSize(),
+                )
             }
+
+            topRatedMovies.loadState.refresh is LoadState.Error &&
+                nowPlayingMovies.loadState.refresh is LoadState.Error &&
+                upcomingMovies.loadState.refresh is LoadState.Error &&
+                popularMovies.loadState.refresh is LoadState.Error -> {
+                showToast(
+                    context,
+                    exceptionHandling((topRatedMovies.loadState.refresh as LoadState.Error).error),
+                )
+            }
+
+            else ->
+                if (!moviesUiState.isSearchBarExpanded) {
+                    LazyColumn(
+                        state = rememberLazyListState(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                    ) {
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = stringResource(MediaResource.string.upcoming),
+                                mediaList = upcomingMovies,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = stringResource(MediaResource.string.top_rated),
+                                mediaList = topRatedMovies,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = stringResource(MediaResource.string.now_playing),
+                                mediaList = nowPlayingMovies,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = stringResource(MediaResource.string.popular),
+                                mediaList = popularMovies,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                            )
+                        }
+                    }
+                }
         }
     }
 }

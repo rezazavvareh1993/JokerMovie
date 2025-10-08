@@ -5,7 +5,9 @@ enum class ThemeSegmentButtonType {
     DARK,
 }
 
-enum class LanguageSegmentButtonType(val locale: String) {
+enum class LanguageSegmentButtonType(
+    val locale: String,
+) {
     ENGLISH("en-Us"),
     FARSI("fa-IR"),
     ;

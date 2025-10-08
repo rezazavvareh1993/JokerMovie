@@ -29,11 +29,12 @@ class SettingViewModel
     ) : ViewModel() {
         private val mSettingUiState = MutableStateFlow<SettingUiState>(SettingUiState())
         val settingUiState: StateFlow<SettingUiState> =
-            mSettingUiState.onStart {
-                getTheme()
-                getLanguage()
-                getVersion()
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingUiState())
+            mSettingUiState
+                .onStart {
+                    getTheme()
+                    getLanguage()
+                    getVersion()
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingUiState())
 
         fun onEvent(event: SettingUiEvent) {
             when (event) {

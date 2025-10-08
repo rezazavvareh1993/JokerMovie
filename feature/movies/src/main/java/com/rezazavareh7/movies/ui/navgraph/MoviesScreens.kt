@@ -8,16 +8,24 @@ object MoviesScreensGraph {
     data object Movies
 
     @Serializable
-    data class Favorite(val category: String)
+    data class Favorite(
+        val category: String,
+    )
 
     @Serializable
     object Setting
 
     @Serializable
-    data class MediaDetails(val mediaData: MediaData, val groupName: String)
+    data class MediaDetails(
+        val mediaData: MediaData,
+        val groupName: String,
+    )
 
     @Serializable
-    data class MediaImages(val mediaId: Long, val mediaCategory: String)
+    data class MediaImages(
+        val mediaId: Long,
+        val mediaCategory: String,
+    )
 }
 
 @Serializable
@@ -35,9 +43,11 @@ sealed class MoviesScreens<T>(
     )
 
     @Serializable
-    data class Favorite(val category: String) : MoviesScreens<MoviesScreensGraph.Favorite>(
-        route = MoviesScreensGraph.Favorite(category = category),
-    )
+    data class Favorite(
+        val category: String,
+    ) : MoviesScreens<MoviesScreensGraph.Favorite>(
+            route = MoviesScreensGraph.Favorite(category = category),
+        )
 
     @Serializable
     data class MediaDetails(

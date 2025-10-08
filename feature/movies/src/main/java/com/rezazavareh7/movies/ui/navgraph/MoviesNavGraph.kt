@@ -52,10 +52,11 @@ fun NavGraphBuilder.moviesNavGraph(
                 mediaUiState = mediaUiState,
                 navigateToMediaDetailsScreen = { mediaData, groupName ->
                     navController.navigate(
-                        MoviesScreens.MediaDetails(
-                            mediaData,
-                            groupName,
-                        ).route,
+                        MoviesScreens
+                            .MediaDetails(
+                                mediaData,
+                                groupName,
+                            ).route,
                     )
                 },
                 navigateToFavoriteScreen = { category ->
@@ -107,10 +108,11 @@ fun NavGraphBuilder.moviesNavGraph(
                 },
                 navigateToMediaImages = { mediaId, mediaCategory ->
                     navController.navigate(
-                        MoviesScreens.MediaImages(
-                            mediaId,
-                            mediaCategory = mediaCategory.name,
-                        ).route,
+                        MoviesScreens
+                            .MediaImages(
+                                mediaId,
+                                mediaCategory = mediaCategory.name,
+                            ).route,
                     )
                 },
             )
@@ -154,10 +156,11 @@ fun NavGraphBuilder.moviesNavGraph(
                 favoriteUiState = favoriteUiState,
                 navigateToMediaDetailsScreen = { mediaData, groupName ->
                     navController.navigate(
-                        MoviesScreens.MediaDetails(
-                            mediaData,
-                            groupName,
-                        ).route,
+                        MoviesScreens
+                            .MediaDetails(
+                                mediaData,
+                                groupName,
+                            ).route,
                     )
                 },
                 onBackClicked = {

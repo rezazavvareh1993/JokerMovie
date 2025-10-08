@@ -23,6 +23,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.designsystem.R
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
+import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
 import com.rezazavareh7.ui.components.showToast
 
@@ -73,7 +74,9 @@ fun SearchedContentComponent(
                         item {
                             showToast(
                                 LocalContext.current,
-                                (mediaList.loadState.append as LoadState.Error).error.message.toString(),
+                                exceptionHandling(
+                                    (mediaList.loadState.refresh as LoadState.Error).error,
+                                ),
                             )
                         }
 

@@ -1,6 +1,6 @@
 package com.rezazavareh7.movies.ui.favorite
 
-import SearchedListItem
+import FavoriteListItem
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -77,7 +77,7 @@ fun FavoriteScreen(
             ) {
                 items(favoriteUiState.favorites, key = { it.id }) { item ->
                     val isRemoving = removingIds[item.id] == true
-                    SearchedListItem(
+                    FavoriteListItem(
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope,
                         groupName = stringResource(R.string.favorites),

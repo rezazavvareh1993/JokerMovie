@@ -66,7 +66,8 @@ object NetworkModule {
 //                    .build()
             val token = "Bearer $API_ACCESS_TOKEN"
             val newRequest =
-                originalRequest.newBuilder()
+                originalRequest
+                    .newBuilder()
                     .url(originalUrl)
                     .addHeader(AUTHORIZATION, token)
 

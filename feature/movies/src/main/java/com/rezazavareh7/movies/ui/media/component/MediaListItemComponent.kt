@@ -56,8 +56,7 @@ fun MediaListItemComponent(
                     .background(
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
                         shape = Shape.highRoundCorner,
-                    )
-                    .padding(8.dp)
+                    ).padding(8.dp)
                     .clickable { onItemClicked(mediaData) },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
