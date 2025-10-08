@@ -126,8 +126,7 @@ fun FavoriteListItem(
                                         sharedContentState = rememberSharedContentState(key = "title$groupName${item.id}"),
                                         animatedVisibilityScope = animatedVisibilityScope,
                                         renderInOverlayDuringTransition = false,
-                                    )
-                                    .padding(end = 16.dp),
+                                    ).padding(end = 16.dp),
                             text = item.title,
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onSurface,

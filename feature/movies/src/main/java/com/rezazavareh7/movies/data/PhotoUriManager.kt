@@ -11,14 +11,13 @@ import java.io.File
 suspend fun generateShareablePhoto(
     photoUrl: String,
     context: Context,
-): SharePhotoState {
-    return try {
+): SharePhotoState =
+    try {
         createTempFile(photoUrl, context)
     } catch (error: Throwable) {
         Timber.e(error, "Error in share process: ${error.message}")
         SharePhotoState.Error(error.message.toString())
     }
-}
 
 private suspend fun createTempFile(
     photoUrl: String,

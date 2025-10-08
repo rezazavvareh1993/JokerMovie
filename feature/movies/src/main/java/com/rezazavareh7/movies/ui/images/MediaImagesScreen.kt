@@ -142,8 +142,7 @@ fun MediaImagesScreen(
                                         .heightIn(
                                             min = getScreenDpSize().width / 4,
                                             max = item.height.dp / 6,
-                                        )
-                                        .padding(2.dp)
+                                        ).padding(2.dp)
                                         .sharedBounds(
                                             sharedContentState = rememberSharedContentState(key = index),
                                             animatedVisibilityScope = animatedVisibilityScope,

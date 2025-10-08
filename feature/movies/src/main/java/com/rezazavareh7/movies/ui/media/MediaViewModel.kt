@@ -27,9 +27,10 @@ class MediaViewModel
     ) : ViewModel() {
         private var mMediaState = MutableStateFlow(MediaUiState())
         val mediaState: StateFlow<MediaUiState> =
-            mMediaState.onStart {
-                getFavorites()
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MediaUiState())
+            mMediaState
+                .onStart {
+                    getFavorites()
+                }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MediaUiState())
 
         fun onEvent(event: MediaUiEvent) {
             when (event) {

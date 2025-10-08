@@ -5,9 +5,15 @@ sealed class MoviesUiEvent {
 
     data object OnToastMessageShown : MoviesUiEvent()
 
-    data class OnSearchBarExpandStateChanged(val isExpanded: Boolean) : MoviesUiEvent()
+    data class OnSearchBarExpandStateChanged(
+        val isExpanded: Boolean,
+    ) : MoviesUiEvent()
 
-    data class OnSearchQueryChanged(val newMovieName: String) : MoviesUiEvent()
+    data class OnSearchQueryChanged(
+        val newMovieName: String,
+    ) : MoviesUiEvent()
 
-    data class OnSearched(val query: String) : MoviesUiEvent()
+    data class OnSearched(
+        val query: String,
+    ) : MoviesUiEvent()
 }

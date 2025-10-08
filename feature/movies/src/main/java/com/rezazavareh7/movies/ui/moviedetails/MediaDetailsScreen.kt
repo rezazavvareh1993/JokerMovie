@@ -107,8 +107,7 @@ fun MediaDetailsScreen(
                                             mediaData.id,
                                             mediaData.mediaCategory,
                                         )
-                                    }
-                                    .clip(Shape.highRoundCornerBottom),
+                                    }.clip(Shape.highRoundCornerBottom),
                         ) {
                             ShowGlideImageByUrl(
                                 modifier = Modifier.matchParentSize(),

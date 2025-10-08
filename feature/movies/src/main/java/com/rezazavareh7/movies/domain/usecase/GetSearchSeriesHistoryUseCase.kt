@@ -20,7 +20,8 @@ class GetSearchSeriesHistoryUseCase
             withContext(dispatcher) {
                 val seriesQueriesHistory: Flow<List<String>> =
                     flow {
-                        regularDataStoreManager.getString(SEARCH_SERIES_HISTORY)
+                        regularDataStoreManager
+                            .getString(SEARCH_SERIES_HISTORY)
                             .collect { querySeriesHistoryJson ->
                                 if (querySeriesHistoryJson.isNotEmpty()) {
                                     val querySeriesHistoryList =

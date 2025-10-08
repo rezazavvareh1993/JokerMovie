@@ -89,7 +89,8 @@ fun SearchedListItemComponent(
                 val releasedYear = item.releaseDate.split("-").first()
                 TitleLargeTextComponent(
                     modifier =
-                        Modifier.fillMaxWidth()
+                        Modifier
+                            .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(key = "title$groupName${item.id}"),

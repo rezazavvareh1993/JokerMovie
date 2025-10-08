@@ -59,9 +59,13 @@ class MainActivity : ComponentActivity() {
             val mainUiState by viewModel.mainState.collectAsStateWithLifecycle()
             val context = this
             LaunchedEffect(mainUiState.currentLanguage) {
-                if (mainUiState.currentLanguage.isNotEmpty() && ::localeManager.isInitialized &&
-                    mainUiState.currentLanguage.split("-")
-                        .first() != context.resources.configuration.locales[0].language
+                if (mainUiState.currentLanguage.isNotEmpty() &&
+                    ::localeManager.isInitialized &&
+                    mainUiState.currentLanguage
+                        .split("-")
+                        .first() !=
+                    context.resources.configuration.locales[0]
+                        .language
                 ) {
                     restartApp(context)
                 }

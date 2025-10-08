@@ -46,8 +46,7 @@ fun CreditListItemComponent(
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = Shape.mediumRoundCorner,
-                )
-                .clickable { onItemClicked(credit.id) },
+                ).clickable { onItemClicked(credit.id) },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
