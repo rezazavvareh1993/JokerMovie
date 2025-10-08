@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
 import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
+import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
@@ -45,6 +46,7 @@ import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.moviedetails.component.CreditListItemComponent
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
@@ -55,8 +57,7 @@ fun MediaDetailsScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
-    mediaId: Long,
-    mediaCategory: MediaCategory,
+    mediaData: MediaData,
     mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit,
     mediaDetailsUiState: MovieDetailsUiState,
     onBackClicked: () -> Unit,
@@ -68,8 +69,8 @@ fun MediaDetailsScreen(
         mediaDetailsUiEvent(MediaDetailsUiEvent.OnToastMessageShown)
     }
 
-    LaunchedEffect(mediaId) {
-        mediaDetailsUiEvent(MediaDetailsUiEvent.OnGetMediaDetailsCalled(mediaId, mediaCategory))
+    LaunchedEffect(mediaData) {
+        mediaDetailsUiEvent(MediaDetailsUiEvent.OnGetMediaDetailsCalled(mediaData))
     }
 
     Scaffold(
@@ -101,7 +102,12 @@ fun MediaDetailsScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(250.dp)
-                                    .clickable { navigateToMediaImages(mediaId, mediaCategory) }
+                                    .clickable {
+                                        navigateToMediaImages(
+                                            mediaData.id,
+                                            mediaData.mediaCategory,
+                                        )
+                                    }
                                     .clip(Shape.highRoundCornerTop),
                         ) {
                             ShowGlideImageByUrl(
@@ -121,7 +127,37 @@ fun MediaDetailsScreen(
                                 iconSize = 20.dp,
                                 boxSize = 42.dp,
                                 isClickable = true,
-                                onClick = { navigateToMediaImages(mediaId, mediaCategory) },
+                                onClick = {
+                                    navigateToMediaImages(
+                                        mediaData.id,
+                                        mediaData.mediaCategory,
+                                    )
+                                },
+                            )
+
+                            CircleIconBoxComponent(
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(16.dp),
+                                icon = if (mediaDetailsUiState.isFavorite) LocalJokerIconPalette.current.icLike else LocalJokerIconPalette.current.icDislike,
+                                borderColor = Color.Unspecified,
+                                backgroundColor = Color.Black.copy(alpha = 0.8f),
+                                iconTint = if (mediaDetailsUiState.isFavorite) MaterialTheme.colorScheme.error else Color.White,
+                                iconSize = 20.dp,
+                                boxSize = 42.dp,
+                                isClickable = true,
+                                onClick = {
+                                    if (mediaDetailsUiState.isFavorite) {
+                                        mediaDetailsUiEvent(
+                                            MediaDetailsUiEvent.OnDislikeMedia(mediaData),
+                                        )
+                                    } else {
+                                        mediaDetailsUiEvent(
+                                            MediaDetailsUiEvent.OnLikeMedia(mediaData),
+                                        )
+                                    }
+                                },
                             )
                         }
 
@@ -172,22 +208,29 @@ fun MediaDetailsScreen(
                                             .wrapContentHeight()
                                             .padding(top = 24.dp)
                                             .sharedElement(
-                                                rememberSharedContentState(key = "title$groupName$mediaId"),
+                                                rememberSharedContentState(key = "title$groupName$mediaData"),
                                                 animatedVisibilityScope = animatedVisibilityScope,
                                                 renderInOverlayDuringTransition = false,
                                             ),
                                     textAlign = TextAlign.Center,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
-                                Spacer(Modifier.height(8.dp))
-                                TitleValueComponent(
-                                    title = stringResource(R.string.release_date),
-                                    value = mediaDetailsUiState.movieDetailsData.releaseDate,
-                                )
-                                TitleValueComponent(
-                                    title = stringResource(R.string.rate),
-                                    value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    TitleValueComponent(
+                                        title = stringResource(R.string.release_date),
+                                        modifier = Modifier.weight(1f),
+                                        value = mediaDetailsUiState.movieDetailsData.releaseDate,
+                                    )
+
+                                    ImageValueComponent(
+                                        image = LocalJokerIconPalette.current.icIMDB,
+                                        value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
+                                    )
+                                }
+
                                 TitleValueComponent(
                                     title = stringResource(R.string.vote_count),
                                     value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
@@ -201,7 +244,7 @@ fun MediaDetailsScreen(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .padding(16.dp),
+                                            .padding(horizontal = 16.dp, vertical = 8.dp),
                                 )
                                 TitleMediumTextComponent(text = stringResource(R.string.overview))
                                 Spacer(Modifier.height(8.dp))
@@ -246,12 +289,27 @@ fun MediaDetailsScreen(
 
 @Composable
 private fun TitleValueComponent(
+    modifier: Modifier = Modifier,
     title: String,
     value: String,
 ) {
     Spacer(Modifier.height(8.dp))
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         TitleSmallTextComponent(text = title)
+        Spacer(modifier = Modifier.width(4.dp))
+        BodyMediumTextComponent(text = value)
+    }
+}
+
+@Composable
+private fun ImageValueComponent(
+    modifier: Modifier = Modifier,
+    image: Int,
+    value: String,
+) {
+    Spacer(Modifier.height(8.dp))
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        IconComponent(drawableId = image, iconSize = 20.dp)
         Spacer(modifier = Modifier.width(4.dp))
         BodyMediumTextComponent(text = value)
     }

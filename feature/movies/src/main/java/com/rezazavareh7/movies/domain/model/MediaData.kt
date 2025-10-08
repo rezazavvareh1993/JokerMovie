@@ -1,5 +1,8 @@
 package com.rezazavareh7.movies.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class MediaData(
     val mediaCategory: MediaCategory,
     val title: String,

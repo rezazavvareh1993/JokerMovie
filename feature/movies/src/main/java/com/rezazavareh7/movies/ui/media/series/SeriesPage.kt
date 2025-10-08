@@ -21,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
+import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
@@ -39,7 +40,7 @@ fun SeriesPage(
     seriesUiState: SeriesUiState = viewModel.seriesState.collectAsStateWithLifecycle().value,
     favoriteIds: List<Long>,
     mediaUiEvent: (MediaUiEvent) -> Unit,
-    navigateToMediaDetailsScreen: (Long, String, String) -> Unit,
+    navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
     val topRatedSeries = seriesUiState.topRatedSeries.collectAsLazyPagingItems()
     val onTheAirSeries = seriesUiState.onTheAirSeries.collectAsLazyPagingItems()

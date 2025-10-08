@@ -31,7 +31,6 @@ import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.body.BodySmallTextComponent
-import com.rezazavareh7.designsystem.custom.LocalJokerColorPalette
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.movies.domain.model.MediaData
@@ -45,7 +44,7 @@ fun MediaListItemComponent(
     animatedVisibilityScope: AnimatedVisibilityScope,
     mediaData: MediaData,
     isLiked: Boolean,
-    onItemClicked: (Long, String) -> Unit,
+    onItemClicked: (MediaData) -> Unit,
     onFavoriteClicked: (Boolean, MediaData) -> Unit,
 ) {
     with(sharedTransitionScope) {
@@ -59,7 +58,7 @@ fun MediaListItemComponent(
                         shape = Shape.highRoundCorner,
                     )
                     .padding(8.dp)
-                    .clickable { onItemClicked(mediaData.id, mediaData.mediaCategory.name) },
+                    .clickable { onItemClicked(mediaData) },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             BodyMediumTextComponent(
@@ -86,7 +85,7 @@ fun MediaListItemComponent(
                         .weight(1f)
                         .padding(4.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             shape = Shape.highRoundCorner,
                         ),
             ) {
@@ -123,8 +122,7 @@ fun MediaListItemComponent(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconComponent(
-                        drawableId = LocalJokerIconPalette.current.icStar,
-                        tint = LocalJokerColorPalette.current.yellow,
+                        drawableId = LocalJokerIconPalette.current.icIMDB,
                         iconSize = 16.dp,
                         boxSize = 16.dp,
                     )
