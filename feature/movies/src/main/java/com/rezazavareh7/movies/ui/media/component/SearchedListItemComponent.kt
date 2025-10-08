@@ -3,6 +3,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,10 +25,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.icon.IconComponent
-import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
+import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 
@@ -47,7 +49,7 @@ fun SearchedListItemComponent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(240.dp)
+                    .height(getScreenDpSize().height * 0.2f)
                     .clip(shape = Shape.highRoundCorner)
                     .clickable {
                         onItemClicked(item, groupName)
@@ -72,7 +74,7 @@ fun SearchedListItemComponent(
                         .background(
                             brush =
                                 Brush.verticalGradient(
-                                    0.3f to MaterialTheme.colorScheme.surface.copy(alpha = 0.1f),
+                                    0.3f to MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
                                     1f to MaterialTheme.colorScheme.surface.copy(alpha = 1f),
                                     1f to Color.Transparent,
                                 ),
@@ -81,14 +83,31 @@ fun SearchedListItemComponent(
             Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .padding(vertical = 24.dp, horizontal = 16.dp),
+                        .matchParentSize()
+                        .padding(vertical = 20.dp, horizontal = 16.dp),
             ) {
+                val releasedYear = item.releaseDate.split("-").first()
+                TitleLargeTextComponent(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .sharedElement(
+                                sharedContentState = rememberSharedContentState(key = "title$groupName${item.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                renderInOverlayDuringTransition = false,
+                            ),
+                    text = if (releasedYear.isNotEmpty()) "${item.title} - $releasedYear" else item.title,
+                    overflow = TextOverflow.MiddleEllipsis,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                )
+                Spacer(Modifier.weight(1f))
                 Row(
                     modifier =
                         Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Row(
                         modifier =
@@ -108,28 +127,13 @@ fun SearchedListItemComponent(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
-                    val releasedYear = item.releaseDate.split("-").first()
-                    TitleMediumTextComponent(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .padding(horizontal = 16.dp)
-                                .sharedElement(
-                                    sharedContentState = rememberSharedContentState(key = "title$groupName${item.id}"),
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                    renderInOverlayDuringTransition = false,
-                                ),
-                        text = if (releasedYear.isNotEmpty()) "${item.title} - $releasedYear" else item.title,
-                        overflow = TextOverflow.MiddleEllipsis,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                    )
                     IconComponent(
                         drawableId = if (isLiked) LocalJokerIconPalette.current.icLike else LocalJokerIconPalette.current.icDislike,
                         isClickable = true,
                         tint = if (isLiked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
                         onClick = { onFavoriteClicked(!isLiked, item) },
+                        iconSize = 20.dp,
+                        boxSize = 20.dp,
                     )
                 }
             }
