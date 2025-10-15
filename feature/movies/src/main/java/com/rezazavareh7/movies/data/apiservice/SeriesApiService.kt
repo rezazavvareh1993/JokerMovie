@@ -49,4 +49,10 @@ interface SeriesApiService {
     suspend fun getCredits(
         @Path("seriesId") seriesId: Long,
     ): Result<SeriesCreditsResponse>
+
+    @GET("tv/{seriesId}/similar")
+    suspend fun getSimilarSeries(
+        @Path("seriesId") seriesId: Long,
+        @Query("page") page: Int,
+    ): Result<SeriesResponse>
 }

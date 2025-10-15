@@ -49,4 +49,10 @@ interface MovieApiService {
     suspend fun getCredits(
         @Path("movieId") movieId: Long,
     ): Result<MovieCreditsResponse>
+
+    @GET("movie/{movieId}/similar")
+    suspend fun getSimilarMovies(
+        @Path("movieId") movieId: Long,
+        @Query("page") page: Int,
+    ): Result<MoviesResponse>
 }

@@ -17,11 +17,12 @@ interface MoviesRepository {
 
     fun getUpcomingMovies(): Flow<PagingData<MediaData>>
 
+    fun getSimilarMovies(movieId: Long): Flow<PagingData<MediaData>>
     fun getPopularMovies(): Flow<PagingData<MediaData>>
 
     fun getNowPlayingMovies(): Flow<PagingData<MediaData>>
 
-    suspend fun getImages(moviesId: Long): BasicNetworkState<List<MediaImage>>
+    suspend fun getImages(movieId: Long): BasicNetworkState<List<MediaImage>>
 
-    suspend fun getMovieCredits(moviesId: Long): BasicNetworkState<List<Credit>>
+    suspend fun getMovieCredits(movieId: Long): BasicNetworkState<List<Credit>>
 }

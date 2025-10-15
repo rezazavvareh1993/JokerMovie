@@ -17,6 +17,8 @@ interface SeriesRepository {
 
     fun getPopularSeries(): Flow<PagingData<MediaData>>
 
+    fun getSimilarSeries(seriesId: Long): Flow<PagingData<MediaData>>
+
     fun getAiringTodaySeries(): Flow<PagingData<MediaData>>
 
     suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<MediaDetailData>
