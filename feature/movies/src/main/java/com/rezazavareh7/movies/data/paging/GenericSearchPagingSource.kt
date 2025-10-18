@@ -3,13 +3,16 @@ package com.rezazavareh7.movies.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class GenericPagingSource<ResponseType, OutputType : Any>
-    @Inject
+class GenericSearchPagingSource<ResponseType, OutputType : Any>
+    @AssistedInject
     constructor(
-        private val apiCall: suspend (page: Int) -> ResponseType,
+        private val apiCall: suspend (query: String, page: Int) -> ResponseType,
         private val mapper: suspend (ResponseType) -> BasicNetworkState<List<OutputType>>,
+        @Assisted private val query: String,
     ) : PagingSource<Int, OutputType>() {
         override fun getRefreshKey(state: PagingState<Int, OutputType>): Int? =
             state.anchorPosition?.let { anchorPosition ->
@@ -20,7 +23,7 @@ class GenericPagingSource<ResponseType, OutputType : Any>
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, OutputType> =
             try {
                 val page = params.key ?: 1
-                val response = apiCall(page)
+                val response = apiCall(query, page)
                 val result = mapper(response)
 
                 when (result) {
@@ -37,4 +40,9 @@ class GenericPagingSource<ResponseType, OutputType : Any>
             } catch (e: Exception) {
                 LoadResult.Error(e)
             }
+
+        @AssistedFactory
+        interface Factory {
+            fun create(query: String): SearchMoviePagingSource
+        }
     }

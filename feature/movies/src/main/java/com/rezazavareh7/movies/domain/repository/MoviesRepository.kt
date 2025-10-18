@@ -18,6 +18,7 @@ interface MoviesRepository {
     fun getUpcomingMovies(): Flow<PagingData<MediaData>>
 
     fun getSimilarMovies(movieId: Long): Flow<PagingData<MediaData>>
+
     fun getPopularMovies(): Flow<PagingData<MediaData>>
 
     fun getNowPlayingMovies(): Flow<PagingData<MediaData>>
