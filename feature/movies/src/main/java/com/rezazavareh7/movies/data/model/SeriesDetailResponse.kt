@@ -39,7 +39,7 @@ data class SeriesDetailResponse(
 
 @JsonClass(generateAdapter = true)
 data class Season(
-    val air_date: String,
+    val air_date: String? = null,
     val episode_count: Int,
     val id: Int,
     val name: String,
