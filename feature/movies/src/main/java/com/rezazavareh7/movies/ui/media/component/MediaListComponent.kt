@@ -63,7 +63,7 @@ fun MediaListComponent(
                                 mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
                             }
                         },
-                        onItemClicked = { mediaData ->
+                        onItemClicked = { mediaData, groupName ->
                             onItemClicked(mediaData, groupName)
                         },
                     )

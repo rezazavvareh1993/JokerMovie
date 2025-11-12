@@ -44,7 +44,7 @@ fun MediaListItemComponent(
     animatedVisibilityScope: AnimatedVisibilityScope,
     mediaData: MediaData,
     isLiked: Boolean,
-    onItemClicked: (MediaData) -> Unit,
+    onItemClicked: (MediaData, String) -> Unit,
     onFavoriteClicked: (Boolean, MediaData) -> Unit,
 ) {
     with(sharedTransitionScope) {
@@ -57,7 +57,7 @@ fun MediaListItemComponent(
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
                         shape = Shape.highRoundCorner,
                     ).padding(8.dp)
-                    .clickable { onItemClicked(mediaData) },
+                    .clickable { onItemClicked(mediaData, groupName) },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             BodyMediumTextComponent(

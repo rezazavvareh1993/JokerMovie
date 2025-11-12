@@ -11,6 +11,7 @@ import com.rezazavareh7.movies.domain.usecase.GetSimilarListUseCase
 import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,8 +29,10 @@ class MediaDetailsViewModel
         private val removeFavoriteItemUseCase: RemoveFavoriteItemUseCase,
         private val getSimilarListUseCase: GetSimilarListUseCase,
     ) : ViewModel() {
-        private var mMediaDetailsState = MutableStateFlow(MovieDetailsUiState(isLoading = true))
+        private var mMediaDetailsState = MutableStateFlow(MediaDetailsUiState(isLoading = true))
         val mediaDetailsState = mMediaDetailsState.asStateFlow()
+
+        private var mediaJob: Job? = null
 
         fun onEvent(event: MediaDetailsUiEvent) {
             when (event) {
@@ -46,7 +49,25 @@ class MediaDetailsViewModel
                 is MediaDetailsUiEvent.OnLikeMedia -> saveFavoriteMovie(event.mediaData)
 
                 is MediaDetailsUiEvent.OnDislikeMedia -> removeFavoriteMovie(event.mediaData)
+
+                is MediaDetailsUiEvent.OnShowMore -> mMediaDetailsState.update { it.copy(showOverview = true) }
+                is MediaDetailsUiEvent.OnShowLess -> mMediaDetailsState.update { it.copy(showOverview = false) }
+                is MediaDetailsUiEvent.MediaDataSelected -> {
+                    mediaJob?.cancel()
+                    mediaSelected(event.mediaData)
+                }
             }
+        }
+
+        private fun mediaSelected(mediaData: MediaData) {
+            mediaJob =
+                viewModelScope.launch {
+                    mMediaDetailsState.update { it.copy(mediaDataSelected = mediaData, isLoading = true) }
+                    getFavorites(mediaData)
+                    getMediaDetails(mediaData)
+                    getMediaCredits(mediaData)
+                    getMediaSimilarList(mediaData)
+                }
         }
 
         private fun getMediaCredits(mediaData: MediaData) {
@@ -55,19 +76,13 @@ class MediaDetailsViewModel
                 when (result.hasError) {
                     false -> {
                         mMediaDetailsState.update {
-                            it.copy(
-                                isLoading = false,
-                                mediaCredits = result.mediaCredits,
-                            )
+                            it.copy(mediaCredits = result.mediaCredits)
                         }
                     }
 
                     true -> {
                         mMediaDetailsState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorMessage = result.errorMessage,
-                            )
+                            it.copy(errorMessage = result.errorMessage)
                         }
                     }
                 }
@@ -77,7 +92,11 @@ class MediaDetailsViewModel
         private fun getMediaSimilarList(mediaData: MediaData) {
             viewModelScope.launch {
                 val response = getSimilarListUseCase.invoke(mediaData)
-                mMediaDetailsState.update { it.copy(mediaSimilarList = response.mediaSimilar.cachedIn(viewModelScope)) }
+                mMediaDetailsState.update {
+                    it.copy(
+                        mediaSimilarList = response.mediaSimilar.cachedIn(viewModelScope),
+                    )
+                }
             }
         }
 
@@ -105,7 +124,15 @@ class MediaDetailsViewModel
             viewModelScope.launch {
                 getFavoritesUseCase().collect { favoriteItems ->
                     val isFavorite = favoriteItems.contains(mediaData)
-                    mMediaDetailsState.update { it.copy(isFavorite = isFavorite) }
+                    mMediaDetailsState.update {
+                        it.copy(
+                            isFavorite = isFavorite,
+                            favoriteIds =
+                                favoriteItems.map { favoriteItem ->
+                                    favoriteItem.id
+                                },
+                        )
+                    }
                 }
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -25,9 +24,8 @@ import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
-import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
+import com.rezazavareh7.ui.components.lottie.MediaLoadingAnimation
 import com.rezazavareh7.ui.components.showToast
-import com.rezazavareh7.designsystem.R as DesignSystemResource
 import com.rezazavareh7.movies.R as MediaResource
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -115,10 +113,7 @@ fun SeriesPage(
             onTheAirSeries.loadState.refresh is LoadState.Loading ||
             popularSeries.loadState.refresh is LoadState.Loading
         ) {
-            LottieAnimationComponent(
-                lottieResource = DesignSystemResource.raw.lottie_video_loading,
-                modifier = Modifier.fillMaxSize(),
-            )
+            MediaLoadingAnimation()
         } else if (!seriesUiState.isSearchBarExpanded) {
             LazyColumn(
                 state = rememberLazyListState(),

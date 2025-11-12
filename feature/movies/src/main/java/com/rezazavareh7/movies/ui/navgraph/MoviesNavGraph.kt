@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.navigation.GraphRoutes
 import com.rezazavareh7.designsystem.component.navigation.SystemBarManager
 import com.rezazavareh7.movies.domain.model.MediaCategory
@@ -27,6 +28,8 @@ import com.rezazavareh7.movies.ui.images.MediaImagesViewModel
 import com.rezazavareh7.movies.ui.media.MediaScreen
 import com.rezazavareh7.movies.ui.media.MediaViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsScreen
+import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsUiEvent
+import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsViewModel
 import com.rezazavareh7.movies.ui.setting.SettingScreen
 import com.rezazavareh7.movies.ui.setting.SettingViewModel
 import kotlin.reflect.typeOf
@@ -92,24 +95,44 @@ fun NavGraphBuilder.moviesNavGraph(
             },
         ) { backStackEntry ->
             val mediaDetailsInfo: MoviesScreensGraph.MediaDetails = backStackEntry.toRoute()
-            MediaDetailsScreen(
-                sharedTransitionScope = sharedTransitionScope,
-                animatedVisibilityScope = this,
-                mediaData = mediaDetailsInfo.mediaData,
-                groupName = mediaDetailsInfo.groupName,
-                onBackClicked = {
-                    navController.popBackStack()
-                },
-                navigateToMediaImages = { mediaId, mediaCategory ->
-                    navController.navigate(
-                        MoviesScreens
-                            .MediaImages(
-                                mediaId,
-                                mediaCategory = mediaCategory.name,
-                            ).route,
-                    )
-                },
-            )
+            val viewModel = hiltViewModel<MediaDetailsViewModel>()
+            val mediaDetailsUiEvent = viewModel::onEvent
+            val mediaDetailsUiState by viewModel.mediaDetailsState.collectAsStateWithLifecycle()
+            val mediaSimilarList = mediaDetailsUiState.mediaSimilarList.collectAsLazyPagingItems()
+
+            LaunchedEffect(mediaDetailsUiEvent) {
+                mediaDetailsUiEvent(MediaDetailsUiEvent.MediaDataSelected(mediaDetailsInfo.mediaData))
+            }
+            mediaDetailsUiState.mediaDataSelected?.let { mediaData ->
+                MediaDetailsScreen(
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = this,
+                    mediaData = mediaData,
+                    mediaDetailsUiEvent = mediaDetailsUiEvent,
+                    mediaDetailsUiState = mediaDetailsUiState,
+                    mediaSimilarList = mediaSimilarList,
+                    groupName = mediaDetailsInfo.groupName,
+                    onBackClicked = {
+                        navController.popBackStack()
+                    },
+                    navigateToMediaImages = { mediaId, mediaCategory ->
+                        navController.navigate(
+                            MoviesScreens
+                                .MediaImages(
+                                    mediaId,
+                                    mediaCategory = mediaCategory.name,
+                                ).route,
+                        )
+                    },
+                    navigateToMediaDetails = { mediaData, groupName ->
+                        navController.navigate(
+                            MoviesScreens
+                                .MediaDetails(mediaData, groupName)
+                                .route,
+                        )
+                    },
+                )
+            }
         }
 
         composable<MoviesScreensGraph.MediaImages> { backStackEntry ->

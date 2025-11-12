@@ -7,11 +7,14 @@ import com.rezazavareh7.movies.domain.model.MediaDetailData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-data class MovieDetailsUiState(
+data class MediaDetailsUiState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
     val movieDetailsData: MediaDetailData? = null,
+    val favoriteIds: List<Long> = emptyList(),
     val isFavorite: Boolean = false,
     val mediaCredits: List<Credit> = emptyList(),
     val mediaSimilarList: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),
+    val showOverview: Boolean = false,
+    val mediaDataSelected: MediaData? = null,
 )

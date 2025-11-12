@@ -16,4 +16,12 @@ sealed class MediaDetailsUiEvent {
     data class OnDislikeMedia(
         val mediaData: MediaData,
     ) : MediaDetailsUiEvent()
+
+    data object OnShowMore : MediaDetailsUiEvent()
+
+    data object OnShowLess : MediaDetailsUiEvent()
+
+    data class MediaDataSelected(
+        val mediaData: MediaData,
+    ) : MediaDetailsUiEvent()
 }

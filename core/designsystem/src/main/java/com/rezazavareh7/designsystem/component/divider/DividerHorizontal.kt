@@ -1,7 +1,6 @@
 package com.rezazavareh7.designsystem.component.divider
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,9 +20,7 @@ fun HorizontalDividerComponent(
 ) {
     HorizontalDivider(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
+        modifier,
         color = color,
         thickness = 1.dp,
     )
@@ -36,6 +33,6 @@ fun HorizontalDividerComponent(
 @Composable
 fun HorizontalDividerComponentPreview() {
     JokerMovieTheme {
-        HorizontalDividerComponent()
+        HorizontalDividerComponent(modifier = Modifier.fillMaxWidth())
     }
 }

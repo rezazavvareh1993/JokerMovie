@@ -1,7 +1,6 @@
 package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -26,7 +25,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,18 +33,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
 import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
+import com.rezazavareh7.designsystem.component.icon.IconComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
-import com.rezazavareh7.designsystem.component.toolbar.ToolbarComponent
+import com.rezazavareh7.designsystem.component.text.title.TitleSmallTextComponent
 import com.rezazavareh7.designsystem.custom.LocalJokerIconPalette
 import com.rezazavareh7.designsystem.theme.Shape
 import com.rezazavareh7.designsystem.util.getScreenDpSize
@@ -59,6 +57,7 @@ import com.rezazavareh7.movies.ui.moviedetails.component.ImageValueComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.TitleValueComponent
 import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
+import com.rezazavareh7.ui.components.lottie.MediaLoadingAnimation
 import com.rezazavareh7.ui.components.showToast
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -68,281 +67,317 @@ fun MediaDetailsScreen(
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
     mediaData: MediaData,
-    viewModel: MediaDetailsViewModel = hiltViewModel<MediaDetailsViewModel>(),
-    mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit = viewModel::onEvent,
-    mediaDetailsUiState: MovieDetailsUiState = viewModel.mediaDetailsState.collectAsStateWithLifecycle().value,
+    mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit,
+    mediaDetailsUiState: MediaDetailsUiState,
+    mediaSimilarList: LazyPagingItems<MediaData>,
     onBackClicked: () -> Unit,
     navigateToMediaImages: (Long, MediaCategory) -> Unit,
+    navigateToMediaDetails: (MediaData, String) -> Unit,
 ) {
     val context = LocalContext.current
-    val mediaSimilarList = mediaDetailsUiState.mediaSimilarList.collectAsLazyPagingItems()
     if (mediaDetailsUiState.errorMessage.isNotEmpty()) {
         showToast(context, mediaDetailsUiState.errorMessage)
         mediaDetailsUiEvent(MediaDetailsUiEvent.OnToastMessageShown)
     }
 
-    LaunchedEffect(mediaData) {
-        mediaDetailsUiEvent(MediaDetailsUiEvent.OnGetMediaDetailsCalled(mediaData))
-    }
-
     Scaffold(
-        topBar = {
-            ToolbarComponent(
-                hasBackButton = true,
-                onBackClicked = onBackClicked,
-                startContent = {
-                    TitleLargeTextComponent(
-                        text = stringResource(R.string.details),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-            )
-        },
         modifier = Modifier.fillMaxSize(),
     ) { padding ->
-        with(sharedTransitionScope) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-            ) {
-                mediaDetailsUiState.movieDetailsData?.let { data ->
-                    with(data) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(getScreenDpSize().height * 0.25f)
-                                    .clickable {
+        if (mediaDetailsUiState.isLoading) {
+            MediaLoadingAnimation()
+        } else {
+            with(sharedTransitionScope) {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(padding),
+                ) {
+                    mediaDetailsUiState.movieDetailsData?.let { data ->
+                        with(data) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(getScreenDpSize().height * 0.25f)
+                                        .clickable {
+                                            navigateToMediaImages(
+                                                mediaData.id,
+                                                mediaData.mediaCategory,
+                                            )
+                                        }.clip(Shape.highRoundCornerBottom),
+                            ) {
+                                ShowGlideImageByUrl(
+                                    modifier = Modifier.matchParentSize(),
+                                    imageUrlPath = backdrop,
+                                    context = LocalContext.current,
+                                )
+                                IconComponent(
+                                    drawableId = LocalJokerIconPalette.current.icBack,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    isClickable = true,
+                                    onClick = onBackClicked,
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.TopStart)
+                                            .padding(16.dp),
+                                )
+                                CircleIconBoxComponent(
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.BottomStart)
+                                            .padding(16.dp),
+                                    icon = LocalJokerIconPalette.current.icGallery,
+                                    borderColor = Color.Unspecified,
+                                    backgroundColor = Color.Black.copy(alpha = 0.8f),
+                                    iconTint = Color.White,
+                                    iconSize = 20.dp,
+                                    boxSize = 42.dp,
+                                    isClickable = true,
+                                    onClick = {
                                         navigateToMediaImages(
                                             mediaData.id,
                                             mediaData.mediaCategory,
                                         )
-                                    }.clip(Shape.highRoundCornerBottom),
-                        ) {
-                            ShowGlideImageByUrl(
-                                modifier = Modifier.matchParentSize(),
-                                imageUrlPath = backdrop,
-                                context = LocalContext.current,
-                            )
-                            CircleIconBoxComponent(
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(16.dp),
-                                icon = LocalJokerIconPalette.current.icGallery,
-                                borderColor = Color.Unspecified,
-                                backgroundColor = Color.Black.copy(alpha = 0.8f),
-                                iconTint = Color.White,
-                                iconSize = 20.dp,
-                                boxSize = 42.dp,
-                                isClickable = true,
-                                onClick = {
-                                    navigateToMediaImages(
-                                        mediaData.id,
-                                        mediaData.mediaCategory,
-                                    )
-                                },
-                            )
-
-                            CircleIconBoxComponent(
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(16.dp),
-                                icon = if (mediaDetailsUiState.isFavorite) LocalJokerIconPalette.current.icLike else LocalJokerIconPalette.current.icDislike,
-                                borderColor = Color.Unspecified,
-                                backgroundColor = Color.Black.copy(alpha = 0.8f),
-                                iconTint = if (mediaDetailsUiState.isFavorite) MaterialTheme.colorScheme.error else Color.White,
-                                iconSize = 20.dp,
-                                boxSize = 42.dp,
-                                isClickable = true,
-                                onClick = {
-                                    if (mediaDetailsUiState.isFavorite) {
-                                        mediaDetailsUiEvent(
-                                            MediaDetailsUiEvent.OnDislikeMedia(mediaData),
-                                        )
-                                    } else {
-                                        mediaDetailsUiEvent(
-                                            MediaDetailsUiEvent.OnLikeMedia(mediaData),
-                                        )
-                                    }
-                                },
-                            )
-                        }
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            Box(modifier = Modifier.matchParentSize()) {
-                                ShowGlideImageByUrl(
-                                    modifier =
-                                        Modifier
-                                            .matchParentSize()
-                                            .sharedElement(
-                                                sharedContentState = rememberSharedContentState(key = "poster$groupName$id"),
-                                                animatedVisibilityScope = animatedVisibilityScope,
-                                                renderInOverlayDuringTransition = false,
-                                            ),
-                                    imageUrlPath = poster,
-                                    context = LocalContext.current,
+                                    },
                                 )
-                                Box(
+
+                                CircleIconBoxComponent(
                                     modifier =
                                         Modifier
-                                            .matchParentSize()
-                                            .background(
-                                                brush =
-                                                    Brush.verticalGradient(
-                                                        0.5f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.9f,
-                                                            ),
-                                                        1f to
-                                                            MaterialTheme.colorScheme.surface.copy(
-                                                                alpha = 0.2f,
-                                                            ),
-                                                        1f to Color.Transparent,
-                                                    ),
-                                            ),
+                                            .align(Alignment.BottomEnd)
+                                            .padding(16.dp),
+                                    icon = if (mediaDetailsUiState.isFavorite) LocalJokerIconPalette.current.icLike else LocalJokerIconPalette.current.icDislike,
+                                    borderColor = Color.Unspecified,
+                                    backgroundColor = Color.Black.copy(alpha = 0.8f),
+                                    iconTint = if (mediaDetailsUiState.isFavorite) MaterialTheme.colorScheme.error else Color.White,
+                                    iconSize = 20.dp,
+                                    boxSize = 42.dp,
+                                    isClickable = true,
+                                    onClick = {
+                                        if (mediaDetailsUiState.isFavorite) {
+                                            mediaDetailsUiEvent(
+                                                MediaDetailsUiEvent.OnDislikeMedia(mediaData),
+                                            )
+                                        } else {
+                                            mediaDetailsUiEvent(
+                                                MediaDetailsUiEvent.OnLikeMedia(mediaData),
+                                            )
+                                        }
+                                    },
                                 )
                             }
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                Box(modifier = Modifier.matchParentSize()) {
+                                    ShowGlideImageByUrl(
+                                        modifier =
+                                            Modifier
+                                                .matchParentSize()
+                                                .sharedElement(
+                                                    sharedContentState =
+                                                        rememberSharedContentState(
+                                                            key = "poster$groupName$id",
+                                                        ),
+                                                    animatedVisibilityScope = animatedVisibilityScope,
+                                                    renderInOverlayDuringTransition = false,
+                                                ),
+                                        imageUrlPath = poster,
+                                        context = LocalContext.current,
+                                    )
+                                    Box(
+                                        modifier =
+                                            Modifier
+                                                .matchParentSize()
+                                                .background(
+                                                    brush =
+                                                        Brush.verticalGradient(
+                                                            0.5f to
+                                                                MaterialTheme.colorScheme.surface.copy(
+                                                                    alpha = 0.9f,
+                                                                ),
+                                                            1f to
+                                                                MaterialTheme.colorScheme.surface.copy(
+                                                                    alpha = 0.2f,
+                                                                ),
+                                                            1f to Color.Transparent,
+                                                        ),
+                                                ),
+                                    )
+                                }
 
-                            Column(
-                                modifier =
-                                    Modifier
-                                        .matchParentSize()
-                                        .padding(horizontal = 8.dp),
-                            ) {
-                                TitleLargeTextComponent(
-                                    text = mediaDetailsUiState.movieDetailsData.name,
-                                    modifier =
-                                        Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentHeight()
-                                            .padding(top = 8.dp)
-                                            .sharedElement(
-                                                rememberSharedContentState(key = "title$groupName$mediaData"),
-                                                animatedVisibilityScope = animatedVisibilityScope,
-                                                renderInOverlayDuringTransition = false,
-                                            ),
-                                    textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
                                 Column(
                                     modifier =
                                         Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .verticalScroll(rememberScrollState()),
+                                            .matchParentSize()
+                                            .padding(horizontal = 8.dp),
                                 ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        TitleValueComponent(
-                                            title = stringResource(R.string.release_date),
-                                            modifier = Modifier.weight(1f),
-                                            value = mediaDetailsUiState.movieDetailsData.releaseDate,
-                                        )
-
-                                        ImageValueComponent(
-                                            image = LocalJokerIconPalette.current.icIMDB,
-                                            value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
-                                        )
-                                    }
-
-                                    TitleValueComponent(
-                                        title = stringResource(R.string.vote_count),
-                                        value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
-                                    )
-                                    TitleValueComponent(
-                                        title = stringResource(R.string.genres),
-                                        value = mediaDetailsUiState.movieDetailsData.genres,
-                                    )
-
-                                    HorizontalDividerComponent(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    )
-                                    TitleMediumTextComponent(text = stringResource(R.string.overview))
-                                    Spacer(Modifier.height(4.dp))
-                                    BodyMediumTextComponent(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth(),
-                                        text = mediaDetailsUiState.movieDetailsData.overview,
-                                    )
-                                }
-                                if (mediaSimilarList.itemCount > 0) {
-                                    TitleMediumTextComponent(text = groupName)
-                                    LazyRow(
-                                        state = rememberLazyListState(),
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .height(300.dp)
-                                                .padding(top = 8.dp, bottom = 20.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    ) {
-                                        items(mediaSimilarList.itemCount) { index ->
-                                            val item = mediaSimilarList[index]
-                                            item?.let {
-                                                MediaListItemComponent(
-                                                    groupName = groupName,
-                                                    sharedTransitionScope = sharedTransitionScope,
-                                                    animatedVisibilityScope = animatedVisibilityScope,
-                                                    mediaData = item,
-                                                    isLiked = false, // TODO
-                                                    onFavoriteClicked = { isLiked, mediaItem ->
-//                                                        if (isLiked) {
-//                                                            mediaUiEvent(MediaUiEvent.OnLikeMovie(mediaItem))
-//                                                        } else {
-//                                                            mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
-//                                                        }
-                                                    },
-                                                    onItemClicked = { mediaData ->
-//                                                        onItemClicked(mediaData, groupName)
-                                                    },
-                                                )
-                                            }
-                                        }
-
-                                        mediaSimilarList.apply {
-                                            when (loadState.append) {
-                                                is LoadState.Loading ->
-                                                    item {
-                                                        CircularProgressIndicator()
-                                                    }
-
-                                                is LoadState.Error ->
-                                                    item {
-                                                        showToast(
-                                                            LocalContext.current,
-                                                            exceptionHandling((loadState.append as LoadState.Error).error),
-                                                        )
-                                                    }
-
-                                                else -> {}
-                                            }
-                                        }
-                                    }
-                                }
-                                AnimatedVisibility(visible = mediaDetailsUiState.mediaCredits.isNotEmpty()) {
-                                    Spacer(Modifier.height(8.dp))
-                                    TitleMediumTextComponent(text = stringResource(R.string.credits))
-                                    LazyRow(
+                                    TitleLargeTextComponent(
+                                        text = mediaDetailsUiState.movieDetailsData.name,
                                         modifier =
                                             Modifier
                                                 .fillMaxWidth()
                                                 .wrapContentHeight()
-                                                .padding(bottom = 16.dp, top = 8.dp),
+                                                .padding(top = 8.dp)
+                                                .sharedElement(
+                                                    rememberSharedContentState(key = "title$groupName$mediaData"),
+                                                    animatedVisibilityScope = animatedVisibilityScope,
+                                                    renderInOverlayDuringTransition = false,
+                                                ),
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                    Column(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .weight(1f)
+                                                .verticalScroll(rememberScrollState()),
                                     ) {
-                                        items(mediaDetailsUiState.mediaCredits) { item ->
-                                            CreditListItemComponent(
-                                                credit = item,
-                                                onItemClicked = {},
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            TitleValueComponent(
+                                                title = stringResource(R.string.release_date),
+                                                modifier = Modifier.weight(1f),
+                                                value = mediaDetailsUiState.movieDetailsData.releaseDate,
                                             )
+
+                                            ImageValueComponent(
+                                                image = LocalJokerIconPalette.current.icIMDB,
+                                                value = mediaDetailsUiState.movieDetailsData.rate.formattedStringOneDecimal(),
+                                            )
+                                        }
+
+                                        TitleValueComponent(
+                                            title = stringResource(R.string.vote_count),
+                                            value = mediaDetailsUiState.movieDetailsData.voteCount.toString(),
+                                        )
+                                        TitleValueComponent(
+                                            title = stringResource(R.string.genres),
+                                            value = mediaDetailsUiState.movieDetailsData.genres,
+                                        )
+                                        Spacer(Modifier.height(8.dp))
+                                        TitleSmallTextComponent(text = stringResource(R.string.overview))
+                                        Spacer(Modifier.height(4.dp))
+                                        BodyMediumTextComponent(
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth(),
+                                            text = mediaDetailsUiState.movieDetailsData.overview,
+                                            maxLines =
+                                                if (mediaDetailsUiState.showOverview) {
+                                                    Int.MAX_VALUE
+                                                } else {
+                                                    1
+                                                },
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            HorizontalDividerComponent(modifier = Modifier.weight(1f))
+                                            TitleSmallTextComponent(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                text =
+                                                    if (mediaDetailsUiState.showOverview) {
+                                                        stringResource(R.string.show_less)
+                                                    } else {
+                                                        stringResource(R.string.show_more)
+                                                    },
+                                                isClickable = true,
+                                                onClickable = {
+                                                    if (mediaDetailsUiState.showOverview) {
+                                                        mediaDetailsUiEvent(MediaDetailsUiEvent.OnShowLess)
+                                                    } else {
+                                                        mediaDetailsUiEvent(MediaDetailsUiEvent.OnShowMore)
+                                                    }
+                                                },
+                                            )
+                                            HorizontalDividerComponent(modifier = Modifier.weight(1f))
+                                        }
+                                        if (mediaDetailsUiState.mediaCredits.isNotEmpty()) {
+                                            Spacer(Modifier.height(8.dp))
+                                            TitleMediumTextComponent(text = stringResource(R.string.credits))
+                                            LazyRow(
+                                                modifier =
+                                                    Modifier
+                                                        .fillMaxWidth()
+                                                        .wrapContentHeight()
+                                                        .padding(bottom = 16.dp, top = 8.dp),
+                                            ) {
+                                                items(mediaDetailsUiState.mediaCredits) { item ->
+                                                    CreditListItemComponent(
+                                                        credit = item,
+                                                        onItemClicked = {},
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        if (mediaSimilarList.itemCount > 0) {
+                                            TitleMediumTextComponent(text = stringResource(R.string.similar))
+                                            LazyRow(
+                                                state = rememberLazyListState(),
+                                                modifier =
+                                                    Modifier
+                                                        .fillMaxWidth()
+                                                        .height(300.dp)
+                                                        .padding(top = 8.dp, bottom = 20.dp),
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                            ) {
+                                                items(mediaSimilarList.itemCount) { index ->
+                                                    val item = mediaSimilarList[index]
+                                                    item?.let {
+                                                        MediaListItemComponent(
+                                                            groupName = groupName,
+                                                            sharedTransitionScope = sharedTransitionScope,
+                                                            animatedVisibilityScope = animatedVisibilityScope,
+                                                            mediaData = item,
+                                                            isLiked = mediaDetailsUiState.favoriteIds.contains(it.id),
+                                                            onFavoriteClicked = { isLiked, mediaItem ->
+                                                                if (isLiked) {
+                                                                    mediaDetailsUiEvent(
+                                                                        MediaDetailsUiEvent.OnLikeMedia(
+                                                                            mediaItem,
+                                                                        ),
+                                                                    )
+                                                                } else {
+                                                                    mediaDetailsUiEvent(
+                                                                        MediaDetailsUiEvent.OnDislikeMedia(
+                                                                            mediaItem,
+                                                                        ),
+                                                                    )
+                                                                }
+                                                            },
+                                                            onItemClicked = { mediaData, groupName ->
+                                                                navigateToMediaDetails(mediaData, groupName)
+                                                            },
+                                                        )
+                                                    }
+                                                }
+
+                                                mediaSimilarList.apply {
+                                                    when (loadState.append) {
+                                                        is LoadState.Loading ->
+                                                            item {
+                                                                CircularProgressIndicator()
+                                                            }
+
+                                                        is LoadState.Error ->
+                                                            item {
+                                                                showToast(
+                                                                    LocalContext.current,
+                                                                    exceptionHandling((loadState.append as LoadState.Error).error),
+                                                                )
+                                                            }
+
+                                                        else -> Unit
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
