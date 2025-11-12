@@ -39,7 +39,7 @@ class SeriesViewModel
                 }.stateIn(
                     viewModelScope,
                     SharingStarted.WhileSubscribed(5000),
-                    SeriesUiState(isLoading = true),
+                    mSeriesUiState.value,
                 )
 
         fun onEvent(event: SeriesUiEvent) {
