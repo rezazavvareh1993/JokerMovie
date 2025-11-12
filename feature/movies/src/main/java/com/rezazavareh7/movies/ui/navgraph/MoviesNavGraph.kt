@@ -27,7 +27,6 @@ import com.rezazavareh7.movies.ui.images.MediaImagesViewModel
 import com.rezazavareh7.movies.ui.media.MediaScreen
 import com.rezazavareh7.movies.ui.media.MediaViewModel
 import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsScreen
-import com.rezazavareh7.movies.ui.moviedetails.MediaDetailsViewModel
 import com.rezazavareh7.movies.ui.setting.SettingScreen
 import com.rezazavareh7.movies.ui.setting.SettingViewModel
 import kotlin.reflect.typeOf
@@ -93,16 +92,11 @@ fun NavGraphBuilder.moviesNavGraph(
             },
         ) { backStackEntry ->
             val mediaDetailsInfo: MoviesScreensGraph.MediaDetails = backStackEntry.toRoute()
-            val viewModel = hiltViewModel<MediaDetailsViewModel>()
-            val mediaDetailsUiEvent = viewModel::onEvent
-            val mediaDetailsUiState by viewModel.mediaDetailsState.collectAsStateWithLifecycle()
             MediaDetailsScreen(
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = this,
                 mediaData = mediaDetailsInfo.mediaData,
                 groupName = mediaDetailsInfo.groupName,
-                mediaDetailsUiEvent = mediaDetailsUiEvent,
-                mediaDetailsUiState = mediaDetailsUiState,
                 onBackClicked = {
                     navController.popBackStack()
                 },

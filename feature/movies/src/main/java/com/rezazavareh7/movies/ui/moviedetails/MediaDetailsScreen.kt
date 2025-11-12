@@ -7,6 +7,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +19,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -33,6 +36,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
 import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
@@ -46,9 +53,11 @@ import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.ui.media.component.MediaListItemComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.CreditListItemComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.ImageValueComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.TitleValueComponent
+import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.showToast
 
@@ -59,12 +68,14 @@ fun MediaDetailsScreen(
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
     mediaData: MediaData,
-    mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit,
-    mediaDetailsUiState: MovieDetailsUiState,
+    viewModel: MediaDetailsViewModel = hiltViewModel<MediaDetailsViewModel>(),
+    mediaDetailsUiEvent: (MediaDetailsUiEvent) -> Unit = viewModel::onEvent,
+    mediaDetailsUiState: MovieDetailsUiState = viewModel.mediaDetailsState.collectAsStateWithLifecycle().value,
     onBackClicked: () -> Unit,
     navigateToMediaImages: (Long, MediaCategory) -> Unit,
 ) {
     val context = LocalContext.current
+    val mediaSimilarList = mediaDetailsUiState.mediaSimilarList.collectAsLazyPagingItems()
     if (mediaDetailsUiState.errorMessage.isNotEmpty()) {
         showToast(context, mediaDetailsUiState.errorMessage)
         mediaDetailsUiEvent(MediaDetailsUiEvent.OnToastMessageShown)
@@ -262,6 +273,60 @@ fun MediaDetailsScreen(
                                                 .fillMaxWidth(),
                                         text = mediaDetailsUiState.movieDetailsData.overview,
                                     )
+                                }
+                                if (mediaSimilarList.itemCount > 0) {
+                                    TitleMediumTextComponent(text = groupName)
+                                    LazyRow(
+                                        state = rememberLazyListState(),
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(300.dp)
+                                                .padding(top = 8.dp, bottom = 20.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    ) {
+                                        items(mediaSimilarList.itemCount) { index ->
+                                            val item = mediaSimilarList[index]
+                                            item?.let {
+                                                MediaListItemComponent(
+                                                    groupName = groupName,
+                                                    sharedTransitionScope = sharedTransitionScope,
+                                                    animatedVisibilityScope = animatedVisibilityScope,
+                                                    mediaData = item,
+                                                    isLiked = false, // TODO
+                                                    onFavoriteClicked = { isLiked, mediaItem ->
+//                                                        if (isLiked) {
+//                                                            mediaUiEvent(MediaUiEvent.OnLikeMovie(mediaItem))
+//                                                        } else {
+//                                                            mediaUiEvent(MediaUiEvent.OnDislikeMovie(mediaItem))
+//                                                        }
+                                                    },
+                                                    onItemClicked = { mediaData ->
+//                                                        onItemClicked(mediaData, groupName)
+                                                    },
+                                                )
+                                            }
+                                        }
+
+                                        mediaSimilarList.apply {
+                                            when (loadState.append) {
+                                                is LoadState.Loading ->
+                                                    item {
+                                                        CircularProgressIndicator()
+                                                    }
+
+                                                is LoadState.Error ->
+                                                    item {
+                                                        showToast(
+                                                            LocalContext.current,
+                                                            exceptionHandling((loadState.append as LoadState.Error).error),
+                                                        )
+                                                    }
+
+                                                else -> {}
+                                            }
+                                        }
+                                    }
                                 }
                                 AnimatedVisibility(visible = mediaDetailsUiState.mediaCredits.isNotEmpty()) {
                                     Spacer(Modifier.height(8.dp))

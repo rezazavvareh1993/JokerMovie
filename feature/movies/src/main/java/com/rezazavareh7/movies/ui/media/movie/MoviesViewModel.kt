@@ -39,7 +39,7 @@ class MoviesViewModel
                 }.stateIn(
                     viewModelScope,
                     SharingStarted.WhileSubscribed(5000),
-                    MoviesUiState(isLoading = true),
+                    mMoviesState.value,
                 )
 
         fun onEvent(event: MoviesUiEvent) {

@@ -2,10 +2,12 @@ package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.usecase.GetFavoritesUseCase
 import com.rezazavareh7.movies.domain.usecase.GetMediaCreditsUseCase
 import com.rezazavareh7.movies.domain.usecase.GetMediaDetailsUseCase
+import com.rezazavareh7.movies.domain.usecase.GetSimilarListUseCase
 import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ class MediaDetailsViewModel
         private val saveFavoriteItemUseCase: SaveFavoriteItemUseCase,
         private val getFavoritesUseCase: GetFavoritesUseCase,
         private val removeFavoriteItemUseCase: RemoveFavoriteItemUseCase,
+        private val getSimilarListUseCase: GetSimilarListUseCase,
     ) : ViewModel() {
         private var mMediaDetailsState = MutableStateFlow(MovieDetailsUiState(isLoading = true))
         val mediaDetailsState = mMediaDetailsState.asStateFlow()
@@ -34,6 +37,7 @@ class MediaDetailsViewModel
                     getFavorites(event.mediaData)
                     getMediaDetails(event.mediaData)
                     getMediaCredits(event.mediaData)
+                    getMediaSimilarList(event.mediaData)
                 }
 
                 is MediaDetailsUiEvent.OnToastMessageShown ->
@@ -67,6 +71,13 @@ class MediaDetailsViewModel
                         }
                     }
                 }
+            }
+        }
+
+        private fun getMediaSimilarList(mediaData: MediaData) {
+            viewModelScope.launch {
+                val response = getSimilarListUseCase.invoke(mediaData)
+                mMediaDetailsState.update { it.copy(mediaSimilarList = response.mediaSimilar.cachedIn(viewModelScope)) }
             }
         }
 
