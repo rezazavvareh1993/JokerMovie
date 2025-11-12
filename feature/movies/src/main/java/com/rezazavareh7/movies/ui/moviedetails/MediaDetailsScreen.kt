@@ -1,6 +1,7 @@
 package com.rezazavareh7.movies.ui.moviedetails
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -327,7 +328,7 @@ fun MediaDetailsScreen(
                                         }
                                     }
                                 }
-                                if (mediaDetailsUiState.mediaCredits.isNotEmpty()) {
+                                AnimatedVisibility(visible = mediaDetailsUiState.mediaCredits.isNotEmpty()) {
                                     Spacer(Modifier.height(8.dp))
                                     TitleMediumTextComponent(text = stringResource(R.string.credits))
                                     LazyRow(
