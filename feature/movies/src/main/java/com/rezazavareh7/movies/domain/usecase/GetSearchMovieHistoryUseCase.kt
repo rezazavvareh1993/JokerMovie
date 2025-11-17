@@ -2,8 +2,8 @@ package com.rezazavareh7.movies.domain.usecase
 
 import com.rezazavareh.prefrences.RegularDataStoreManager
 import com.rezazavareh.prefrences.SEARCH_MOVIE_HISTORY
-import com.rezazavareh7.common.util.fromJsonList
 import com.rezazavareh7.movies.domain.model.MediaResult
+import com.rezazavareh7.network.util.fromJsonList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

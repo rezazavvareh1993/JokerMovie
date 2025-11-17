@@ -3,22 +3,12 @@ package com.rezazavareh7.movies.data.mapper
 import com.rezazavareh7.movies.data.model.MovieCreditsResponse
 import com.rezazavareh7.movies.domain.model.Credit
 import com.rezazavareh7.movies.domain.model.Role
-import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import javax.inject.Inject
 
 class MovieCreditsMapper
     @Inject
     constructor() {
-        operator fun invoke(result: Result<MovieCreditsResponse>): BasicNetworkState<List<Credit>> =
-            result.fold(
-                onSuccess = { onSuccess(response = it) },
-                onFailure = { onFailure(it) },
-            )
-
-        private fun onFailure(throwable: Throwable): BasicNetworkState<Nothing> =
-            BasicNetworkState.Error(throwable = throwable, message = throwable.message.toString())
-
-        private fun onSuccess(response: MovieCreditsResponse): BasicNetworkState<List<Credit>> {
+        operator fun invoke(response: MovieCreditsResponse): List<Credit> {
             val credits = mutableListOf<Credit>()
             response.crew.filter { it.job == "Director" }.map { crew ->
                 with(crew) {
@@ -46,6 +36,6 @@ class MovieCreditsMapper
                     )
                 }
             }
-            return BasicNetworkState.Success(data = credits)
+            return credits
         }
     }

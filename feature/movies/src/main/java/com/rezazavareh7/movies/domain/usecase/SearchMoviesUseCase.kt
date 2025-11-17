@@ -2,10 +2,10 @@ package com.rezazavareh7.movies.domain.usecase
 
 import com.rezazavareh.prefrences.RegularDataStoreManager
 import com.rezazavareh.prefrences.SEARCH_MOVIE_HISTORY
-import com.rezazavareh7.common.util.fromJsonList
-import com.rezazavareh7.common.util.toJson
 import com.rezazavareh7.movies.domain.model.MediaResult
 import com.rezazavareh7.movies.domain.repository.MoviesRepository
+import com.rezazavareh7.network.util.fromJsonList
+import com.rezazavareh7.network.util.toJson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext

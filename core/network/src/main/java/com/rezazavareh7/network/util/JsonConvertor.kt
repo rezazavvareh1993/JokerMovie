@@ -1,4 +1,4 @@
-package com.rezazavareh7.common.util
+package com.rezazavareh7.network.util
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

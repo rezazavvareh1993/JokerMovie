@@ -3,11 +3,16 @@ package com.rezazavareh7.movies.data.repositoryimpl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.rezazavareh7.common.domain.DataError
+import com.rezazavareh7.common.domain.Result
+import com.rezazavareh7.common.domain.map
 import com.rezazavareh7.movies.data.apiservice.SeriesApiService
 import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
 import com.rezazavareh7.movies.data.mapper.SeriesCreditsMapper
 import com.rezazavareh7.movies.data.mapper.SeriesDetailMapper
 import com.rezazavareh7.movies.data.mapper.SeriesMapper
+import com.rezazavareh7.movies.data.model.SeriesCreditsResponse
+import com.rezazavareh7.movies.data.model.SeriesDetailResponse
 import com.rezazavareh7.movies.data.paging.GenericPagingSource
 import com.rezazavareh7.movies.data.paging.SearchSeriesPagingSource
 import com.rezazavareh7.movies.domain.model.Credit
@@ -16,6 +21,7 @@ import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.SeriesRepository
+import com.rezazavareh7.network.util.safeApiCall
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -79,18 +85,22 @@ class SeriesRepositoryImpl
                 },
             ).flow
 
-        override suspend fun getSeriesDetail(seriesId: Long): BasicNetworkState<MediaDetailData> =
-            seriesDetailMapper(seriesApiService.getSeriesDetails(seriesId))
+        override suspend fun getSeriesDetail(seriesId: Long): Result<MediaDetailData, DataError.Remote> =
+            safeApiCall<SeriesDetailResponse> {
+                seriesApiService.getSeriesDetails(seriesId)
+            }.map { response ->
+                seriesDetailMapper(response)
+            }
 
         override suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>> =
             mediaImagesMapper(
                 seriesApiService.getImages(seriesId),
             )
 
-        override suspend fun getSeriesCredits(seriesId: Long): BasicNetworkState<List<Credit>> =
-            seriesCreditsMapper(
-                seriesApiService.getCredits(seriesId),
-            )
+        override suspend fun getSeriesCredits(seriesId: Long): Result<List<Credit>, DataError> =
+            safeApiCall<SeriesCreditsResponse> {
+                seriesApiService.getCredits(seriesId)
+            }.map { response -> seriesCreditsMapper(response) }
 
         override fun getSimilarSeries(seriesId: Long): Flow<PagingData<MediaData>> =
             Pager(

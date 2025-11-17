@@ -10,6 +10,7 @@ import com.rezazavareh7.movies.domain.usecase.GetMediaDetailsUseCase
 import com.rezazavareh7.movies.domain.usecase.GetSimilarListUseCase
 import com.rezazavareh7.movies.domain.usecase.RemoveFavoriteItemUseCase
 import com.rezazavareh7.movies.domain.usecase.SaveFavoriteItemUseCase
+import com.rezazavareh7.ui.util.toUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,11 +41,11 @@ class MediaDetailsViewModel
                     getFavorites(event.mediaData)
                     getMediaDetails(event.mediaData)
                     getMediaCredits(event.mediaData)
-                    getMediaSimilarList(event.mediaData)
+//                    getMediaSimilarList(event.mediaData)
                 }
 
                 is MediaDetailsUiEvent.OnToastMessageShown ->
-                    mMediaDetailsState.update { it.copy(errorMessage = "") }
+                    mMediaDetailsState.update { it.copy(errorMessage = null) }
 
                 is MediaDetailsUiEvent.OnLikeMedia -> saveFavoriteMovie(event.mediaData)
 
@@ -62,7 +63,12 @@ class MediaDetailsViewModel
         private fun mediaSelected(mediaData: MediaData) {
             mediaJob =
                 viewModelScope.launch {
-                    mMediaDetailsState.update { it.copy(mediaDataSelected = mediaData, isLoading = true) }
+                    mMediaDetailsState.update {
+                        it.copy(
+                            mediaDataSelected = mediaData,
+                            isLoading = true,
+                        )
+                    }
                     getFavorites(mediaData)
                     getMediaDetails(mediaData)
                     getMediaCredits(mediaData)
@@ -82,7 +88,7 @@ class MediaDetailsViewModel
 
                     true -> {
                         mMediaDetailsState.update {
-                            it.copy(errorMessage = result.errorMessage)
+                            it.copy(errorMessage = result.dataError.toUiText())
                         }
                     }
                 }
@@ -113,7 +119,7 @@ class MediaDetailsViewModel
 
                     true -> {
                         mMediaDetailsState.update {
-                            it.copy(errorMessage = result.errorMessage, isLoading = false)
+                            it.copy(errorMessage = result.dataError.toUiText(), isLoading = false)
                         }
                     }
                 }

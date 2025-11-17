@@ -3,11 +3,16 @@ package com.rezazavareh7.movies.data.repositoryimpl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.rezazavareh7.common.domain.DataError
+import com.rezazavareh7.common.domain.Result
+import com.rezazavareh7.common.domain.map
 import com.rezazavareh7.movies.data.apiservice.MovieApiService
 import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
 import com.rezazavareh7.movies.data.mapper.MovieCreditsMapper
 import com.rezazavareh7.movies.data.mapper.MovieDetailsMapper
 import com.rezazavareh7.movies.data.mapper.MoviesMapper
+import com.rezazavareh7.movies.data.model.MovieCreditsResponse
+import com.rezazavareh7.movies.data.model.MovieDetailsResponse
 import com.rezazavareh7.movies.data.paging.GenericPagingSource
 import com.rezazavareh7.movies.data.paging.SearchMoviePagingSource
 import com.rezazavareh7.movies.domain.model.Credit
@@ -16,6 +21,7 @@ import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
 import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.MoviesRepository
+import com.rezazavareh7.network.util.safeApiCall
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -35,10 +41,12 @@ class MoviesRepositoryImpl
                 pagingSourceFactory = { searchMoviePagerFactory.create(query) },
             ).flow
 
-        override suspend fun getMovieDetail(movieId: Long): BasicNetworkState<MediaDetailData> {
-            val result = movieApiServices.getMovieDetails(movieId)
-            return movieDetailMapper(result)
-        }
+        override suspend fun getMovieDetail(movieId: Long): Result<MediaDetailData, DataError> =
+            safeApiCall<MovieDetailsResponse> {
+                movieApiServices.getMovieDetails(movieId)
+            }.map { response ->
+                movieDetailMapper(response)
+            }
 
         override fun getTopRatedMovies(): Flow<PagingData<MediaData>> =
             Pager(
@@ -98,6 +106,10 @@ class MoviesRepositoryImpl
         override suspend fun getImages(movieId: Long): BasicNetworkState<List<MediaImage>> =
             mediaImagesMapper(movieApiServices.getImages(movieId))
 
-        override suspend fun getMovieCredits(movieId: Long): BasicNetworkState<List<Credit>> =
-            movieCreditsMapper(movieApiServices.getCredits(movieId))
+        override suspend fun getMovieCredits(movieId: Long): Result<List<Credit>, DataError> =
+            safeApiCall<MovieCreditsResponse> {
+                movieApiServices.getCredits(movieId)
+            }.map { response ->
+                movieCreditsMapper(response)
+            }
     }

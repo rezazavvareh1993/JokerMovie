@@ -1,8 +1,8 @@
 package com.rezazavareh7.movies.domain.usecase
 
+import com.rezazavareh7.common.domain.handleResult
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaDetailsResult
-import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 import com.rezazavareh7.movies.domain.repository.MoviesRepository
 import com.rezazavareh7.movies.domain.repository.SeriesRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,13 +27,14 @@ class GetMediaDetailsUseCase
                     } else {
                         seriesRepository.getSeriesDetail(mediaId)
                     }
-                when (result) {
-                    is BasicNetworkState.Success -> MediaDetailsResult(mediaDetailsData = result.data)
-                    is BasicNetworkState.Error ->
-                        MediaDetailsResult(
-                            hasError = true,
-                            errorMessage = result.message,
-                        )
-                }
+
+                return@withContext result.handleResult(
+                    onSuccessAction = { data ->
+                        MediaDetailsResult(mediaDetailsData = data)
+                    },
+                    onErrorAction = { error ->
+                        MediaDetailsResult(hasError = true, dataError = error)
+                    },
+                )
             }
     }

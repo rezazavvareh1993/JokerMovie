@@ -75,8 +75,8 @@ fun MediaDetailsScreen(
     navigateToMediaDetails: (MediaData, String) -> Unit,
 ) {
     val context = LocalContext.current
-    if (mediaDetailsUiState.errorMessage.isNotEmpty()) {
-        showToast(context, mediaDetailsUiState.errorMessage)
+    if (mediaDetailsUiState.errorMessage != null) {
+        showToast(context, mediaDetailsUiState.errorMessage.asString())
         mediaDetailsUiEvent(MediaDetailsUiEvent.OnToastMessageShown)
     }
 
