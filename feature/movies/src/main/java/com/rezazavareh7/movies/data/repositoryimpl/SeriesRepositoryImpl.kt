@@ -14,8 +14,9 @@ import com.rezazavareh7.movies.data.mapper.SeriesMapper
 import com.rezazavareh7.movies.data.model.SeriesCreditsResponse
 import com.rezazavareh7.movies.data.model.SeriesDetailResponse
 import com.rezazavareh7.movies.data.paging.GenericPagingSource
-import com.rezazavareh7.movies.data.paging.SearchSeriesPagingSource
+import com.rezazavareh7.movies.data.paging.SearchPagingSource
 import com.rezazavareh7.movies.domain.model.Credit
+import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.domain.model.MediaDetailData
 import com.rezazavareh7.movies.domain.model.MediaImage
@@ -29,7 +30,7 @@ class SeriesRepositoryImpl
     @Inject
     constructor(
         private val seriesApiService: SeriesApiService,
-        private val searchSeriesFactory: SearchSeriesPagingSource.Factory,
+        private val searchPagingSourceFactory: SearchPagingSource.Factory,
         private val seriesDetailMapper: SeriesDetailMapper,
         private val mediaImagesMapper: MediaImagesMapper,
         private val seriesCreditsMapper: SeriesCreditsMapper,
@@ -38,7 +39,9 @@ class SeriesRepositoryImpl
         override fun searchSeries(query: String): Flow<PagingData<MediaData>> =
             Pager(
                 config = PagingConfig(pageSize = 5),
-                pagingSourceFactory = { searchSeriesFactory.create(query) },
+                pagingSourceFactory = {
+                    searchPagingSourceFactory.create(MediaCategory.SERIES, query)
+                },
             ).flow
 
         override fun getTopRatedSeries(): Flow<PagingData<MediaData>> =

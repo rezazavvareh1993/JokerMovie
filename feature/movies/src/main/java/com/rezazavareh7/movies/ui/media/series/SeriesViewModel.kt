@@ -46,7 +46,7 @@ class SeriesViewModel
             when (event) {
                 is SeriesUiEvent.OnGetSeriesCalled -> getSeries()
                 is SeriesUiEvent.OnToastMessageShown ->
-                    mSeriesUiState.update { it.copy(errorMessage = "") }
+                    mSeriesUiState.update { it.copy(errorMessage = null) }
 
                 is SeriesUiEvent.OnSearchQueryChanged ->
                     mSeriesUiState.update { it.copy(queryInput = event.newSeriesName, shouldShowHistoryQueries = true) }
@@ -54,6 +54,7 @@ class SeriesViewModel
                 is SeriesUiEvent.OnSearched -> searchMovies(event.query)
 
                 is SeriesUiEvent.OnSearchBarExpandStateChanged -> handelSearchBarExpandState(event.isExpanded)
+                is SeriesUiEvent.OnShowToast -> mSeriesUiState.update { it.copy(errorMessage = event.uiText) }
             }
         }
 

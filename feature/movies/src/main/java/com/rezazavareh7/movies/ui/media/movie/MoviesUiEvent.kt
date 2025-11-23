@@ -1,19 +1,25 @@
 package com.rezazavareh7.movies.ui.media.movie
 
-sealed class MoviesUiEvent {
-    data object OnGetMoviesCalled : MoviesUiEvent()
+import com.rezazavareh7.ui.util.UiText
 
-    data object OnToastMessageShown : MoviesUiEvent()
+sealed interface MoviesUiEvent {
+    data object OnGetMoviesCalled : MoviesUiEvent
+
+    data object OnToastMessageShown : MoviesUiEvent
 
     data class OnSearchBarExpandStateChanged(
         val isExpanded: Boolean,
-    ) : MoviesUiEvent()
+    ) : MoviesUiEvent
 
     data class OnSearchQueryChanged(
         val newMovieName: String,
-    ) : MoviesUiEvent()
+    ) : MoviesUiEvent
 
     data class OnSearched(
         val query: String,
-    ) : MoviesUiEvent()
+    ) : MoviesUiEvent
+
+    data class OnShowToast(
+        val uiText: UiText?,
+    ) : MoviesUiEvent
 }

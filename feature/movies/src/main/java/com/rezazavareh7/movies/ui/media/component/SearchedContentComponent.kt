@@ -16,16 +16,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.designsystem.R
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
-import com.rezazavareh7.movies.ui.util.exceptionHandling
+import com.rezazavareh7.movies.ui.util.toDataError
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
-import com.rezazavareh7.ui.components.showToast
+import com.rezazavareh7.ui.util.UiText
+import com.rezazavareh7.ui.util.toUiText
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -42,6 +42,7 @@ fun SearchedContentComponent(
     onItemClicked: (MediaData, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
     clickOnQueryItem: (String) -> Unit,
+    onShowToast: (UiText?) -> Unit,
 ) {
     AnimatedVisibility(shouldShowHistoryQueries) {
         SearchHistoryListComponent(
@@ -61,8 +62,9 @@ fun SearchedContentComponent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             mediaList.apply {
+                val refreshState = mediaList.loadState.refresh
                 when {
-                    mediaList.loadState.refresh is LoadState.Loading ->
+                    refreshState is LoadState.Loading ->
                         item {
                             LottieAnimationComponent(
                                 lottieResource = R.raw.lottie_video_loading,
@@ -72,12 +74,7 @@ fun SearchedContentComponent(
 
                     mediaList.loadState.refresh is LoadState.Error ->
                         item {
-                            showToast(
-                                LocalContext.current,
-                                exceptionHandling(
-                                    (mediaList.loadState.refresh as LoadState.Error).error,
-                                ),
-                            )
+                            onShowToast((refreshState as LoadState.Error).toDataError().toUiText())
                         }
 
                     mediaList.loadState.refresh is LoadState.NotLoading && mediaList.itemCount == 0 -> {

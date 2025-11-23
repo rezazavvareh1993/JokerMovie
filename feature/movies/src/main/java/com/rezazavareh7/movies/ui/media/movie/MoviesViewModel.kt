@@ -45,14 +45,21 @@ class MoviesViewModel
         fun onEvent(event: MoviesUiEvent) {
             when (event) {
                 is MoviesUiEvent.OnGetMoviesCalled -> getMovies()
-                is MoviesUiEvent.OnToastMessageShown -> mMoviesState.update { it.copy(errorMessage = "") }
+                is MoviesUiEvent.OnToastMessageShown -> mMoviesState.update { it.copy(errorMessage = null) }
 
                 is MoviesUiEvent.OnSearchQueryChanged ->
-                    mMoviesState.update { it.copy(queryInput = event.newMovieName, shouldShowHistoryQueries = true) }
+                    mMoviesState.update {
+                        it.copy(
+                            queryInput = event.newMovieName,
+                            shouldShowHistoryQueries = true,
+                        )
+                    }
 
                 is MoviesUiEvent.OnSearched -> searchMovies(event.query)
 
                 is MoviesUiEvent.OnSearchBarExpandStateChanged -> handelSearchBarExpandState(event.isExpanded)
+
+                is MoviesUiEvent.OnShowToast -> mMoviesState.update { it.copy(errorMessage = event.uiText) }
             }
         }
 
@@ -67,10 +74,21 @@ class MoviesViewModel
         private fun handelSearchBarExpandState(isExpanded: Boolean) {
             viewModelScope.launch {
                 if (isExpanded) {
-                    mMoviesState.update { it.copy(isSearchBarExpanded = true, shouldShowHistoryQueries = true) }
+                    mMoviesState.update {
+                        it.copy(
+                            isSearchBarExpanded = true,
+                            shouldShowHistoryQueries = true,
+                        )
+                    }
                     getSearchMovieHistory()
                 } else {
-                    mMoviesState.update { it.copy(queryInput = "", isSearchBarExpanded = false, hasSearched = false) }
+                    mMoviesState.update {
+                        it.copy(
+                            queryInput = "",
+                            isSearchBarExpanded = false,
+                            hasSearched = false,
+                        )
+                    }
                     getMovies()
                 }
             }
@@ -97,11 +115,10 @@ class MoviesViewModel
 
         private fun searchMovies(query: String) {
             viewModelScope.launch {
-                mMoviesState.update { it.copy(isLoading = true, queryInput = query) }
+                mMoviesState.update { it.copy(queryInput = query) }
                 val result = searchMoviesUseCase(query)
                 mMoviesState.update {
                     it.copy(
-                        isLoading = false,
                         searchResult = result.searchResult,
                         hasSearched = true,
                         shouldShowHistoryQueries = false,

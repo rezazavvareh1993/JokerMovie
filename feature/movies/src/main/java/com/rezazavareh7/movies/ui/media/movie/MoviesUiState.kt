@@ -2,12 +2,13 @@ package com.rezazavareh7.movies.ui.media.movie
 
 import androidx.paging.PagingData
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.ui.util.UiText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 data class MoviesUiState(
     val isLoading: Boolean = false,
-    val errorMessage: String = "",
+    val errorMessage: UiText? = null,
     val queryInput: String = "",
     val moviesData: List<MediaData> = emptyList(),
     val topRatedMovies: Flow<PagingData<MediaData>> = flowOf(PagingData.empty()),

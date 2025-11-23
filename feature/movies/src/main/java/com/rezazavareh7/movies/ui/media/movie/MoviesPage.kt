@@ -11,20 +11,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
+import com.rezazavareh7.movies.ui.media.component.HandlingPagingLoadState
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
-import com.rezazavareh7.movies.ui.util.exceptionHandling
+import com.rezazavareh7.movies.ui.model.MediaCategoryPagingList
 import com.rezazavareh7.ui.components.lottie.MediaLoadingAnimation
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.movies.R as MediaResource
@@ -41,16 +46,58 @@ fun MoviesPage(
     mediaUiEvent: (MediaUiEvent) -> Unit,
     navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
-    val topRatedMovies = moviesUiState.topRatedMovies.collectAsLazyPagingItems()
-    val upcomingMovies = moviesUiState.upcomingMovies.collectAsLazyPagingItems()
-    val popularMovies = moviesUiState.popularMovies.collectAsLazyPagingItems()
-    val nowPlayingMovies = moviesUiState.nowPlayingMovies.collectAsLazyPagingItems()
-    val searchedMovies = moviesUiState.searchResult.collectAsLazyPagingItems()
     val context = LocalContext.current
-    if (moviesUiState.errorMessage.isNotEmpty()) {
-        showToast(context, moviesUiState.errorMessage)
+    if (moviesUiState.errorMessage != null) {
+        showToast(context, moviesUiState.errorMessage.asString())
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
     }
+
+    var isNeedToHandlePagin by remember {
+        mutableStateOf(false)
+    }
+
+    val searchedMovies = moviesUiState.searchResult.collectAsLazyPagingItems()
+
+    val listPagingCategories =
+        arrayOf(
+            MediaCategoryPagingList(
+                pagingList = moviesUiState.upcomingMovies.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.upcoming),
+            ),
+            MediaCategoryPagingList(
+                pagingList = moviesUiState.topRatedMovies.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.top_rated),
+            ),
+            MediaCategoryPagingList(
+                pagingList = moviesUiState.nowPlayingMovies.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.now_playing),
+            ),
+            MediaCategoryPagingList(
+                pagingList = moviesUiState.popularMovies.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.popular),
+            ),
+        )
+
+    LaunchedEffect(Unit) {
+        isNeedToHandlePagin = true
+    }
+
+    if (isNeedToHandlePagin) {
+        HandlingPagingLoadState(
+            categoryLists = listPagingCategories,
+            onRefreshLoading = {
+                if (moviesUiState.isLoading) {
+                    MediaLoadingAnimation()
+                }
+            },
+            onRefreshError = { errorUiText ->
+                if (moviesUiState.isLoading) {
+                    movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
+                }
+            },
+        )
+    }
+
     Column(
         modifier =
             Modifier
@@ -106,85 +153,41 @@ fun MoviesPage(
                     clickOnQueryItem = { query ->
                         movieUiEvent(MoviesUiEvent.OnSearched(query))
                     },
+                    onShowToast = { errorUiText ->
+                        movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
+                    },
                 )
             },
         )
-        when {
-            topRatedMovies.loadState.refresh is LoadState.Loading ||
-                nowPlayingMovies.loadState.refresh is LoadState.Loading ||
-                upcomingMovies.loadState.refresh is LoadState.Loading ||
-                popularMovies.loadState.refresh is LoadState.Loading -> {
-                MediaLoadingAnimation()
-            }
-
-            topRatedMovies.loadState.refresh is LoadState.Error &&
-                nowPlayingMovies.loadState.refresh is LoadState.Error &&
-                upcomingMovies.loadState.refresh is LoadState.Error &&
-                popularMovies.loadState.refresh is LoadState.Error -> {
-                showToast(
-                    context,
-                    exceptionHandling((topRatedMovies.loadState.refresh as LoadState.Error).error),
-                )
-            }
-
-            else ->
-                if (!moviesUiState.isSearchBarExpanded) {
-                    LazyColumn(
-                        state = rememberLazyListState(),
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                    ) {
-                        item {
-                            MediaListComponent(
-                                sharedTransitionScope = sharedTransitionScope,
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                groupName = stringResource(MediaResource.string.upcoming),
-                                mediaList = upcomingMovies,
-                                favoriteIds = favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
-
-                        item {
-                            MediaListComponent(
-                                sharedTransitionScope = sharedTransitionScope,
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                groupName = stringResource(MediaResource.string.top_rated),
-                                mediaList = topRatedMovies,
-                                favoriteIds = favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
-
-                        item {
-                            MediaListComponent(
-                                sharedTransitionScope = sharedTransitionScope,
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                groupName = stringResource(MediaResource.string.now_playing),
-                                mediaList = nowPlayingMovies,
-                                favoriteIds = favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
-                        }
-
-                        item {
-                            MediaListComponent(
-                                sharedTransitionScope = sharedTransitionScope,
-                                animatedVisibilityScope = animatedVisibilityScope,
-                                groupName = stringResource(MediaResource.string.popular),
-                                mediaList = popularMovies,
-                                favoriteIds = favoriteIds,
-                                mediaUiEvent = mediaUiEvent,
-                                onItemClicked = navigateToMediaDetailsScreen,
-                            )
+        if (!moviesUiState.isSearchBarExpanded) {
+            LazyColumn(
+                state = rememberLazyListState(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+            ) {
+                if (!moviesUiState.isLoading) {
+                    listPagingCategories.forEach { mediaCategoryPagingList ->
+                        if (mediaCategoryPagingList.pagingList.itemCount > 0) {
+                            item {
+                                MediaListComponent(
+                                    sharedTransitionScope = sharedTransitionScope,
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    groupName = mediaCategoryPagingList.title,
+                                    mediaPagingList = mediaCategoryPagingList.pagingList,
+                                    favoriteIds = favoriteIds,
+                                    mediaUiEvent = mediaUiEvent,
+                                    onItemClicked = navigateToMediaDetailsScreen,
+                                    onShowError = { errorUiText ->
+                                        movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
+                                    },
+                                )
+                            }
                         }
                     }
                 }
+            }
         }
     }
 }

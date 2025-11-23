@@ -2,11 +2,10 @@ package com.rezazavareh7.movies.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
 
 class GenericPagingSource<ResponseType, OutputType : Any> constructor(
-    private val apiCall: suspend (page: Int) -> ResponseType,
-    private val mapper: suspend (ResponseType) -> BasicNetworkState<List<OutputType>>,
+    private val apiCall: suspend (page: Int) -> Result<ResponseType>,
+    private val mapper: suspend (ResponseType) -> List<OutputType>,
 ) : PagingSource<Int, OutputType>() {
     override fun getRefreshKey(state: PagingState<Int, OutputType>): Int? =
         state.anchorPosition?.let { anchorPosition ->
@@ -18,19 +17,19 @@ class GenericPagingSource<ResponseType, OutputType : Any> constructor(
         try {
             val page = params.key ?: 1
             val response = apiCall(page)
-            val result = mapper(response)
-
-            when (result) {
-                is BasicNetworkState.Success ->
+            response.fold(
+                onSuccess = {
+                    val resultMapper = mapper(it)
                     LoadResult.Page(
-                        data = result.data,
+                        data = resultMapper,
                         prevKey = if (page == 1) null else page - 1,
-                        nextKey = if (result.data.isEmpty()) null else page + 1,
+                        nextKey = if (resultMapper.isEmpty()) null else page + 1,
                     )
-
-                is BasicNetworkState.Error ->
-                    LoadResult.Error(result.throwable)
-            }
+                },
+                onFailure = {
+                    LoadResult.Error(it)
+                },
+            )
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

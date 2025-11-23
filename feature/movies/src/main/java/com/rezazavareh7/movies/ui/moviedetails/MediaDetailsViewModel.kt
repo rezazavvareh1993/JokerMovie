@@ -37,13 +37,6 @@ class MediaDetailsViewModel
 
         fun onEvent(event: MediaDetailsUiEvent) {
             when (event) {
-                is MediaDetailsUiEvent.OnGetMediaDetailsCalled -> {
-                    getFavorites(event.mediaData)
-                    getMediaDetails(event.mediaData)
-                    getMediaCredits(event.mediaData)
-//                    getMediaSimilarList(event.mediaData)
-                }
-
                 is MediaDetailsUiEvent.OnToastMessageShown ->
                     mMediaDetailsState.update { it.copy(errorMessage = null) }
 
@@ -57,6 +50,9 @@ class MediaDetailsViewModel
                     mediaJob?.cancel()
                     mediaSelected(event.mediaData)
                 }
+
+                is MediaDetailsUiEvent.OnShowToast ->
+                    mMediaDetailsState.update { it.copy(errorMessage = event.uiText) }
             }
         }
 

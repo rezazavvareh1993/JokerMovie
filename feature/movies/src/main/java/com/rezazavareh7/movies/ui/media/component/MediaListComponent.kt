@@ -4,25 +4,23 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.designsystem.R
+import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
-import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.lottie.LottieAnimationComponent
-import com.rezazavareh7.ui.components.showToast
+import com.rezazavareh7.ui.util.UiText
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -30,13 +28,14 @@ fun MediaListComponent(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     groupName: String,
-    mediaList: LazyPagingItems<MediaData>,
+    mediaPagingList: LazyPagingItems<MediaData>,
     favoriteIds: List<Long>,
     isInSearchMode: Boolean = false,
     onItemClicked: (MediaData, String) -> Unit,
     mediaUiEvent: (MediaUiEvent) -> Unit,
+    onShowError: (UiText?) -> Unit,
 ) {
-    if (mediaList.itemCount > 0) {
+    if (mediaPagingList.itemCount > 0) {
         TitleMediumTextComponent(text = groupName)
         LazyRow(
             state = rememberLazyListState(),
@@ -47,8 +46,8 @@ fun MediaListComponent(
                     .padding(top = 8.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(mediaList.itemCount) { index ->
-                val item = mediaList[index]
+            items(mediaPagingList.itemCount) { index ->
+                val item = mediaPagingList[index]
                 item?.let {
                     MediaListItemComponent(
                         groupName = groupName,
@@ -70,26 +69,17 @@ fun MediaListComponent(
                 }
             }
 
-            mediaList.apply {
-                when (loadState.append) {
-                    is LoadState.Loading ->
-                        item {
-                            CircularProgressIndicator()
-                        }
-
-                    is LoadState.Error ->
-                        item {
-                            showToast(
-                                LocalContext.current,
-                                exceptionHandling((loadState.append as LoadState.Error).error),
-                            )
-                        }
-
-                    else -> {}
-                }
+            item {
+                HandlingPagingLoadState(
+                    pagingListData = mediaPagingList,
+                    onAppendLoading = { CircularProgressBarComponent(modifier = Modifier.fillMaxSize()) },
+                    onAppendError = { errorUiText ->
+                        onShowError(errorUiText)
+                    },
+                )
             }
         }
-    } else if (isInSearchMode && mediaList.itemCount == 0) {
+    } else if (isInSearchMode && mediaPagingList.itemCount == 0) {
         LottieAnimationComponent(
             modifier =
                 Modifier

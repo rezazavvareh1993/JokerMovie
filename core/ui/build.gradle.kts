@@ -29,6 +29,10 @@ dependencies {
     // Hilt Navigation
     api(libs.hilt.navigation.compose)
 
+    // Pagination
+    api(libs.androidx.paging.compose)
+    api(libs.androidx.paging.runtime.ktx)
+
     // Modules
     implementation(projects.core.common)
     api(projects.core.designsystem)

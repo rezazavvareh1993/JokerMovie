@@ -29,7 +29,7 @@ suspend inline fun <reified T> safeApiCall(execute: () -> KotlinResult<T>): Doma
     return responseToDomainResult(response)
 }
 
-suspend inline fun <reified T> responseToDomainResult(response: KotlinResult<T>): DomainResult<T, DataError.Remote> =
+inline fun <reified T> responseToDomainResult(response: KotlinResult<T>): DomainResult<T, DataError.Remote> =
     response.fold(
         onSuccess = {
             DomainResult.Success(it)
@@ -37,20 +37,7 @@ suspend inline fun <reified T> responseToDomainResult(response: KotlinResult<T>)
         onFailure = {
             it.timberLog()
             when (it) {
-                is HttpException -> {
-                    when (it.response()?.code()) {
-                        in 200..299 -> DomainResult.Error(DataError.Remote.SERIALIZATION)
-                        400 -> DomainResult.Error(DataError.Remote.BAD_REQUEST)
-                        401 -> DomainResult.Error(DataError.Remote.UNAUTHORIZED)
-                        403 -> DomainResult.Error(DataError.Remote.FORBIDDEN)
-                        404 -> DomainResult.Error(DataError.Remote.NOT_FOUND)
-                        408 -> DomainResult.Error(DataError.Remote.REQUEST_TIMEOUT)
-                        429 -> DomainResult.Error(DataError.Remote.TOO_MANY_REQUESTS)
-                        in 500..599 -> DomainResult.Error(DataError.Remote.SERVER_UNAVAILABLE)
-                        else -> DomainResult.Error(DataError.Remote.UNKNOWN)
-                    }
-                }
-
+                is HttpException -> mapHttpError(it)
                 is SocketTimeoutException -> DomainResult.Error(DataError.Remote.REQUEST_TIMEOUT)
                 is UnresolvedAddressException -> DomainResult.Error(DataError.Remote.NO_INTERNET)
                 is UnknownHostException -> DomainResult.Error(DataError.Remote.NO_INTERNET)
@@ -58,3 +45,17 @@ suspend inline fun <reified T> responseToDomainResult(response: KotlinResult<T>)
             }
         },
     )
+
+fun mapHttpError(e: HttpException): DomainResult.Error<DataError.Remote> {
+    val code = e.code()
+    return when (code) {
+        400 -> DomainResult.Error(DataError.Remote.BAD_REQUEST)
+        401 -> DomainResult.Error(DataError.Remote.UNAUTHORIZED)
+        403 -> DomainResult.Error(DataError.Remote.FORBIDDEN)
+        404 -> DomainResult.Error(DataError.Remote.NOT_FOUND)
+        408 -> DomainResult.Error(DataError.Remote.REQUEST_TIMEOUT)
+        429 -> DomainResult.Error(DataError.Remote.TOO_MANY_REQUESTS)
+        in 500..599 -> DomainResult.Error(DataError.Remote.SERVER_UNAVAILABLE)
+        else -> DomainResult.Error(DataError.Remote.UNKNOWN)
+    }
+}

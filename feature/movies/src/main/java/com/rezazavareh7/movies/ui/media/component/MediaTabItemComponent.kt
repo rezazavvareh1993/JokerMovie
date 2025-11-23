@@ -13,7 +13,7 @@ import com.rezazavareh7.designsystem.preview.JockerPreview
 import com.rezazavareh7.designsystem.theme.JokerMovieTheme
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
-import com.rezazavareh7.movies.ui.media.MediaTabItem
+import com.rezazavareh7.movies.ui.model.MediaTabItem
 
 @Composable
 fun MediaItemComponent(

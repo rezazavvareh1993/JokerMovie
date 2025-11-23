@@ -1,4 +1,4 @@
-package com.rezazavareh7.movies.ui.media
+package com.rezazavareh7.movies.ui.model
 
 import com.rezazavareh7.movies.domain.model.MediaCategory
 

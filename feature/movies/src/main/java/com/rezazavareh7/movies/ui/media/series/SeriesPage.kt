@@ -17,13 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rezazavareh7.designsystem.component.searchbar.SearchBarComponent
 import com.rezazavareh7.movies.domain.model.MediaData
 import com.rezazavareh7.movies.ui.media.MediaUiEvent
+import com.rezazavareh7.movies.ui.media.component.HandlingPagingLoadState
 import com.rezazavareh7.movies.ui.media.component.MediaListComponent
 import com.rezazavareh7.movies.ui.media.component.SearchedContentComponent
+import com.rezazavareh7.movies.ui.model.MediaCategoryPagingList
 import com.rezazavareh7.ui.components.lottie.MediaLoadingAnimation
 import com.rezazavareh7.ui.components.showToast
 import com.rezazavareh7.movies.R as MediaResource
@@ -40,16 +41,41 @@ fun SeriesPage(
     mediaUiEvent: (MediaUiEvent) -> Unit,
     navigateToMediaDetailsScreen: (MediaData, String) -> Unit,
 ) {
-    val topRatedSeries = seriesUiState.topRatedSeries.collectAsLazyPagingItems()
-    val onTheAirSeries = seriesUiState.onTheAirSeries.collectAsLazyPagingItems()
-    val popularSeries = seriesUiState.popularSeries.collectAsLazyPagingItems()
-    val airingTodaySeries = seriesUiState.airingTodaySeries.collectAsLazyPagingItems()
-    val searchedSeries = seriesUiState.searchResult.collectAsLazyPagingItems()
     val context = LocalContext.current
-    if (seriesUiState.errorMessage.isNotEmpty()) {
-        showToast(context, seriesUiState.errorMessage)
+    if (seriesUiState.errorMessage != null) {
+        showToast(context, seriesUiState.errorMessage.asString())
         seriesUiEvent(SeriesUiEvent.OnToastMessageShown)
     }
+
+    val searchedSeries = seriesUiState.searchResult.collectAsLazyPagingItems()
+    val listPagingCategories =
+        arrayOf(
+            MediaCategoryPagingList(
+                pagingList = seriesUiState.airingTodaySeries.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.airing_today),
+            ),
+            MediaCategoryPagingList(
+                pagingList = seriesUiState.topRatedSeries.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.top_rated),
+            ),
+            MediaCategoryPagingList(
+                pagingList = seriesUiState.onTheAirSeries.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.on_the_air),
+            ),
+            MediaCategoryPagingList(
+                pagingList = seriesUiState.popularSeries.collectAsLazyPagingItems(),
+                title = stringResource(MediaResource.string.popular),
+            ),
+        )
+    HandlingPagingLoadState(
+        categoryLists = listPagingCategories,
+        onRefreshLoading = {
+            MediaLoadingAnimation()
+        },
+        onRefreshError = { errorUiText ->
+            seriesUiEvent(SeriesUiEvent.OnShowToast(errorUiText))
+        },
+    )
     Column(
         modifier =
             Modifier
@@ -105,16 +131,13 @@ fun SeriesPage(
                     clickOnQueryItem = { query ->
                         seriesUiEvent(SeriesUiEvent.OnSearched(query))
                     },
+                    onShowToast = { errorMessage ->
+                        seriesUiEvent(SeriesUiEvent.OnShowToast(errorMessage))
+                    },
                 )
             },
         )
-        if (topRatedSeries.loadState.refresh is LoadState.Loading ||
-            airingTodaySeries.loadState.refresh is LoadState.Loading ||
-            onTheAirSeries.loadState.refresh is LoadState.Loading ||
-            popularSeries.loadState.refresh is LoadState.Loading
-        ) {
-            MediaLoadingAnimation()
-        } else if (!seriesUiState.isSearchBarExpanded) {
+        if (!seriesUiState.isSearchBarExpanded) {
             LazyColumn(
                 state = rememberLazyListState(),
                 modifier =
@@ -122,49 +145,21 @@ fun SeriesPage(
                         .fillMaxWidth()
                         .weight(1f),
             ) {
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.airing_today),
-                        mediaList = airingTodaySeries,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.top_rated),
-                        mediaList = topRatedSeries,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.on_the_air),
-                        mediaList = onTheAirSeries,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
-                }
-                item {
-                    MediaListComponent(
-                        sharedTransitionScope = sharedTransitionScope,
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        groupName = stringResource(MediaResource.string.popular),
-                        mediaList = popularSeries,
-                        favoriteIds = favoriteIds,
-                        mediaUiEvent = mediaUiEvent,
-                        onItemClicked = navigateToMediaDetailsScreen,
-                    )
+                listPagingCategories.forEach { mediaCategoryPagingList ->
+                    item {
+                        MediaListComponent(
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            groupName = mediaCategoryPagingList.title,
+                            mediaPagingList = mediaCategoryPagingList.pagingList,
+                            favoriteIds = favoriteIds,
+                            mediaUiEvent = mediaUiEvent,
+                            onItemClicked = navigateToMediaDetailsScreen,
+                            onShowError = { errorMessage ->
+                                seriesUiEvent(SeriesUiEvent.OnShowToast(errorMessage))
+                            },
+                        )
+                    }
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.rezazavareh7.network.di
 
-import com.rezazavareh.usecase.GetLanguageUseCase
 import com.rezazavareh7.network.BuildConfig
 import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import com.squareup.moshi.Moshi
@@ -8,8 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,19 +48,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthInterceptor(getLanguageUseCase: GetLanguageUseCase): Interceptor {
+    fun provideAuthInterceptor(): Interceptor {
         return Interceptor { chain ->
-            val language =
-                runBlocking {
-                    getLanguageUseCase().first()
-                }
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url
-
-//            val newUrl =
-//                originalUrl.newBuilder()
-//                    .setQueryParameter("language", language)
-//                    .build()
             val token = "Bearer $API_ACCESS_TOKEN"
             val newRequest =
                 originalRequest

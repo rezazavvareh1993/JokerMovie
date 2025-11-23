@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -35,12 +34,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.rezazavareh7.common.util.extensions.formattedStringOneDecimal
 import com.rezazavareh7.designsystem.component.divider.HorizontalDividerComponent
 import com.rezazavareh7.designsystem.component.icon.CircleIconBoxComponent
 import com.rezazavareh7.designsystem.component.icon.IconComponent
+import com.rezazavareh7.designsystem.component.progressbar.CircularProgressBarComponent
 import com.rezazavareh7.designsystem.component.text.body.BodyMediumTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleLargeTextComponent
 import com.rezazavareh7.designsystem.component.text.title.TitleMediumTextComponent
@@ -51,11 +50,11 @@ import com.rezazavareh7.designsystem.util.getScreenDpSize
 import com.rezazavareh7.movies.R
 import com.rezazavareh7.movies.domain.model.MediaCategory
 import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.ui.media.component.HandlingPagingLoadState
 import com.rezazavareh7.movies.ui.media.component.MediaListItemComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.CreditListItemComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.ImageValueComponent
 import com.rezazavareh7.movies.ui.moviedetails.component.TitleValueComponent
-import com.rezazavareh7.movies.ui.util.exceptionHandling
 import com.rezazavareh7.ui.components.glide.ShowGlideImageByUrl
 import com.rezazavareh7.ui.components.lottie.MediaLoadingAnimation
 import com.rezazavareh7.ui.components.showToast
@@ -336,7 +335,10 @@ fun MediaDetailsScreen(
                                                             sharedTransitionScope = sharedTransitionScope,
                                                             animatedVisibilityScope = animatedVisibilityScope,
                                                             mediaData = item,
-                                                            isLiked = mediaDetailsUiState.favoriteIds.contains(it.id),
+                                                            isLiked =
+                                                                mediaDetailsUiState.favoriteIds.contains(
+                                                                    it.id,
+                                                                ),
                                                             onFavoriteClicked = { isLiked, mediaItem ->
                                                                 if (isLiked) {
                                                                     mediaDetailsUiEvent(
@@ -353,29 +355,25 @@ fun MediaDetailsScreen(
                                                                 }
                                                             },
                                                             onItemClicked = { mediaData, groupName ->
-                                                                navigateToMediaDetails(mediaData, groupName)
+                                                                navigateToMediaDetails(
+                                                                    mediaData,
+                                                                    groupName,
+                                                                )
                                                             },
                                                         )
                                                     }
                                                 }
 
-                                                mediaSimilarList.apply {
-                                                    when (loadState.append) {
-                                                        is LoadState.Loading ->
-                                                            item {
-                                                                CircularProgressIndicator()
-                                                            }
-
-                                                        is LoadState.Error ->
-                                                            item {
-                                                                showToast(
-                                                                    LocalContext.current,
-                                                                    exceptionHandling((loadState.append as LoadState.Error).error),
-                                                                )
-                                                            }
-
-                                                        else -> Unit
-                                                    }
+                                                item {
+                                                    HandlingPagingLoadState(
+                                                        mediaSimilarList,
+                                                        onAppendLoading = {
+                                                            CircularProgressBarComponent()
+                                                        },
+                                                        onAppendError = { errorUiText ->
+                                                            mediaDetailsUiEvent(MediaDetailsUiEvent.OnShowToast(errorUiText))
+                                                        },
+                                                    )
                                                 }
                                             }
                                         }

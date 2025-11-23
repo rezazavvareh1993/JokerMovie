@@ -1,19 +1,25 @@
 package com.rezazavareh7.movies.ui.media.series
 
-sealed class SeriesUiEvent {
-    data object OnGetSeriesCalled : SeriesUiEvent()
+import com.rezazavareh7.ui.util.UiText
 
-    data object OnToastMessageShown : SeriesUiEvent()
+sealed interface SeriesUiEvent {
+    data object OnGetSeriesCalled : SeriesUiEvent
+
+    data object OnToastMessageShown : SeriesUiEvent
 
     data class OnSearchBarExpandStateChanged(
         val isExpanded: Boolean,
-    ) : SeriesUiEvent()
+    ) : SeriesUiEvent
 
     data class OnSearchQueryChanged(
         val newSeriesName: String,
-    ) : SeriesUiEvent()
+    ) : SeriesUiEvent
 
     data class OnSearched(
         val query: String,
-    ) : SeriesUiEvent()
+    ) : SeriesUiEvent
+
+    data class OnShowToast(
+        val uiText: UiText?,
+    ) : SeriesUiEvent
 }
