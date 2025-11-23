@@ -26,6 +26,6 @@ private fun SocketException.handleSocketExceptions(): DataError =
 
 private fun IOException.handleIOExceptions(): DataError =
     when (this) {
-        is UnknownHostException -> DataError.Remote.NOT_FOUND
+        is UnknownHostException -> DataError.Remote.NO_INTERNET
         else -> DataError.Remote.UNKNOWN
     }

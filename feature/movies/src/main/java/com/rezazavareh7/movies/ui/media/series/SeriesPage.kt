@@ -11,6 +11,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -47,6 +52,10 @@ fun SeriesPage(
         seriesUiEvent(SeriesUiEvent.OnToastMessageShown)
     }
 
+    var isNeedToHandlePagingState by remember {
+        mutableStateOf(false)
+    }
+
     val searchedSeries = seriesUiState.searchResult.collectAsLazyPagingItems()
     val listPagingCategories =
         arrayOf(
@@ -67,15 +76,24 @@ fun SeriesPage(
                 title = stringResource(MediaResource.string.popular),
             ),
         )
-    HandlingPagingLoadState(
-        categoryLists = listPagingCategories,
-        onRefreshLoading = {
-            MediaLoadingAnimation()
-        },
-        onRefreshError = { errorUiText ->
-            seriesUiEvent(SeriesUiEvent.OnShowToast(errorUiText))
-        },
-    )
+    LaunchedEffect(Unit) {
+        isNeedToHandlePagingState = true
+    }
+
+    if (isNeedToHandlePagingState) {
+        HandlingPagingLoadState(
+            categoryLists = listPagingCategories,
+            onRefreshLoading = {
+                if (seriesUiState.isLoading) {
+                    MediaLoadingAnimation()
+                }
+            },
+            onRefreshError = { errorUiText ->
+                seriesUiEvent(SeriesUiEvent.OnShowToast(errorUiText))
+                isNeedToHandlePagingState = false
+            },
+        )
+    }
     Column(
         modifier =
             Modifier
@@ -137,7 +155,7 @@ fun SeriesPage(
                 )
             },
         )
-        if (!seriesUiState.isSearchBarExpanded) {
+        if (!seriesUiState.isSearchBarExpanded && !seriesUiState.isLoading) {
             LazyColumn(
                 state = rememberLazyListState(),
                 modifier =
@@ -146,19 +164,21 @@ fun SeriesPage(
                         .weight(1f),
             ) {
                 listPagingCategories.forEach { mediaCategoryPagingList ->
-                    item {
-                        MediaListComponent(
-                            sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            groupName = mediaCategoryPagingList.title,
-                            mediaPagingList = mediaCategoryPagingList.pagingList,
-                            favoriteIds = favoriteIds,
-                            mediaUiEvent = mediaUiEvent,
-                            onItemClicked = navigateToMediaDetailsScreen,
-                            onShowError = { errorMessage ->
-                                seriesUiEvent(SeriesUiEvent.OnShowToast(errorMessage))
-                            },
-                        )
+                    if (mediaCategoryPagingList.pagingList.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = mediaCategoryPagingList.title,
+                                mediaPagingList = mediaCategoryPagingList.pagingList,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                                onShowError = { errorMessage ->
+                                    seriesUiEvent(SeriesUiEvent.OnShowToast(errorMessage))
+                                },
+                            )
+                        }
                     }
                 }
             }

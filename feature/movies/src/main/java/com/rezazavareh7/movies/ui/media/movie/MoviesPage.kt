@@ -52,7 +52,7 @@ fun MoviesPage(
         movieUiEvent(MoviesUiEvent.OnToastMessageShown)
     }
 
-    var isNeedToHandlePagin by remember {
+    var isNeedToHandlePagingState by remember {
         mutableStateOf(false)
     }
 
@@ -79,10 +79,10 @@ fun MoviesPage(
         )
 
     LaunchedEffect(Unit) {
-        isNeedToHandlePagin = true
+        isNeedToHandlePagingState = true
     }
 
-    if (isNeedToHandlePagin) {
+    if (isNeedToHandlePagingState) {
         HandlingPagingLoadState(
             categoryLists = listPagingCategories,
             onRefreshLoading = {
@@ -91,9 +91,8 @@ fun MoviesPage(
                 }
             },
             onRefreshError = { errorUiText ->
-                if (moviesUiState.isLoading) {
-                    movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
-                }
+                movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
+                isNeedToHandlePagingState = false
             },
         )
     }
@@ -159,7 +158,7 @@ fun MoviesPage(
                 )
             },
         )
-        if (!moviesUiState.isSearchBarExpanded) {
+        if (!moviesUiState.isSearchBarExpanded && !moviesUiState.isLoading) {
             LazyColumn(
                 state = rememberLazyListState(),
                 modifier =
@@ -167,23 +166,21 @@ fun MoviesPage(
                         .fillMaxWidth()
                         .weight(1f),
             ) {
-                if (!moviesUiState.isLoading) {
-                    listPagingCategories.forEach { mediaCategoryPagingList ->
-                        if (mediaCategoryPagingList.pagingList.itemCount > 0) {
-                            item {
-                                MediaListComponent(
-                                    sharedTransitionScope = sharedTransitionScope,
-                                    animatedVisibilityScope = animatedVisibilityScope,
-                                    groupName = mediaCategoryPagingList.title,
-                                    mediaPagingList = mediaCategoryPagingList.pagingList,
-                                    favoriteIds = favoriteIds,
-                                    mediaUiEvent = mediaUiEvent,
-                                    onItemClicked = navigateToMediaDetailsScreen,
-                                    onShowError = { errorUiText ->
-                                        movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
-                                    },
-                                )
-                            }
+                listPagingCategories.forEach { mediaCategoryPagingList ->
+                    if (mediaCategoryPagingList.pagingList.itemCount > 0) {
+                        item {
+                            MediaListComponent(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                groupName = mediaCategoryPagingList.title,
+                                mediaPagingList = mediaCategoryPagingList.pagingList,
+                                favoriteIds = favoriteIds,
+                                mediaUiEvent = mediaUiEvent,
+                                onItemClicked = navigateToMediaDetailsScreen,
+                                onShowError = { errorUiText ->
+                                    movieUiEvent(MoviesUiEvent.OnShowToast(errorUiText))
+                                },
+                            )
                         }
                     }
                 }
