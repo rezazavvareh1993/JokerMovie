@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_movie">Search movie</string>
+    <string name="search_series">Search series</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="popular">Popular</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="farsi">Farsi</string>
+    <string name="english">English</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="toolbar_title">Joker Movie</string>
+    <string name="overview">Overview:</string>
+    <string name="credits">Credits:</string>
+    <string name="genres">Genres:</string>
+    <string name="release_date">Release date:</string>
+    <string name="rate">Rate:</string>
+    <string name="vote_count">Vote count:</string>
+    <string name="details">Details</string>
+    <string name="movie">Movie</string>
+    <string name="series">Series</string>
+    <string name="on_the_air">On the air</string>
+    <string name="airing_today">Airing today</string>
+    <string name="searched">Searched</string>
+    <string name="favorites">Favorites</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_photo">Save the photo</string>
+    <string name="yes_save_it">Yes, add it</string>
+    <string name="photo_saved_successfully">The photo saved successfully</string>
+    <string name="photo_save_error">Can`t save the photo, Please try again.</string>
+    <string name="are_you_sure_to_save_photo">Are you sure to save the photo?</string>
+    <string name="photos">Photos</string>
+    <string name="no_data">No data</string>
+    <string name="version">version:%s</string>
+    <string name="director">Director</string>
+    <string name="vpn_error_connection">No internet or VPN connection</string>
+    <string name="default_error">There is a problem</string>
+    <string name="internet_error_connection">No Internet.</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+    <string name="similar">Similar:</string>
+
+</resources>

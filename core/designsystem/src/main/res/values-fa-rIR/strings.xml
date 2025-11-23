@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">بازگشت</string>
+    <string name="home">خانه</string>
+    <string name="setting">تنظیمات</string>
+    <string name="search">جستجو</string>
+    <string name="cancel">لغو</string>
+    <string name="favorite">مورد علاقه</string>
+    <string name="request_timeout_error">زمان درخواست به پایان رسید. لطفاً دوباره تلاش کنید.</string>
+    <string name="too_many_request_error">درخواست‌های بیش از حد. لطفاً کمی صبر کرده و دوباره تلاش کنید.</string>
+    <string name="no_internet_error">اتصال اینترنت یا VPN وجود ندارد. لطفاً شبکه را بررسی کنید.</string>
+    <string name="service_unavailable_error">سرویس موقتاً در دسترس نیست. لطفاً بعداً امتحان کنید.</string>
+    <string name="serialization_error">خطا در پردازش داده‌ها.</string>
+    <string name="unknown_error">خطای غیرمنتظره رخ داده است.</string>
+    <string name="bad_request_error">درخواست نامعتبر.</string>
+    <string name="unauthorized_error">دسترسی غیرمجاز. لطفاً دوباره وارد شوید.</string>
+    <string name="forbidden_error">دسترسی ممنوع است.</string>
+    <string name="not_found_error">مورد موردنظر یافت نشد.</string>
+    <string name="no_data_error">داده‌ای موجود نیست.</string>
+    <string name="disk_full_error">حافظه دستگاه پر است. لطفاً فضا را خالی کنید.</string>
+    <string name="vpn_error_connection">اینترنت یا VPN شما متصل نیست.</string>
+    <string name="default_error">مشکلی پیش آمده است.</string>
+    <string name="internet_error_connection">اینترنت شما متصل نیست.</string>
+</resources>

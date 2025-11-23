@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Back</string>
+    <string name="home">Home</string>
+    <string name="setting">Setting</string>
+    <string name="search">Search</string>
+    <string name="cancel">Cancel</string>
+    <string name="favorite">Favorite</string>
+    <string name="request_timeout_error">Request timed out. Please try again.</string>
+    <string name="too_many_request_error">Too many requests. Please wait and try again.</string>
+    <string name="no_internet_error">No internet or VPN connection. Check your network and try again.</string>
+    <string name="service_unavailable_error">Service is temporarily unavailable. Please try again later.</string>
+    <string name="serialization_error">Data processing error occurred.</string>
+    <string name="unknown_error">An unexpected error occurred.</string>
+    <string name="bad_request_error">Invalid request.</string>
+    <string name="unauthorized_error">You are not authorized. Please log in again.</string>
+    <string name="forbidden_error">Access denied.</string>
+    <string name="not_found_error">Requested resource not found.</string>
+    <string name="no_data_error">No data available.</string>
+    <string name="disk_full_error">Storage is full. Please free up space.</string>
+    <string name="vpn_error_connection">No internet or VPN connection</string>
+    <string name="default_error">There is a problem</string>
+    <string name="internet_error_connection">No Internet.</string>
+</resources>

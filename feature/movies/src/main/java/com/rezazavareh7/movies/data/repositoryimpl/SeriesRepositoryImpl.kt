@@ -1,0 +1,118 @@
+package com.rezazavareh7.movies.data.repositoryimpl
+
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.rezazavareh7.common.domain.DataError
+import com.rezazavareh7.common.domain.Result
+import com.rezazavareh7.common.domain.map
+import com.rezazavareh7.movies.data.apiservice.SeriesApiService
+import com.rezazavareh7.movies.data.mapper.MediaImagesMapper
+import com.rezazavareh7.movies.data.mapper.SeriesCreditsMapper
+import com.rezazavareh7.movies.data.mapper.SeriesDetailMapper
+import com.rezazavareh7.movies.data.mapper.SeriesMapper
+import com.rezazavareh7.movies.data.model.SeriesCreditsResponse
+import com.rezazavareh7.movies.data.model.SeriesDetailResponse
+import com.rezazavareh7.movies.data.paging.GenericPagingSource
+import com.rezazavareh7.movies.data.paging.SearchPagingSource
+import com.rezazavareh7.movies.domain.model.Credit
+import com.rezazavareh7.movies.domain.model.MediaCategory
+import com.rezazavareh7.movies.domain.model.MediaData
+import com.rezazavareh7.movies.domain.model.MediaDetailData
+import com.rezazavareh7.movies.domain.model.MediaImage
+import com.rezazavareh7.movies.domain.networkstate.BasicNetworkState
+import com.rezazavareh7.movies.domain.repository.SeriesRepository
+import com.rezazavareh7.network.util.safeApiCall
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class SeriesRepositoryImpl
+    @Inject
+    constructor(
+        private val seriesApiService: SeriesApiService,
+        private val searchPagingSourceFactory: SearchPagingSource.Factory,
+        private val seriesDetailMapper: SeriesDetailMapper,
+        private val mediaImagesMapper: MediaImagesMapper,
+        private val seriesCreditsMapper: SeriesCreditsMapper,
+        private val seriesMapper: SeriesMapper,
+    ) : SeriesRepository {
+        override fun searchSeries(query: String): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    searchPagingSourceFactory.create(MediaCategory.SERIES, query)
+                },
+            ).flow
+
+        override fun getTopRatedSeries(): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    GenericPagingSource(
+                        apiCall = { page -> seriesApiService.getTopRatedSeries(page) },
+                        mapper = { response -> seriesMapper.invoke(response) },
+                    )
+                },
+            ).flow
+
+        override fun getOnTheAirSeries(): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    GenericPagingSource(
+                        apiCall = { page -> seriesApiService.getOnTheAirSeries(page) },
+                        mapper = { response -> seriesMapper.invoke(response) },
+                    )
+                },
+            ).flow
+
+        override fun getPopularSeries(): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    GenericPagingSource(
+                        apiCall = { page -> seriesApiService.getPopularSeries(page) },
+                        mapper = { response -> seriesMapper.invoke(response) },
+                    )
+                },
+            ).flow
+
+        override fun getAiringTodaySeries(): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    GenericPagingSource(
+                        apiCall = { page -> seriesApiService.getAiringTodaySeries(page) },
+                        mapper = { response -> seriesMapper.invoke(response) },
+                    )
+                },
+            ).flow
+
+        override suspend fun getSeriesDetail(seriesId: Long): Result<MediaDetailData, DataError.Remote> =
+            safeApiCall<SeriesDetailResponse> {
+                seriesApiService.getSeriesDetails(seriesId)
+            }.map { response ->
+                seriesDetailMapper(response)
+            }
+
+        override suspend fun getImages(seriesId: Long): BasicNetworkState<List<MediaImage>> =
+            mediaImagesMapper(
+                seriesApiService.getImages(seriesId),
+            )
+
+        override suspend fun getSeriesCredits(seriesId: Long): Result<List<Credit>, DataError> =
+            safeApiCall<SeriesCreditsResponse> {
+                seriesApiService.getCredits(seriesId)
+            }.map { response -> seriesCreditsMapper(response) }
+
+        override fun getSimilarSeries(seriesId: Long): Flow<PagingData<MediaData>> =
+            Pager(
+                config = PagingConfig(pageSize = 5),
+                pagingSourceFactory = {
+                    GenericPagingSource(
+                        apiCall = { page -> seriesApiService.getSimilarSeries(seriesId, page) },
+                        mapper = { response -> seriesMapper.invoke(response) },
+                    )
+                },
+            ).flow
+    }
